@@ -1,0 +1,192 @@
+import { ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Bell, User, ChevronDown } from "lucide-react";
+import {
+  LayoutDashboard,
+  FileText,
+  FilePlus,
+  Database,
+  BarChart3,
+  Compass,
+  Newspaper,
+  CalendarClock,
+  Users2,
+  Search,
+  Send,
+  ClipboardList,
+  Wrench,
+  MessageCircle,
+  CreditCard,
+  Settings,
+} from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { NavLink } from "@/components/NavLink";
+
+const sidebarGroups = [
+  {
+    label: "",
+    items: [{ title: "Dashboard", url: "/dashboard", icon: LayoutDashboard }],
+  },
+  {
+    label: "My Research",
+    items: [
+      { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
+      { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
+    ],
+  },
+  {
+    label: "Data & Analysis",
+    items: [
+      { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
+      { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
+    ],
+  },
+  {
+    label: "Intelligence Hub",
+    items: [
+      { title: "Journal Recommender", url: "/dashboard/intelligence/journals", icon: Compass },
+      { title: "Conference Alerts", url: "/dashboard/intelligence/conferences", icon: CalendarClock },
+      { title: "Stakeholders", url: "/dashboard/intelligence/stakeholders", icon: Users2 },
+      { title: "Research Gaps", url: "/dashboard/intelligence/gaps", icon: Search },
+    ],
+  },
+  {
+    label: "Publishing",
+    items: [
+      { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
+      { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList },
+    ],
+  },
+  {
+    label: "",
+    items: [
+      { title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: Wrench },
+      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
+      { title: "Settings", url: "/dashboard/settings", icon: Settings },
+    ],
+  },
+];
+
+function AppSidebar() {
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
+  const location = useLocation();
+
+  return (
+    <Sidebar collapsible="icon" className="border-r border-border">
+      <div className="h-16 flex items-center px-4 border-b border-border">
+        {!collapsed && (
+          <Link to="/" className="flex items-center gap-1">
+            <span className="text-lg font-bold">
+              <span className="text-afrika-orange">Afrika</span>
+              <span className="text-primary">scholar</span>
+            </span>
+          </Link>
+        )}
+        {collapsed && (
+          <span className="text-lg font-bold text-afrika-orange mx-auto">A</span>
+        )}
+      </div>
+      <SidebarContent className="pt-2">
+        {sidebarGroups.map((group, gi) => (
+          <SidebarGroup key={gi}>
+            {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end={item.url === "/dashboard"}
+                        className="hover:bg-accent/10"
+                        activeClassName="bg-accent/15 text-accent font-semibold"
+                      >
+                        <item.icon className="h-4 w-4 mr-2 shrink-0" />
+                        {!collapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+      {!collapsed && (
+        <div className="mt-auto border-t border-border p-4">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">
+              D
+            </div>
+            <div className="text-xs">
+              <p className="font-semibold">Defi</p>
+              <p className="text-muted-foreground">Pro plan</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </Sidebar>
+  );
+}
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-secondary">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Top bar */}
+          <header className="h-16 flex items-center justify-between border-b border-border bg-background px-4 lg:px-6 sticky top-0 z-30">
+            <SidebarTrigger className="mr-2" />
+            <div className="flex items-center gap-3 ml-auto">
+              <Badge variant="outline" className="text-xs font-medium border-accent text-accent">
+                Pro (Trial)
+              </Badge>
+              <button className="relative p-2 rounded-md hover:bg-secondary transition-colors">
+                <Bell className="h-5 w-5 text-muted-foreground" />
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-accent" />
+              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1">
+                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
+                    D
+                  </div>
+                  <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild><Link to="/dashboard/settings">Settings</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/dashboard/billing">Billing</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/auth/login">Sign Out</Link></DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </header>
+          <main className="flex-1 overflow-auto p-4 lg:p-8">
+            {children}
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+}
