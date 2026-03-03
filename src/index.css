@@ -2,95 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 235 50% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 235 50% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 235 50% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 235 60% 18%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 230 25% 96%;
+    --secondary-foreground: 235 50% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 230 20% 96%;
+    --muted-foreground: 230 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 25 90% 52%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 230 20% 90%;
+    --input: 230 20% 90%;
+    --ring: 235 60% 18%;
 
     --radius: 0.5rem;
 
+    /* Afrika Scholar custom tokens */
+    --afrika-blue: 235 60% 18%;
+    --afrika-blue-light: 235 45% 25%;
+    --afrika-blue-dark: 235 65% 12%;
+    --afrika-orange: 25 90% 52%;
+    --afrika-orange-hover: 25 90% 45%;
+    --afrika-orange-light: 25 90% 95%;
+    --afrika-green: 145 60% 40%;
+    --afrika-green-dark: 160 70% 35%;
+    --afrika-section-alt: 230 30% 97%;
+    --afrika-text-light: 230 15% 55%;
+
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
+    --background: 235 60% 8%;
+    --foreground: 0 0% 95%;
+    --card: 235 55% 12%;
+    --card-foreground: 0 0% 95%;
+    --popover: 235 55% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 25 90% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 235 40% 20%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 235 30% 18%;
+    --muted-foreground: 230 15% 60%;
+    --accent: 25 90% 52%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --destructive-foreground: 0 0% 95%;
+    --border: 235 30% 22%;
+    --input: 235 30% 22%;
+    --ring: 25 90% 52%;
+    --sidebar-background: 235 60% 10%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 25 90% 52%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 235 40% 15%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 235 30% 18%;
+    --sidebar-ring: 25 90% 52%;
   }
 }
 
@@ -100,6 +93,105 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 700;
+  }
+
+  .heading-serif {
+    font-family: 'DM Serif Display', serif;
+  }
+}
+
+@layer components {
+  .afrika-gradient-bg {
+    background: linear-gradient(135deg, hsl(235 60% 18%), hsl(235 65% 12%));
+  }
+
+  .afrika-gradient-bg-light {
+    background: linear-gradient(180deg, hsl(235 60% 18%), hsl(235 45% 25%));
+  }
+
+  .section-alt {
+    background-color: hsl(var(--afrika-section-alt));
+  }
+
+  .btn-afrika-orange {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all;
+    background-color: hsl(var(--afrika-orange));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .btn-afrika-orange:hover {
+    background-color: hsl(var(--afrika-orange-hover));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px hsl(25 90% 52% / 0.3);
+  }
+
+  .btn-afrika-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all border-2;
+    border-color: hsl(var(--afrika-orange));
+    color: hsl(var(--afrika-orange));
+    background: transparent;
+  }
+
+  .btn-afrika-outline:hover {
+    background-color: hsl(var(--afrika-orange));
+    color: hsl(var(--accent-foreground));
+  }
+
+  .btn-afrika-outline-white {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-all border-2;
+    border-color: hsl(var(--primary-foreground));
+    color: hsl(var(--primary-foreground));
+    background: transparent;
+  }
+
+  .btn-afrika-outline-white:hover {
+    background-color: hsl(var(--primary-foreground));
+    color: hsl(var(--afrika-blue));
+  }
+
+  .card-hover {
+    @apply transition-all duration-300;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px hsl(235 60% 18% / 0.12);
+  }
+
+  .floating-icon {
+    @apply absolute rounded-xl p-3 shadow-lg;
+    background: hsl(var(--background) / 0.95);
+    backdrop-filter: blur(8px);
+  }
+
+  .trust-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
+    background-color: hsl(var(--afrika-orange-light));
+    color: hsl(var(--afrika-orange));
+  }
+}
+
+@layer utilities {
+  .text-afrika-blue {
+    color: hsl(var(--afrika-blue));
+  }
+  .text-afrika-orange {
+    color: hsl(var(--afrika-orange));
+  }
+  .bg-afrika-blue {
+    background-color: hsl(var(--afrika-blue));
+  }
+  .bg-afrika-orange {
+    background-color: hsl(var(--afrika-orange));
+  }
+  .border-afrika-orange {
+    border-color: hsl(var(--afrika-orange));
   }
 }
