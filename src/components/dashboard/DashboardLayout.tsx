@@ -1,6 +1,6 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Bell, User, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import {
   LayoutDashboard,
   FileText,
@@ -8,7 +8,6 @@ import {
   Database,
   BarChart3,
   Compass,
-  Newspaper,
   CalendarClock,
   Users2,
   Search,
@@ -40,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { NavLink } from "@/components/NavLink";
+import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 
 const sidebarGroups = [
   {
@@ -90,27 +90,30 @@ const sidebarGroups = [
 function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border">
-      <div className="h-16 flex items-center px-4 border-b border-border">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+      <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
         {!collapsed && (
           <Link to="/" className="flex items-center gap-1">
             <span className="text-lg font-bold">
-              <span className="text-afrika-orange">Afrika</span>
-              <span className="text-primary">scholar</span>
+              <span className="text-accent">Afrika</span>
+              <span className="text-sidebar-foreground">scholar</span>
             </span>
           </Link>
         )}
         {collapsed && (
-          <span className="text-lg font-bold text-afrika-orange mx-auto">A</span>
+          <span className="text-lg font-bold text-accent mx-auto">A</span>
         )}
       </div>
       <SidebarContent className="pt-2">
         {sidebarGroups.map((group, gi) => (
           <SidebarGroup key={gi}>
-            {group.label && <SidebarGroupLabel>{group.label}</SidebarGroupLabel>}
+            {group.label && (
+              <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest">
+                {group.label}
+              </SidebarGroupLabel>
+            )}
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => (
@@ -119,8 +122,8 @@ function AppSidebar() {
                       <NavLink
                         to={item.url}
                         end={item.url === "/dashboard"}
-                        className="hover:bg-accent/10"
-                        activeClassName="bg-accent/15 text-accent font-semibold"
+                        className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        activeClassName="bg-sidebar-accent text-accent font-semibold"
                       >
                         <item.icon className="h-4 w-4 mr-2 shrink-0" />
                         {!collapsed && <span>{item.title}</span>}
@@ -134,14 +137,14 @@ function AppSidebar() {
         ))}
       </SidebarContent>
       {!collapsed && (
-        <div className="mt-auto border-t border-border p-4">
+        <div className="mt-auto border-t border-sidebar-border p-4">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">
               D
             </div>
             <div className="text-xs">
-              <p className="font-semibold">Defi</p>
-              <p className="text-muted-foreground">Pro plan</p>
+              <p className="font-semibold text-sidebar-foreground">Defi</p>
+              <p className="text-sidebar-foreground/50">Pro plan</p>
             </div>
           </div>
         </div>
@@ -156,17 +159,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <div className="min-h-screen flex w-full bg-secondary">
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Top bar */}
           <header className="h-16 flex items-center justify-between border-b border-border bg-background px-4 lg:px-6 sticky top-0 z-30">
             <SidebarTrigger className="mr-2" />
             <div className="flex items-center gap-3 ml-auto">
               <Badge variant="outline" className="text-xs font-medium border-accent text-accent">
                 Pro (Trial)
               </Badge>
-              <button className="relative p-2 rounded-md hover:bg-secondary transition-colors">
-                <Bell className="h-5 w-5 text-muted-foreground" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-accent" />
-              </button>
+              <NotificationsPanel />
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
                   <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
