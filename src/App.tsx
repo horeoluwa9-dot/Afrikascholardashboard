@@ -12,9 +12,11 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import Onboarding from "./pages/auth/Onboarding";
 import Dashboard from "./pages/Dashboard";
-import DashboardPubleesh from "./pages/dashboard/DashboardPubleesh";
-import DashboardPublishing from "./pages/dashboard/DashboardPublishing";
-import DashboardNetwork from "./pages/dashboard/DashboardNetwork";
+import GeneratePaper from "./pages/dashboard/GeneratePaper";
+import DatasetExplorer from "./pages/dashboard/DatasetExplorer";
+import DatasetAnalyzer from "./pages/dashboard/DatasetAnalyzer";
+import CommunityPage from "./pages/dashboard/CommunityPage";
+import PlaceholderPage from "./pages/dashboard/PlaceholderPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -43,13 +45,30 @@ const App = () => (
           <Route path="/auth/onboarding" element={<Onboarding />} />
 
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/publeesh" element={<DashboardPubleesh />} />
-          <Route path="/dashboard/publishing" element={<DashboardPublishing />} />
-          <Route path="/dashboard/network" element={<DashboardNetwork />} />
+          <Route path="/dashboard/generate-paper" element={<GeneratePaper />} />
+          <Route path="/dashboard/my-papers" element={<PlaceholderPage title="My Papers" breadcrumbs={["My Research", "My Papers"]} description="View and manage all your generated research papers." />} />
+          <Route path="/dashboard/data/explorer" element={<DatasetExplorer />} />
+          <Route path="/dashboard/data/analyzer" element={<DatasetAnalyzer />} />
+          <Route path="/dashboard/intelligence" element={<PlaceholderPage title="Intelligence Hub" breadcrumbs={["Intelligence Hub"]} description="AI-powered research intelligence insights, journal recommendations, and conference alerts." />} />
+          <Route path="/dashboard/intelligence/journals" element={<PlaceholderPage title="Journal Recommender" breadcrumbs={["Intelligence Hub", "Journal Recommender"]} description="Find the best journals for your research manuscript." />} />
+          <Route path="/dashboard/intelligence/conferences" element={<PlaceholderPage title="Conference Alerts" breadcrumbs={["Intelligence Hub", "Conference Alerts"]} description="Track upcoming conferences and submission deadlines." />} />
+          <Route path="/dashboard/intelligence/stakeholders" element={<PlaceholderPage title="Stakeholders" breadcrumbs={["Intelligence Hub", "Stakeholders"]} description="Map key stakeholders in your research domain." />} />
+          <Route path="/dashboard/intelligence/gaps" element={<PlaceholderPage title="Research Gaps" breadcrumbs={["Intelligence Hub", "Research Gaps"]} description="Discover under-researched areas and opportunities." />} />
+          <Route path="/dashboard/publishing/submit" element={<PlaceholderPage title="Submit Manuscript" breadcrumbs={["Publishing", "Submit Manuscript"]} description="Submit your research manuscript for publication." />} />
+          <Route path="/dashboard/publishing/track" element={<PlaceholderPage title="Track Submissions" breadcrumbs={["Publishing", "Track Submissions"]} description="Monitor the status of your manuscript submissions." />} />
+          <Route path="/dashboard/instrument-studio" element={<PlaceholderPage title="Instrument Studio" breadcrumbs={["Instrument Studio"]} description="Build and manage research instruments and survey tools." />} />
+          <Route path="/dashboard/community" element={<CommunityPage />} />
+          <Route path="/dashboard/billing" element={<PlaceholderPage title="Billing & Credits" breadcrumbs={["Billing & Credits"]} description="Manage your subscription, view credit usage, and purchase add-ons." />} />
+          <Route path="/dashboard/settings" element={<PlaceholderPage title="Settings" breadcrumbs={["Settings"]} description="Manage your account settings and preferences." />} />
+          {/* Legacy redirects */}
+          <Route path="/dashboard/publeesh" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard/publishing" element={<Navigate to="/dashboard/publishing/submit" replace />} />
+          <Route path="/dashboard/network" element={<Navigate to="/dashboard/community" replace />} />
+          <Route path="/dashboard/datasets" element={<Navigate to="/dashboard/data/explorer" replace />} />
+          <Route path="/dashboard/analyzer" element={<Navigate to="/dashboard/data/analyzer" replace />} />
 
           <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
 
-          {/* Placeholder routes for nav links */}
           <Route path="/about" element={<PubleeshLanding />} />
           <Route path="/publications" element={<PubleeshLanding />} />
           <Route path="/network" element={<PubleeshLanding />} />
