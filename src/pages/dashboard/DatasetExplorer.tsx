@@ -8,42 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { CreditsHowItWorksModal } from "@/components/dashboard/CreditsModal";
 import {
-  ChevronRight,
-  ArrowRight,
-  Loader2,
-  Check,
-  Download,
-  Copy,
-  BarChart3,
-  Eye,
-  Database,
-  AlertTriangle,
+  ChevronRight, ArrowRight, Loader2, Check, Download, Copy,
+  BarChart3, Eye, Database, AlertTriangle,
 } from "lucide-react";
 
-const sampleSuggestions = [
-  "Survey dataset",
-  "Institutional performance dataset",
-  "Panel dataset",
-  "Time-series dataset",
-  "Experimental dataset",
-];
-
-const analysisTypes = [
-  "Descriptive",
-  "Correlation",
-  "Regression",
-  "ANOVA",
-  "T-Test",
-  "Hypothesis Test",
-];
+const sampleSuggestions = ["Survey dataset", "Institutional performance dataset", "Panel dataset", "Time-series dataset", "Experimental dataset"];
+const analysisTypes = ["Descriptive", "Correlation", "Regression", "ANOVA", "T-Test", "Hypothesis Test"];
 
 const sampleData = [
   { id: 1, age: 22, gender: "Female", income: 45000, family_size: 4, gpa: 3.5, hours_study: 15, extracurriculars: "Yes", school_type: "Public" },
@@ -95,7 +69,6 @@ const DatasetExplorer = () => {
   return (
     <DashboardLayout>
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Breadcrumb */}
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <Link to="/dashboard" className="hover:text-foreground">Dashboard</Link>
           <ChevronRight className="h-3 w-3" />
@@ -104,13 +77,10 @@ const DatasetExplorer = () => {
           <span className="text-foreground font-medium">Dataset Explorer</span>
         </div>
 
-        {/* Header */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Dataset Explorer</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Generate realistic academic datasets, preview structure, and export for analysis.
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">Generate realistic academic datasets, preview structure, and export for analysis.</p>
           </div>
           <div className="text-right space-y-1">
             <div className="text-sm">
@@ -121,39 +91,20 @@ const DatasetExplorer = () => {
           </div>
         </div>
 
-        {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="generate" className="gap-1">
-              <Database className="h-3 w-3" /> Generate Dataset
-            </TabsTrigger>
-            <TabsTrigger value="view" className="gap-1" disabled={!dataGenerated}>
-              <Eye className="h-3 w-3" /> View Data
-            </TabsTrigger>
-            <TabsTrigger value="analyze" className="gap-1" disabled={!dataGenerated}>
-              <BarChart3 className="h-3 w-3" /> Analyze
-            </TabsTrigger>
+            <TabsTrigger value="generate" className="gap-1"><Database className="h-3 w-3" /> Generate Dataset</TabsTrigger>
+            <TabsTrigger value="view" className="gap-1" disabled={!dataGenerated}><Eye className="h-3 w-3" /> View Data</TabsTrigger>
+            <TabsTrigger value="analyze" className="gap-1" disabled={!dataGenerated}><BarChart3 className="h-3 w-3" /> Analyze</TabsTrigger>
           </TabsList>
 
-          {/* TAB 1: Generate */}
           <TabsContent value="generate" className="space-y-5">
             <div className="bg-card rounded-xl border border-border p-6 space-y-5">
               <h2 className="text-base font-bold text-foreground">Describe the Dataset You Need</h2>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Student academic performance and socioeconomic factors across Nigerian universities"
-                className="min-h-[100px]"
-              />
+              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Student academic performance and socioeconomic factors across Nigerian universities" className="min-h-[100px]" />
               <div className="flex flex-wrap gap-2">
                 {sampleSuggestions.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setDescription(s)}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium border border-border bg-card text-muted-foreground hover:border-accent/50 transition-colors"
-                  >
-                    {s}
-                  </button>
+                  <button key={s} onClick={() => setDescription(s)} className="px-3 py-1.5 rounded-full text-xs font-medium border border-border bg-card text-muted-foreground hover:border-accent/50 transition-colors">{s}</button>
                 ))}
               </div>
 
@@ -163,48 +114,34 @@ const DatasetExplorer = () => {
                   <Select value={sampleSize} onValueChange={setSampleSize}>
                     <SelectTrigger><SelectValue placeholder="Select size..." /></SelectTrigger>
                     <SelectContent>
-                      {["100", "500", "1,000", "5,000"].map((s) => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                      ))}
+                      {["100", "500", "1,000", "5,000"].map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Noise Level</Label>
-                  <Select>
-                    <SelectTrigger><SelectValue placeholder="Moderate" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low</SelectItem>
-                      <SelectItem value="moderate">Moderate</SelectItem>
-                      <SelectItem value="high">High</SelectItem>
-                    </SelectContent>
+                  <Select><SelectTrigger><SelectValue placeholder="Moderate" /></SelectTrigger>
+                    <SelectContent><SelectItem value="low">Low</SelectItem><SelectItem value="moderate">Moderate</SelectItem><SelectItem value="high">High</SelectItem></SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
                   <Label>Output Format</Label>
-                  <Select>
-                    <SelectTrigger><SelectValue placeholder="CSV" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="csv">CSV</SelectItem>
-                      <SelectItem value="excel">Excel</SelectItem>
-                    </SelectContent>
+                  <Select><SelectTrigger><SelectValue placeholder="CSV" /></SelectTrigger>
+                    <SelectContent><SelectItem value="csv">CSV</SelectItem><SelectItem value="excel">Excel</SelectItem></SelectContent>
                   </Select>
                 </div>
               </div>
 
               {datasetCredits > 0 ? (
-                <Button variant="afrika" size="xl" className="w-full" onClick={handleGenerate} disabled={generating || !description}>
+                <Button variant="afrika" size="lg" className="w-full" onClick={handleGenerate} disabled={generating || !description}>
                   {generating ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</> : <>Generate Dataset <ArrowRight className="h-4 w-4" /></>}
                 </Button>
               ) : (
                 <div className="text-center space-y-3 p-4 border border-destructive/30 rounded-xl bg-destructive/5">
-                  <div className="flex items-center justify-center gap-2 text-destructive">
-                    <AlertTriangle className="h-4 w-4" />
-                    <p className="text-sm font-medium">No remaining Dataset Credits</p>
-                  </div>
+                  <div className="flex items-center justify-center gap-2 text-destructive"><AlertTriangle className="h-4 w-4" /><p className="text-sm font-medium">No remaining Dataset Credits</p></div>
                   <div className="flex gap-3 justify-center">
-                    <Link to="/publeesh/pricing"><Button variant="afrika" size="sm">Upgrade Plan</Button></Link>
-                    <Link to="/publeesh/pricing"><Button variant="afrikaOutline" size="sm">Buy Credit Pack</Button></Link>
+                    <Link to="/dashboard/billing"><Button variant="afrika" size="sm">Upgrade Plan</Button></Link>
+                    <Link to="/dashboard/billing"><Button variant="outline" size="sm">Buy Credit Pack</Button></Link>
                   </div>
                 </div>
               )}
@@ -213,10 +150,7 @@ const DatasetExplorer = () => {
 
             {dataGenerated && (
               <div className="bg-afrika-green/10 border border-afrika-green/30 rounded-xl p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-afrika-green" />
-                  <p className="text-sm font-semibold text-foreground">Dataset generated successfully!</p>
-                </div>
+                <div className="flex items-center gap-3"><Check className="h-5 w-5 text-afrika-green" /><p className="text-sm font-semibold text-foreground">Dataset generated successfully!</p></div>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => setActiveTab("view")}>View Table</Button>
                   <Button variant="afrikaOutline" size="sm" onClick={() => setActiveTab("analyze")}>Analyze Now</Button>
@@ -225,7 +159,6 @@ const DatasetExplorer = () => {
             )}
           </TabsContent>
 
-          {/* TAB 2: View Data */}
           <TabsContent value="view" className="space-y-5">
             <div className="bg-card rounded-xl border border-border overflow-x-auto">
               <table className="w-full text-sm">
@@ -250,12 +183,11 @@ const DatasetExplorer = () => {
             <div className="flex gap-3">
               <Button variant="afrika" size="sm" className="gap-1"><Download className="h-4 w-4" /> Download CSV</Button>
               <Button variant="outline" size="sm" className="gap-1"><Copy className="h-4 w-4" /> Copy to Clipboard</Button>
-              <Button variant="afrikaOutline" size="sm" className="gap-1" onClick={() => setActiveTab("analyze")}>
-                <BarChart3 className="h-4 w-4" /> Run Analysis
-              </Button>
+              <Link to="/dashboard/data/analyzer">
+                <Button variant="afrikaOutline" size="sm" className="gap-1"><BarChart3 className="h-4 w-4" /> Analyze Dataset</Button>
+              </Link>
             </div>
 
-            {/* Column Summary */}
             <div>
               <h3 className="text-base font-bold text-foreground mb-3">Column Summary</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -269,53 +201,32 @@ const DatasetExplorer = () => {
             </div>
           </TabsContent>
 
-          {/* TAB 3: Analyze */}
           <TabsContent value="analyze" className="space-y-5">
             <div className="bg-card rounded-xl border border-border p-6 space-y-5">
               <h2 className="text-base font-bold text-foreground">Statistical Analysis & Interpretation</h2>
-
               <div>
                 <Label className="mb-2 block">Analysis Type</Label>
                 <div className="flex flex-wrap gap-2">
                   {analysisTypes.map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setAnalysisType(t)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                        analysisType === t
-                          ? "bg-accent text-accent-foreground border-accent"
-                          : "bg-card text-muted-foreground border-border hover:border-accent/50"
-                      }`}
-                    >
-                      {t}
-                    </button>
+                    <button key={t} onClick={() => setAnalysisType(t)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${analysisType === t ? "bg-accent text-accent-foreground border-accent" : "bg-card text-muted-foreground border-border hover:border-accent/50"}`}>{t}</button>
                   ))}
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Label>Analysis Prompt</Label>
-                <Textarea
-                  value={analysisPrompt}
-                  onChange={(e) => setAnalysisPrompt(e.target.value)}
-                  placeholder="e.g. Is there a significant difference in anxiety scores between treatment and control groups? Include effect size and confidence intervals."
-                  className="min-h-[80px]"
-                />
+                <Textarea value={analysisPrompt} onChange={(e) => setAnalysisPrompt(e.target.value)} placeholder="e.g. Is there a significant difference in anxiety scores between treatment and control groups?" className="min-h-[80px]" />
               </div>
-
               {analysisCredits > 0 ? (
-                <Button variant="afrika" size="xl" className="w-full" onClick={handleAnalyze} disabled={analyzing}>
+                <Button variant="afrika" size="lg" className="w-full" onClick={handleAnalyze} disabled={analyzing}>
                   {analyzing ? <><Loader2 className="h-4 w-4 animate-spin" /> Running Analysis...</> : <>Run Analysis <ArrowRight className="h-4 w-4" /></>}
                 </Button>
               ) : (
                 <div className="text-center space-y-3 p-4 border border-destructive/30 rounded-xl bg-destructive/5">
-                  <div className="flex items-center justify-center gap-2 text-destructive">
-                    <AlertTriangle className="h-4 w-4" />
-                    <p className="text-sm font-medium">No remaining Analysis Credits</p>
-                  </div>
+                  <div className="flex items-center justify-center gap-2 text-destructive"><AlertTriangle className="h-4 w-4" /><p className="text-sm font-medium">No remaining Analysis Credits</p></div>
                   <div className="flex gap-3 justify-center">
-                    <Link to="/publeesh/pricing"><Button variant="afrika" size="sm">Upgrade Plan</Button></Link>
-                    <Link to="/publeesh/pricing"><Button variant="afrikaOutline" size="sm">Buy Credit Pack</Button></Link>
+                    <Link to="/dashboard/billing"><Button variant="afrika" size="sm">Upgrade Plan</Button></Link>
+                    <Link to="/dashboard/billing"><Button variant="outline" size="sm">Buy Credit Pack</Button></Link>
                   </div>
                 </div>
               )}
@@ -338,16 +249,13 @@ const DatasetExplorer = () => {
                   <Button variant="outline" size="sm" className="gap-1"><Copy className="h-4 w-4" /> Copy Summary</Button>
                 </div>
                 <Link to="/dashboard/generate-paper">
-                  <Button variant="afrikaOutline" size="sm" className="gap-1 mt-2">
-                    Generate Research Paper from Analysis <ArrowRight className="h-4 w-4" />
-                  </Button>
+                  <Button variant="afrikaOutline" size="sm" className="gap-1 mt-2">Generate Research Paper from Analysis <ArrowRight className="h-4 w-4" /></Button>
                 </Link>
               </div>
             )}
           </TabsContent>
         </Tabs>
 
-        {/* Bottom nav */}
         <div className="flex gap-3 pt-4">
           <Link to="/dashboard"><Button variant="outline" size="sm">← Back to Dashboard</Button></Link>
           <Link to="/dashboard/generate-paper"><Button variant="afrikaOutline" size="sm">Generate Paper</Button></Link>
