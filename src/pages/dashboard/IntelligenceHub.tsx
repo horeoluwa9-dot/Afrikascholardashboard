@@ -4,7 +4,6 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
@@ -16,7 +15,6 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-/* ─── DUMMY DATA ─── */
 const journals = [
   { name: "African Journal of Energy Studies", indexing: "Scopus indexed", impact: 2.3, openAccess: true, reviewWeeks: 6, matchScore: 92, deadline: "Rolling", acceptance: "18%", field: "Energy Studies" },
   { name: "East African Economic Review", indexing: "DOAJ listed", impact: 1.5, openAccess: true, reviewWeeks: 8, matchScore: 88, deadline: "Rolling", acceptance: "22%", field: "Economics" },
@@ -57,6 +55,14 @@ const gaps = [
 
 const statusColor: Record<string, string> = { Open: "bg-afrika-green/10 text-afrika-green border-afrika-green/30", Upcoming: "bg-accent/10 text-accent border-accent/30" };
 const impactColor: Record<string, string> = { HIGH: "bg-destructive/10 text-destructive", MEDIUM: "bg-accent/10 text-accent", LOW: "bg-muted text-muted-foreground" };
+
+const tabItems = [
+  { value: "journals", label: "Journals", icon: BookOpen },
+  { value: "conferences", label: "Conferences", icon: Calendar },
+  { value: "stakeholders", label: "Stakeholders", icon: Users },
+  { value: "gaps", label: "Research Gaps", icon: Target },
+  { value: "trends", label: "Trends", icon: TrendingUp },
+];
 
 const IntelligenceHub = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -99,51 +105,67 @@ const IntelligenceHub = () => {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <Link to="/dashboard" className="hover:text-foreground">Dashboard</Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground font-medium">Intelligence Hub</span>
         </div>
 
-        {/* Header row - card aligned properly */}
-        <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-foreground">Your Research Intelligence Hub</h1>
-            <p className="text-sm text-muted-foreground mt-1 max-w-xl">
-              AI-powered insights tailored to your research profile — journals, conferences, stakeholders, trends, and research gaps.
-            </p>
-          </div>
-          <div className="bg-card rounded-xl border border-border p-4 w-full lg:w-72 lg:shrink-0 space-y-2">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Research Profile</p>
-            <div className="flex flex-wrap gap-1">
-              {keywords.map((k) => <Badge key={k} variant="secondary" className="text-[10px]">{k}</Badge>)}
+        {/* Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Your Research Intelligence Hub</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            AI-powered insights tailored to your research profile — journals, conferences, stakeholders, trends, and research gaps.
+          </p>
+        </div>
+
+        {/* Research Profile Card - full width below header */}
+        <div className="bg-card rounded-xl border border-border p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-2">
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Research Profile</p>
+              <div className="flex flex-wrap gap-1.5">
+                {keywords.map((k) => <Badge key={k} variant="secondary" className="text-[10px]">{k}</Badge>)}
+              </div>
             </div>
-            <div className="flex gap-3 text-center text-xs">
-              <div><p className="text-lg font-bold text-foreground">3</p><p className="text-muted-foreground">Papers</p></div>
-              <div><p className="text-lg font-bold text-foreground">5</p><p className="text-muted-foreground">Keywords</p></div>
-              <div><p className="text-lg font-bold text-foreground">6</p><p className="text-muted-foreground">Matches</p></div>
+            <div className="flex items-center gap-6">
+              <div className="flex gap-5 text-center text-xs">
+                <div><p className="text-lg font-bold text-foreground">3</p><p className="text-muted-foreground">Papers</p></div>
+                <div><p className="text-lg font-bold text-foreground">5</p><p className="text-muted-foreground">Keywords</p></div>
+                <div><p className="text-lg font-bold text-foreground">6</p><p className="text-muted-foreground">Matches</p></div>
+              </div>
+              <div className="space-y-1">
+                <Button variant="afrika" size="sm" className="gap-1" onClick={handleRefresh} disabled={refreshing}>
+                  {refreshing ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                  {refreshing ? "Refreshing..." : "Refresh Intelligence"}
+                </Button>
+                <p className="text-[10px] text-muted-foreground">Generated: {lastRefreshed}</p>
+              </div>
             </div>
-            <Button variant="afrika" size="sm" className="w-full gap-1" onClick={handleRefresh} disabled={refreshing}>
-              {refreshing ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-              {refreshing ? "Refreshing..." : "Refresh Intelligence"}
-            </Button>
-            <p className="text-[10px] text-muted-foreground">Generated: {lastRefreshed}</p>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <Tabs value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="bg-secondary">
-            <TabsTrigger value="journals" className="gap-1 text-xs"><BookOpen className="h-3 w-3" /> Journals</TabsTrigger>
-            <TabsTrigger value="conferences" className="gap-1 text-xs"><Calendar className="h-3 w-3" /> Conferences</TabsTrigger>
-            <TabsTrigger value="stakeholders" className="gap-1 text-xs"><Users className="h-3 w-3" /> Stakeholders</TabsTrigger>
-            <TabsTrigger value="gaps" className="gap-1 text-xs"><Target className="h-3 w-3" /> Research Gaps</TabsTrigger>
-            <TabsTrigger value="trends" className="gap-1 text-xs"><TrendingUp className="h-3 w-3" /> Trends</TabsTrigger>
-          </TabsList>
+        <div className="flex gap-2 flex-wrap">
+          {tabItems.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => handleTabChange(tab.value)}
+              className={`px-4 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors ${
+                activeTab === tab.value
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-card text-muted-foreground border border-border hover:border-accent/50"
+              }`}
+            >
+              <tab.icon className="h-3.5 w-3.5" /> {tab.label}
+            </button>
+          ))}
+        </div>
 
-          {/* JOURNALS */}
-          <TabsContent value="journals" className="space-y-4 mt-4">
+        {/* JOURNALS */}
+        {activeTab === "journals" && (
+          <div className="space-y-4">
             {journals.map((j) => (
               <div key={j.name} className="bg-card rounded-xl border border-border p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:shadow-sm transition-shadow">
                 <div className="flex-1 min-w-0">
@@ -182,10 +204,12 @@ const IntelligenceHub = () => {
                 </div>
               </div>
             ))}
-          </TabsContent>
+          </div>
+        )}
 
-          {/* CONFERENCES */}
-          <TabsContent value="conferences" className="space-y-4 mt-4">
+        {/* CONFERENCES */}
+        {activeTab === "conferences" && (
+          <div className="space-y-4">
             {conferences.map((c) => (
               <div key={c.name} className="bg-card rounded-xl border border-border p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex-1 min-w-0">
@@ -218,7 +242,7 @@ const IntelligenceHub = () => {
                           <a href={c.website} target="_blank" rel="noopener noreferrer">
                             <Button variant="outline" size="sm" className="gap-1 text-xs"><Globe className="h-3 w-3" /> Website</Button>
                           </a>
-                          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => toast({ title: "Reminder set", description: `You'll be notified before the ${c.name} deadline.` })}>🔔 Remind Me</Button>
+                          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => toast({ title: "Reminder set" })}>🔔 Remind Me</Button>
                         </div>
                         <Button variant="afrika" size="sm" className="w-full gap-1" onClick={() => {
                           const cal = `BEGIN:VCALENDAR\nBEGIN:VEVENT\nSUMMARY:${c.name}\nDTSTART:20260315\nLOCATION:${c.location}\nEND:VEVENT\nEND:VCALENDAR`;
@@ -237,10 +261,12 @@ const IntelligenceHub = () => {
                 </div>
               </div>
             ))}
-          </TabsContent>
+          </div>
+        )}
 
-          {/* STAKEHOLDERS */}
-          <TabsContent value="stakeholders" className="space-y-4 mt-4">
+        {/* STAKEHOLDERS */}
+        {activeTab === "stakeholders" && (
+          <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {stakeholders.map((s) => (
                 <div key={s.name} className="bg-card rounded-xl border border-border p-5 space-y-3">
@@ -269,6 +295,9 @@ const IntelligenceHub = () => {
                         <Button variant="afrika" size="sm" className="w-full mt-2" onClick={() => toast({ title: "Request sent", description: `Connection request sent to ${s.name}.` })}>Send Request</Button>
                       </DialogContent>
                     </Dialog>
+                    <Link to={`/dashboard/messages?user=${encodeURIComponent(s.name)}`}>
+                      <Button variant="ghost" size="sm" className="text-xs gap-1"><MessageCircle className="h-3 w-3" /> Message</Button>
+                    </Link>
                     <a href={`mailto:${s.email}?subject=Research Collaboration&body=Dear ${s.name},%0D%0A%0D%0AI am writing to explore a potential research collaboration...`}>
                       <Button variant="ghost" size="sm" className="text-xs gap-1"><Mail className="h-3 w-3" /> Email</Button>
                     </a>
@@ -277,40 +306,42 @@ const IntelligenceHub = () => {
               ))}
             </div>
             <p className="text-[10px] text-muted-foreground text-center">⚠ Stakeholder profiles are AI-generated. Verify before outreach.</p>
-          </TabsContent>
+          </div>
+        )}
 
-          {/* RESEARCH GAPS */}
-          <TabsContent value="gaps" className="space-y-4 mt-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {gaps.map((g) => (
-                <div key={g.title} className="bg-card rounded-xl border border-border p-5 space-y-3">
-                  <Badge className={`text-[10px] ${impactColor[g.impact]}`}>{g.impact} IMPACT</Badge>
-                  <h3 className="text-sm font-bold text-foreground">{g.title}</h3>
-                  <p className="text-xs text-muted-foreground">{g.desc}</p>
-                  <div className="bg-secondary rounded-lg p-2">
-                    <p className="text-[10px] text-muted-foreground flex items-start gap-1"><Lightbulb className="h-3 w-3 text-accent shrink-0 mt-0.5" /> {g.direction}</p>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Link to={`/dashboard/generate-paper?topic=${encodeURIComponent(g.title)}`}>
-                      <Button variant="afrika" size="sm" className="w-full gap-1 text-xs"><FileText className="h-3 w-3" /> Generate Proposal</Button>
-                    </Link>
-                    <Link to={`/dashboard/instrument-studio?prompt=${encodeURIComponent(g.direction)}`}>
-                      <Button variant="outline" size="sm" className="w-full gap-1 text-xs"><Wrench className="h-3 w-3" /> Create Instrument</Button>
-                    </Link>
-                    <Link to={`/dashboard/community?post=${encodeURIComponent(`Discussing research gap: ${g.title}`)}`}>
-                      <Button variant="ghost" size="sm" className="w-full gap-1 text-xs"><MessageCircle className="h-3 w-3" /> Discuss</Button>
-                    </Link>
-                    <Button variant={savedGaps.includes(g.title) ? "secondary" : "ghost"} size="sm" className="w-full gap-1 text-xs" onClick={() => saveGap(g.title)}>
-                      <Save className="h-3 w-3" /> {savedGaps.includes(g.title) ? "Saved" : "Save to Research List"}
-                    </Button>
-                  </div>
+        {/* RESEARCH GAPS */}
+        {activeTab === "gaps" && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {gaps.map((g) => (
+              <div key={g.title} className="bg-card rounded-xl border border-border p-5 space-y-3">
+                <Badge className={`text-[10px] ${impactColor[g.impact]}`}>{g.impact} IMPACT</Badge>
+                <h3 className="text-sm font-bold text-foreground">{g.title}</h3>
+                <p className="text-xs text-muted-foreground">{g.desc}</p>
+                <div className="bg-secondary rounded-lg p-2">
+                  <p className="text-[10px] text-muted-foreground flex items-start gap-1"><Lightbulb className="h-3 w-3 text-accent shrink-0 mt-0.5" /> {g.direction}</p>
                 </div>
-              ))}
-            </div>
-          </TabsContent>
+                <div className="flex flex-col gap-2">
+                  <Link to={`/dashboard/generate-paper?topic=${encodeURIComponent(g.title)}`}>
+                    <Button variant="afrika" size="sm" className="w-full gap-1 text-xs"><FileText className="h-3 w-3" /> Generate Proposal</Button>
+                  </Link>
+                  <Link to={`/dashboard/instrument-studio?prompt=${encodeURIComponent(g.direction)}`}>
+                    <Button variant="outline" size="sm" className="w-full gap-1 text-xs"><Wrench className="h-3 w-3" /> Create Instrument</Button>
+                  </Link>
+                  <Link to={`/dashboard/community?post=${encodeURIComponent(`Discussing research gap: ${g.title}`)}`}>
+                    <Button variant="ghost" size="sm" className="w-full gap-1 text-xs"><MessageCircle className="h-3 w-3" /> Discuss</Button>
+                  </Link>
+                  <Button variant={savedGaps.includes(g.title) ? "secondary" : "ghost"} size="sm" className="w-full gap-1 text-xs" onClick={() => saveGap(g.title)}>
+                    <Save className="h-3 w-3" /> {savedGaps.includes(g.title) ? "Saved" : "Save to Research List"}
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-          {/* TRENDS */}
-          <TabsContent value="trends" className="space-y-4 mt-4">
+        {/* TRENDS */}
+        {activeTab === "trends" && (
+          <div className="space-y-4">
             {trends.map((t) => (
               <div key={t.title} className="bg-card rounded-xl border border-border p-5 space-y-3">
                 <div className="flex items-start justify-between">
@@ -340,8 +371,8 @@ const IntelligenceHub = () => {
                 </div>
               </div>
             ))}
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

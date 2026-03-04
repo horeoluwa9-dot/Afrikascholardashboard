@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronRight as ChevronRightIcon, LogOut } from "lucide-react";
+import { ChevronDown, ChevronRight as ChevronRightIcon, LogOut, MessageCircle as MessagesIcon } from "lucide-react";
 import {
   LayoutDashboard, FileText, FilePlus, Database, BarChart3,
   Compass, CalendarClock, Users2, Search, Send, ClipboardList,
@@ -110,6 +110,24 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
   });
   const [open, setOpen] = useState(isActive);
 
+  // Determine which specific sub-item is active
+  const getIsItemActive = (item: SidebarItem) => {
+    if (item.url.includes("?")) {
+      const [path, query] = item.url.split("?");
+      if (location.pathname !== path) return false;
+      const params = new URLSearchParams(query);
+      const searchParams = new URLSearchParams(location.search);
+      for (const [key, value] of params.entries()) {
+        if (searchParams.get(key) !== value) return false;
+      }
+      return true;
+    }
+    if (item.url === "/dashboard/instrument-studio") {
+      return location.pathname === item.url;
+    }
+    return location.pathname === item.url || location.pathname.startsWith(item.url + "/");
+  };
+
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <SidebarGroup>
@@ -124,21 +142,26 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
         <CollapsibleContent>
           <SidebarGroupContent>
             <SidebarMenu>
-              {section.items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/dashboard"}
-                      className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-[13px] py-1.5"
-                      activeClassName="bg-sidebar-accent text-accent font-semibold"
-                    >
-                      <item.icon className="h-4 w-4 mr-2 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {section.items.map((item) => {
+                const active = getIsItemActive(item);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        to={item.url}
+                        className={`flex items-center text-[13px] py-1.5 px-2 rounded-md transition-colors ${
+                          active
+                            ? "bg-sidebar-accent text-accent font-semibold"
+                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        }`}
+                      >
+                        <item.icon className="h-4 w-4 mr-2 shrink-0" />
+                        {!collapsed && <span>{item.title}</span>}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </CollapsibleContent>
@@ -236,6 +259,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <Badge variant="outline" className="text-xs font-medium border-accent text-accent">
                 Pro (Trial)
               </Badge>
+              <Link to="/dashboard/messages" className="relative">
+                <MessagesIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-[10px] flex items-center justify-center font-bold">1</span>
+              </Link>
               <NotificationsPanel />
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
@@ -247,6 +274,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild><Link to="/dashboard/settings">Settings</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild><Link to="/dashboard/billing">Billing</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/dashboard/messages">Messages</Link></DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setShowLogout(true)} className="text-destructive">
                     <LogOut className="h-3 w-3 mr-2" /> Sign Out
                   </DropdownMenuItem>
@@ -260,7 +288,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      {/* Logout confirmation */}
       <Dialog open={showLogout} onOpenChange={setShowLogout}>
         <DialogContent className="max-w-sm">
           <DialogHeader><DialogTitle>Are you sure you want to sign out?</DialogTitle></DialogHeader>

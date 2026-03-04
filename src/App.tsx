@@ -26,6 +26,7 @@ import MyInstruments from "./pages/dashboard/MyInstruments";
 import AISlideBuilder from "./pages/dashboard/AISlideBuilder";
 import SettingsPage from "./pages/dashboard/SettingsPage";
 import BillingPage from "./pages/dashboard/BillingPage";
+import MessagesPage from "./pages/dashboard/MessagesPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -68,6 +69,7 @@ const App = () => (
           <Route path="/dashboard/community" element={<CommunityPage />} />
           <Route path="/dashboard/billing" element={<BillingPage />} />
           <Route path="/dashboard/settings" element={<SettingsPage />} />
+          <Route path="/dashboard/messages" element={<MessagesPage />} />
 
           {/* Legacy redirects */}
           <Route path="/dashboard/publeesh" element={<Navigate to="/dashboard" replace />} />
