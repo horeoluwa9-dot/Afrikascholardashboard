@@ -13,15 +13,19 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import Onboarding from "./pages/auth/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import GeneratePaper from "./pages/dashboard/GeneratePaper";
+import MyPapers from "./pages/dashboard/MyPapers";
+import ProTip from "./pages/dashboard/ProTip";
 import DatasetExplorer from "./pages/dashboard/DatasetExplorer";
 import DatasetAnalyzer from "./pages/dashboard/DatasetAnalyzer";
 import CommunityPage from "./pages/dashboard/CommunityPage";
 import IntelligenceHub from "./pages/dashboard/IntelligenceHub";
 import TrackSubmissions from "./pages/dashboard/TrackSubmissions";
+import SubmitManuscript from "./pages/dashboard/SubmitManuscript";
 import InstrumentStudio from "./pages/dashboard/InstrumentStudio";
+import MyInstruments from "./pages/dashboard/MyInstruments";
+import AISlideBuilder from "./pages/dashboard/AISlideBuilder";
 import SettingsPage from "./pages/dashboard/SettingsPage";
 import BillingPage from "./pages/dashboard/BillingPage";
-import PlaceholderPage from "./pages/dashboard/PlaceholderPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -51,17 +55,16 @@ const App = () => (
 
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/generate-paper" element={<GeneratePaper />} />
-          <Route path="/dashboard/my-papers" element={<PlaceholderPage title="My Papers" breadcrumbs={["My Research", "My Papers"]} description="View and manage all your generated research papers." />} />
+          <Route path="/dashboard/my-papers" element={<MyPapers />} />
+          <Route path="/dashboard/pro-tip" element={<ProTip />} />
           <Route path="/dashboard/data/explorer" element={<DatasetExplorer />} />
           <Route path="/dashboard/data/analyzer" element={<DatasetAnalyzer />} />
           <Route path="/dashboard/intelligence" element={<IntelligenceHub />} />
-          <Route path="/dashboard/intelligence/journals" element={<IntelligenceHub />} />
-          <Route path="/dashboard/intelligence/conferences" element={<IntelligenceHub />} />
-          <Route path="/dashboard/intelligence/stakeholders" element={<IntelligenceHub />} />
-          <Route path="/dashboard/intelligence/gaps" element={<IntelligenceHub />} />
-          <Route path="/dashboard/publishing/submit" element={<PlaceholderPage title="Submit Manuscript" breadcrumbs={["Publishing", "Submit Manuscript"]} description="Submit your research manuscript for publication." />} />
+          <Route path="/dashboard/publishing/submit" element={<SubmitManuscript />} />
           <Route path="/dashboard/publishing/track" element={<TrackSubmissions />} />
           <Route path="/dashboard/instrument-studio" element={<InstrumentStudio />} />
+          <Route path="/dashboard/instrument-studio/my" element={<MyInstruments />} />
+          <Route path="/dashboard/instrument-studio/slides" element={<AISlideBuilder />} />
           <Route path="/dashboard/community" element={<CommunityPage />} />
           <Route path="/dashboard/billing" element={<BillingPage />} />
           <Route path="/dashboard/settings" element={<SettingsPage />} />
@@ -72,6 +75,11 @@ const App = () => (
           <Route path="/dashboard/network" element={<Navigate to="/dashboard/community" replace />} />
           <Route path="/dashboard/datasets" element={<Navigate to="/dashboard/data/explorer" replace />} />
           <Route path="/dashboard/analyzer" element={<Navigate to="/dashboard/data/analyzer" replace />} />
+          <Route path="/dashboard/intelligence/journals" element={<Navigate to="/dashboard/intelligence?tab=journals" replace />} />
+          <Route path="/dashboard/intelligence/conferences" element={<Navigate to="/dashboard/intelligence?tab=conferences" replace />} />
+          <Route path="/dashboard/intelligence/stakeholders" element={<Navigate to="/dashboard/intelligence?tab=stakeholders" replace />} />
+          <Route path="/dashboard/intelligence/gaps" element={<Navigate to="/dashboard/intelligence?tab=gaps" replace />} />
+          <Route path="/dashboard/notifications" element={<Navigate to="/dashboard" replace />} />
 
           <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
 

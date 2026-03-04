@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight as ChevronRightIcon } from "lucide-react";
 import {
   LayoutDashboard,
   FileText,
@@ -17,6 +17,11 @@ import {
   MessageCircle,
   CreditCard,
   Settings,
+  TrendingUp,
+  Lightbulb,
+  Presentation,
+  PlusCircle,
+  FolderOpen,
 } from "lucide-react";
 import {
   Sidebar,
@@ -32,6 +37,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -41,20 +51,36 @@ import { Badge } from "@/components/ui/badge";
 import { NavLink } from "@/components/NavLink";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 
-const sidebarGroups = [
+interface SidebarItem {
+  title: string;
+  url: string;
+  icon: any;
+}
+
+interface SidebarSection {
+  label: string;
+  collapsible: boolean;
+  items: SidebarItem[];
+}
+
+const sidebarSections: SidebarSection[] = [
   {
     label: "",
+    collapsible: false,
     items: [{ title: "Dashboard", url: "/dashboard", icon: LayoutDashboard }],
   },
   {
     label: "My Research",
+    collapsible: true,
     items: [
       { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
+      { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
   },
   {
     label: "Data & Analysis",
+    collapsible: true,
     items: [
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
       { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
@@ -62,30 +88,89 @@ const sidebarGroups = [
   },
   {
     label: "Intelligence Hub",
+    collapsible: true,
     items: [
-      { title: "Journal Recommender", url: "/dashboard/intelligence/journals", icon: Compass },
-      { title: "Conference Alerts", url: "/dashboard/intelligence/conferences", icon: CalendarClock },
-      { title: "Stakeholders", url: "/dashboard/intelligence/stakeholders", icon: Users2 },
-      { title: "Research Gaps", url: "/dashboard/intelligence/gaps", icon: Search },
+      { title: "Journal Recommender", url: "/dashboard/intelligence?tab=journals", icon: Compass },
+      { title: "Conference Alerts", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
+      { title: "Stakeholders", url: "/dashboard/intelligence?tab=stakeholders", icon: Users2 },
+      { title: "Research Gaps", url: "/dashboard/intelligence?tab=gaps", icon: Search },
+      { title: "Trends", url: "/dashboard/intelligence?tab=trends", icon: TrendingUp },
     ],
   },
   {
     label: "Publishing",
+    collapsible: true,
     items: [
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
       { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList },
     ],
   },
   {
-    label: "",
+    label: "Instrument Studio",
+    collapsible: true,
     items: [
-      { title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: Wrench },
+      { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
+      { title: "My Instruments", url: "/dashboard/instrument-studio/my", icon: FolderOpen },
+      { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
+    ],
+  },
+  {
+    label: "",
+    collapsible: false,
+    items: [
       { title: "Community", url: "/dashboard/community", icon: MessageCircle },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
       { title: "Settings", url: "/dashboard/settings", icon: Settings },
     ],
   },
 ];
+
+function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSection; collapsed: boolean }) {
+  const location = useLocation();
+  const isActive = section.items.some((item) => {
+    if (item.url.includes("?")) {
+      return location.pathname === item.url.split("?")[0];
+    }
+    return location.pathname === item.url || location.pathname.startsWith(item.url + "/");
+  });
+  const [open, setOpen] = useState(isActive);
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <SidebarGroup>
+        <CollapsibleTrigger className="w-full">
+          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors">
+            <span>{section.label}</span>
+            {!collapsed && (
+              <ChevronDown className={`h-3 w-3 transition-transform ${open ? "" : "-rotate-90"}`} />
+            )}
+          </SidebarGroupLabel>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {section.items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      end={item.url === "/dashboard"}
+                      className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      activeClassName="bg-sidebar-accent text-accent font-semibold"
+                    >
+                      <item.icon className="h-4 w-4 mr-2 shrink-0" />
+                      {!collapsed && <span>{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </CollapsibleContent>
+      </SidebarGroup>
+    </Collapsible>
+  );
+}
 
 function AppSidebar() {
   const { state } = useSidebar();
@@ -98,7 +183,7 @@ function AppSidebar() {
           <Link to="/" className="flex items-center gap-1">
             <span className="text-lg font-bold">
               <span className="text-accent">Afrika</span>
-              <span className="text-sidebar-foreground">scholar</span>
+              <span className="text-sidebar-foreground">Scholar</span>
             </span>
           </Link>
         )}
@@ -106,35 +191,40 @@ function AppSidebar() {
           <span className="text-lg font-bold text-accent mx-auto">A</span>
         )}
       </div>
-      <SidebarContent className="pt-2">
-        {sidebarGroups.map((group, gi) => (
-          <SidebarGroup key={gi}>
-            {group.label && (
-              <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest">
-                {group.label}
-              </SidebarGroupLabel>
-            )}
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <NavLink
-                        to={item.url}
-                        end={item.url === "/dashboard"}
-                        className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                        activeClassName="bg-sidebar-accent text-accent font-semibold"
-                      >
-                        <item.icon className="h-4 w-4 mr-2 shrink-0" />
-                        {!collapsed && <span>{item.title}</span>}
-                      </NavLink>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+      <SidebarContent className="pt-2 overflow-y-auto">
+        {sidebarSections.map((section, gi) => {
+          if (section.collapsible && section.label) {
+            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} />;
+          }
+          return (
+            <SidebarGroup key={gi}>
+              {section.label && (
+                <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest">
+                  {section.label}
+                </SidebarGroupLabel>
+              )}
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {section.items.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <NavLink
+                          to={item.url}
+                          end={item.url === "/dashboard"}
+                          className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                          activeClassName="bg-sidebar-accent text-accent font-semibold"
+                        >
+                          <item.icon className="h-4 w-4 mr-2 shrink-0" />
+                          {!collapsed && <span>{item.title}</span>}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          );
+        })}
       </SidebarContent>
       {!collapsed && (
         <div className="mt-auto border-t border-sidebar-border p-4">
@@ -162,6 +252,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <header className="h-16 flex items-center justify-between border-b border-border bg-background px-4 lg:px-6 sticky top-0 z-30">
             <SidebarTrigger className="mr-2" />
             <div className="flex items-center gap-3 ml-auto">
+              <Link to="/dashboard/billing" className="text-xs font-medium text-accent hover:underline hidden sm:block">
+                Pro Credits: 55
+              </Link>
               <Badge variant="outline" className="text-xs font-medium border-accent text-accent">
                 Pro (Trial)
               </Badge>
