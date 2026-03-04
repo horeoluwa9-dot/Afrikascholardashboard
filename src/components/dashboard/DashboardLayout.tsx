@@ -1,53 +1,28 @@
 import { ReactNode, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { ChevronDown, ChevronRight as ChevronRightIcon } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ChevronDown, ChevronRight as ChevronRightIcon, LogOut } from "lucide-react";
 import {
-  LayoutDashboard,
-  FileText,
-  FilePlus,
-  Database,
-  BarChart3,
-  Compass,
-  CalendarClock,
-  Users2,
-  Search,
-  Send,
-  ClipboardList,
-  Wrench,
-  MessageCircle,
-  CreditCard,
-  Settings,
-  TrendingUp,
-  Lightbulb,
-  Presentation,
-  PlusCircle,
-  FolderOpen,
+  LayoutDashboard, FileText, FilePlus, Database, BarChart3,
+  Compass, CalendarClock, Users2, Search, Send, ClipboardList,
+  Wrench, MessageCircle, CreditCard, Settings, TrendingUp,
+  Lightbulb, Presentation, PlusCircle, FolderOpen,
 } from "lucide-react";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
+  SidebarProvider, SidebarTrigger, useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+  Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 
@@ -87,22 +62,22 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Intelligence Hub",
-    collapsible: true,
-    items: [
-      { title: "Journal Recommender", url: "/dashboard/intelligence?tab=journals", icon: Compass },
-      { title: "Conference Alerts", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
-      { title: "Stakeholders", url: "/dashboard/intelligence?tab=stakeholders", icon: Users2 },
-      { title: "Research Gaps", url: "/dashboard/intelligence?tab=gaps", icon: Search },
-      { title: "Trends", url: "/dashboard/intelligence?tab=trends", icon: TrendingUp },
-    ],
-  },
-  {
     label: "Publishing",
     collapsible: true,
     items: [
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
       { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList },
+    ],
+  },
+  {
+    label: "Intelligence Hub",
+    collapsible: true,
+    items: [
+      { title: "Journals", url: "/dashboard/intelligence?tab=journals", icon: Compass },
+      { title: "Conferences", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
+      { title: "Stakeholders", url: "/dashboard/intelligence?tab=stakeholders", icon: Users2 },
+      { title: "Research Gaps", url: "/dashboard/intelligence?tab=gaps", icon: Search },
+      { title: "Trends", url: "/dashboard/intelligence?tab=trends", icon: TrendingUp },
     ],
   },
   {
@@ -139,7 +114,7 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
     <Collapsible open={open} onOpenChange={setOpen}>
       <SidebarGroup>
         <CollapsibleTrigger className="w-full">
-          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors">
+          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors font-semibold">
             <span>{section.label}</span>
             {!collapsed && (
               <ChevronDown className={`h-3 w-3 transition-transform ${open ? "" : "-rotate-90"}`} />
@@ -155,7 +130,7 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
                     <NavLink
                       to={item.url}
                       end={item.url === "/dashboard"}
-                      className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-[13px] py-1.5"
                       activeClassName="bg-sidebar-accent text-accent font-semibold"
                     >
                       <item.icon className="h-4 w-4 mr-2 shrink-0" />
@@ -199,7 +174,7 @@ function AppSidebar() {
           return (
             <SidebarGroup key={gi}>
               {section.label && (
-                <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest">
+                <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest font-semibold">
                   {section.label}
                 </SidebarGroupLabel>
               )}
@@ -211,7 +186,7 @@ function AppSidebar() {
                         <NavLink
                           to={item.url}
                           end={item.url === "/dashboard"}
-                          className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                          className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-[13px] py-1.5"
                           activeClassName="bg-sidebar-accent text-accent font-semibold"
                         >
                           <item.icon className="h-4 w-4 mr-2 shrink-0" />
@@ -244,6 +219,9 @@ function AppSidebar() {
 }
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+  const [showLogout, setShowLogout] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-secondary">
@@ -269,7 +247,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild><Link to="/dashboard/settings">Settings</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild><Link to="/dashboard/billing">Billing</Link></DropdownMenuItem>
-                  <DropdownMenuItem asChild><Link to="/auth/login">Sign Out</Link></DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setShowLogout(true)} className="text-destructive">
+                    <LogOut className="h-3 w-3 mr-2" /> Sign Out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -279,6 +259,18 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </main>
         </div>
       </div>
+
+      {/* Logout confirmation */}
+      <Dialog open={showLogout} onOpenChange={setShowLogout}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader><DialogTitle>Are you sure you want to sign out?</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground">You will be redirected to the login page.</p>
+          <div className="flex gap-2 mt-3">
+            <Button variant="outline" size="sm" className="flex-1" onClick={() => setShowLogout(false)}>Cancel</Button>
+            <Button variant="destructive" size="sm" className="flex-1" onClick={() => { setShowLogout(false); navigate("/auth/login"); }}>Continue</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 }
