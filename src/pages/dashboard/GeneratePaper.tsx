@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -7,103 +7,65 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+  Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { CreditsHowItWorksModal } from "@/components/dashboard/CreditsModal";
 import {
-  ArrowRight,
-  ChevronDown,
-  ChevronRight,
-  Lightbulb,
-  Check,
-  Download,
-  Send,
-  Save,
-  Copy,
-  FileText,
-  Loader2,
-  AlertTriangle,
+  ArrowRight, ChevronDown, ChevronRight, Lightbulb, Check,
+  Download, Send, Save, Copy, FileText, Loader2, AlertTriangle,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const standards = [
-  "Harvard / MIT Standard",
-  "APA 7th Edition",
-  "IMRAD Structure",
-  "25+ Citations",
-  "Statistical Analysis",
-  "SPSS / STATA / R Code",
-  "Power Analysis",
-  "Word Export",
+  "Harvard / MIT Standard", "APA 7th Edition", "IMRAD Structure",
+  "25+ Citations", "Statistical Analysis", "SPSS / STATA / R Code",
+  "Power Analysis", "Word Export",
 ];
 
 const paperTypes = [
-  "Empirical Research Paper",
-  "Theoretical Paper",
-  "Literature Review",
-  "Policy Analysis",
-  "Case Study",
-  "Experimental Study",
-  "Meta-Analysis",
+  "Empirical Research Paper", "Theoretical Paper", "Literature Review",
+  "Policy Analysis", "Case Study", "Experimental Study", "Meta-Analysis",
 ];
 
-const lengths = [
-  "~3,000 words (short paper)",
-  "~5,000 words",
-  "~8,000 words",
-  "Custom length",
-];
+const lengths = ["~3,000 words (short paper)", "~5,000 words", "~8,000 words", "Custom length"];
 
 const audiences = [
-  "Academic / Peer-reviewed Journal",
-  "Policy Institution",
-  "Conference Paper",
-  "Institutional Report",
-  "Working Paper",
+  "Academic / Peer-reviewed Journal", "Policy Institution",
+  "Conference Paper", "Institutional Report", "Working Paper",
 ];
 
 const paperSections = [
-  "TITLE",
-  "RUNNING HEAD",
-  "ABSTRACT",
-  "KEYWORDS",
-  "INTRODUCTION",
-  "LITERATURE REVIEW",
-  "METHODOLOGY",
-  "RESULTS",
-  "DISCUSSION",
-  "CONCLUSION",
-  "REFERENCES",
+  "TITLE", "RUNNING HEAD", "ABSTRACT", "KEYWORDS", "INTRODUCTION",
+  "LITERATURE REVIEW", "METHODOLOGY", "RESULTS", "DISCUSSION",
+  "CONCLUSION", "REFERENCES",
 ];
 
 const sampleContent: Record<string, string> = {
   TITLE: 'The Effects of AI-Driven Health Diagnostics on Clinical Outcomes in Sub-Saharan Africa: An Empirical Investigation',
   "RUNNING HEAD": 'AI-DRIVEN HEALTH DIAGNOSTICS IN SUB-SAHARAN AFRICA',
-  ABSTRACT: 'Background | This study examines the impact of AI-driven health diagnostic tools on clinical outcomes in Sub-Saharan African healthcare settings. Despite growing interest in AI-powered healthcare, empirical evidence on its effectiveness in resource-constrained environments remains limited.\n\nObjectives | This study aims to investigate the effects of AI diagnostics on patient outcomes, with a focus on accuracy, efficiency, and accessibility.\n\nMethods | A mixed-methods approach was employed, combining quantitative analysis of diagnostic accuracy data with qualitative interviews of healthcare providers.\n\nResults | The results show a significant positive correlation between AI diagnostic usage and improved clinical outcomes, with a medium effect size (r = 0.43, p < 0.001, 95% CI [0.25, 0.58]).',
+  ABSTRACT: 'Background | This study examines the impact of AI-driven health diagnostic tools on clinical outcomes in Sub-Saharan African healthcare settings.\n\nObjectives | This study aims to investigate the effects of AI diagnostics on patient outcomes.\n\nMethods | A mixed-methods approach was employed.\n\nResults | The results show a significant positive correlation (r = 0.43, p < 0.001, 95% CI [0.25, 0.58]).',
   KEYWORDS: 'AI diagnostics, Sub-Saharan Africa, clinical outcomes, healthcare technology, digital health',
-  INTRODUCTION: 'The integration of artificial intelligence (AI) into healthcare diagnostics has gained significant attention in recent years due to its potential to improve clinical outcomes in resource-constrained settings...',
-  "LITERATURE REVIEW": 'Existing literature on AI in healthcare has primarily focused on developed nations, with limited attention to the unique challenges and opportunities in Sub-Saharan Africa...',
-  METHODOLOGY: 'This study employed a mixed-methods research design, combining both quantitative and qualitative data collection and analysis methods...',
-  RESULTS: 'The quantitative analysis revealed a statistically significant relationship between AI diagnostic tool usage and improved clinical outcomes (F(2, 247) = 18.34, p < 0.001)...',
-  DISCUSSION: 'The findings of this study contribute to the growing body of evidence supporting the potential of AI-driven diagnostics in improving healthcare outcomes in Sub-Saharan Africa...',
-  CONCLUSION: 'This study provides empirical evidence that AI-driven health diagnostic tools can significantly improve clinical outcomes in Sub-Saharan African healthcare settings...',
-  REFERENCES: '1. Okonkwo, A., & Mensah, P. (2024). AI-powered diagnostics in African healthcare. Journal of Digital Health, 12(3), 45-62.\n2. Ibrahim, K. et al. (2023). Machine learning applications in tropical medicine. Lancet Digital Health, 5(8), e512-e520.\n...(25+ references)',
+  INTRODUCTION: 'The integration of artificial intelligence (AI) into healthcare diagnostics has gained significant attention in recent years...',
+  "LITERATURE REVIEW": 'Existing literature on AI in healthcare has primarily focused on developed nations...',
+  METHODOLOGY: 'This study employed a mixed-methods research design...',
+  RESULTS: 'The quantitative analysis revealed a statistically significant relationship (F(2, 247) = 18.34, p < 0.001)...',
+  DISCUSSION: 'The findings contribute to the growing body of evidence supporting the potential of AI-driven diagnostics...',
+  CONCLUSION: 'This study provides empirical evidence that AI-driven health diagnostic tools can significantly improve clinical outcomes...',
+  REFERENCES: '1. Okonkwo, A., & Mensah, P. (2024). AI-powered diagnostics in African healthcare. Journal of Digital Health, 12(3), 45-62.\n...(25+ references)',
 };
+
+const topicIdeas = [
+  "The impact of AI-driven health diagnostics in Sub-Saharan Africa",
+  "Climate change effects on agricultural productivity in West Africa",
+  "Digital financial inclusion and economic growth in East Africa",
+  "The role of indigenous knowledge systems in sustainable development",
+];
 
 const GeneratePaper = () => {
   const [selectedStandards, setSelectedStandards] = useState<string[]>(["APA 7th Edition", "IMRAD Structure", "25+ Citations"]);
@@ -114,12 +76,14 @@ const GeneratePaper = () => {
   const [audience, setAudience] = useState("");
   const [generating, setGenerating] = useState(false);
   const [generated, setGenerated] = useState(false);
+  const [showIdeas, setShowIdeas] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const paperCredits = 20;
+  const topicRef = useRef<HTMLTextAreaElement>(null);
+  const { toast } = useToast();
 
   const toggleStandard = (s: string) =>
-    setSelectedStandards((prev) =>
-      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
-    );
+    setSelectedStandards((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
 
   const handleGenerate = () => {
     if (paperCredits <= 0) return;
@@ -127,13 +91,20 @@ const GeneratePaper = () => {
     setTimeout(() => {
       setGenerating(false);
       setGenerated(true);
+      // Show share modal after generation
+      setTimeout(() => setShowShareModal(true), 500);
     }, 3000);
+  };
+
+  const selectIdea = (idea: string) => {
+    setTopic(idea);
+    setShowIdeas(false);
+    setTimeout(() => topicRef.current?.focus(), 100);
   };
 
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Breadcrumb */}
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <Link to="/dashboard" className="hover:text-foreground">Dashboard</Link>
           <ChevronRight className="h-3 w-3" />
@@ -142,13 +113,10 @@ const GeneratePaper = () => {
           <span className="text-foreground font-medium">Generate Paper</span>
         </div>
 
-        {/* Header */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Generate Research Paper</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Create structured academic manuscripts aligned with global publishing standards.
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">Create structured academic manuscripts aligned with global publishing standards.</p>
           </div>
           <div className="text-right space-y-1">
             <div className="text-sm">
@@ -159,20 +127,31 @@ const GeneratePaper = () => {
           </div>
         </div>
 
+        {/* Community share modal */}
+        <Dialog open={showShareModal} onOpenChange={setShowShareModal}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader><DialogTitle>Share this update with the community?</DialogTitle></DialogHeader>
+            <p className="text-sm text-muted-foreground">
+              You generated a new research paper: <strong>{topic || "Untitled Paper"}</strong>
+            </p>
+            <div className="flex flex-col gap-2 mt-3">
+              <Button variant="afrika" size="sm" onClick={() => { setShowShareModal(false); toast({ title: "Shared to community!" }); }}>Share Publicly</Button>
+              <Button variant="outline" size="sm" onClick={() => { setShowShareModal(false); toast({ title: "Shared with network" }); }}>Share with Network Only</Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowShareModal(false)}>Skip</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Standard Selection Badges */}
         <div className="flex flex-wrap gap-2">
           {standards.map((s) => (
-            <button
-              key={s}
-              onClick={() => toggleStandard(s)}
+            <button key={s} onClick={() => toggleStandard(s)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                 selectedStandards.includes(s)
                   ? "bg-accent text-accent-foreground border-accent"
                   : "bg-card text-muted-foreground border-border hover:border-accent/50"
               }`}
-            >
-              {s}
-            </button>
+            >{s}</button>
           ))}
         </div>
 
@@ -181,111 +160,63 @@ const GeneratePaper = () => {
           <div className="bg-card rounded-xl border border-border p-6 space-y-5">
             <h2 className="text-base font-bold text-foreground">Research Configuration</h2>
 
-            {/* Topic */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label>Research Topic</Label>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs gap-1">
-                      <Lightbulb className="h-3 w-3" /> Get Ideas
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Topic Suggestions</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-2 mt-2">
-                      {[
-                        "The impact of AI-driven health diagnostics in Sub-Saharan Africa",
-                        "Climate change effects on agricultural productivity in West Africa",
-                        "Digital financial inclusion and economic growth in East Africa",
-                        "The role of indigenous knowledge systems in sustainable development",
-                      ].map((idea) => (
-                        <button
-                          key={idea}
-                          onClick={() => { setTopic(idea); }}
-                          className="block w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-secondary transition-colors border border-border"
-                        >
-                          {idea}
-                        </button>
-                      ))}
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => setShowIdeas(!showIdeas)}>
+                  <Lightbulb className="h-3 w-3" /> Get Ideas
+                </Button>
               </div>
-              <Textarea
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
+              {showIdeas && (
+                <div className="bg-secondary rounded-lg p-3 space-y-1.5 border border-border">
+                  {topicIdeas.map((idea) => (
+                    <button key={idea} onClick={() => selectIdea(idea)}
+                      className="block w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-background transition-colors border border-transparent hover:border-border"
+                    >{idea}</button>
+                  ))}
+                </div>
+              )}
+              <Textarea ref={topicRef} value={topic} onChange={(e) => setTopic(e.target.value)}
                 placeholder="e.g. The effect of mindfulness-based interventions on cortisol levels in adults with chronic stress"
                 className="min-h-[80px]"
               />
             </div>
 
-            {/* Paper Type + Target Length */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Paper Type</Label>
                 <Select value={paperType} onValueChange={setPaperType}>
                   <SelectTrigger><SelectValue placeholder="Select type..." /></SelectTrigger>
-                  <SelectContent>
-                    {paperTypes.map((t) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))}
-                  </SelectContent>
+                  <SelectContent>{paperTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label>Target Length</Label>
                 <Select value={targetLength} onValueChange={setTargetLength}>
                   <SelectTrigger><SelectValue placeholder="Select length..." /></SelectTrigger>
-                  <SelectContent>
-                    {lengths.map((l) => (
-                      <SelectItem key={l} value={l}>{l}</SelectItem>
-                    ))}
-                  </SelectContent>
+                  <SelectContent>{lengths.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Discipline + Audience */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Academic Discipline <span className="text-muted-foreground">(optional)</span></Label>
-                <Input
-                  value={discipline}
-                  onChange={(e) => setDiscipline(e.target.value)}
-                  placeholder="e.g. Psychology, Public Health, Economics"
-                />
+                <Input value={discipline} onChange={(e) => setDiscipline(e.target.value)} placeholder="e.g. Psychology, Public Health, Economics" />
               </div>
               <div className="space-y-2">
                 <Label>Intended Audience</Label>
                 <Select value={audience} onValueChange={setAudience}>
                   <SelectTrigger><SelectValue placeholder="Select audience..." /></SelectTrigger>
-                  <SelectContent>
-                    {audiences.map((a) => (
-                      <SelectItem key={a} value={a}>{a}</SelectItem>
-                    ))}
-                  </SelectContent>
+                  <SelectContent>{audiences.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
 
-            {/* Generate */}
             <div className="pt-2">
               {paperCredits > 0 ? (
-                <Button
-                  variant="afrika"
-                  size="xl"
-                  className="w-full"
-                  onClick={handleGenerate}
-                  disabled={generating || !topic}
-                >
-                  {generating ? (
-                    <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
-                  ) : (
-                    <>Generate Research Paper <ArrowRight className="h-4 w-4" /></>
-                  )}
+                <Button variant="afrika" size="lg" className="w-full" onClick={handleGenerate} disabled={generating || !topic}>
+                  {generating ? <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</> : <>Generate Research Paper <ArrowRight className="h-4 w-4" /></>}
                 </Button>
               ) : (
                 <div className="text-center space-y-3 p-4 border border-destructive/30 rounded-xl bg-destructive/5">
@@ -295,13 +226,11 @@ const GeneratePaper = () => {
                   </div>
                   <div className="flex gap-3 justify-center">
                     <Link to="/publeesh/pricing"><Button variant="afrika" size="sm">Upgrade Plan</Button></Link>
-                    <Link to="/publeesh/pricing"><Button variant="afrikaOutline" size="sm">Buy Credit Pack</Button></Link>
+                    <Link to="/publeesh/pricing"><Button variant="outline" size="sm">Buy Credit Pack</Button></Link>
                   </div>
                 </div>
               )}
-              <p className="text-xs text-muted-foreground text-center mt-2">
-                Generation takes 30–90 seconds · Consumes 1 Paper Credit
-              </p>
+              <p className="text-xs text-muted-foreground text-center mt-2">Generation takes 30–90 seconds · Consumes 1 Paper Credit</p>
             </div>
           </div>
         )}
@@ -312,44 +241,28 @@ const GeneratePaper = () => {
             <div className="bg-afrika-green/10 border border-afrika-green/30 rounded-xl p-4 flex items-start gap-3">
               <Check className="h-5 w-5 text-afrika-green mt-0.5 shrink-0" />
               <div>
-                <p className="text-sm font-semibold text-foreground">
-                  Academic paper generated and saved to your library.
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  References verified via CrossRef. Review before submission.
-                </p>
+                <p className="text-sm font-semibold text-foreground">Academic paper generated and saved to your library.</p>
+                <p className="text-xs text-muted-foreground mt-0.5">References verified via CrossRef. Review before submission.</p>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button variant="afrika" size="sm" className="gap-1">
-                <FileText className="h-4 w-4" /> View Generated Paper
-              </Button>
-              <Button variant="afrikaOutline" size="sm" className="gap-1">
-                <Download className="h-4 w-4" /> Download Word
-              </Button>
-              <Link to="/dashboard/publishing/submit">
-                <Button variant="afrikaOutline" size="sm" className="gap-1">
-                  <Send className="h-4 w-4" /> Submit to Journal
-                </Button>
-              </Link>
+              <Button variant="afrika" size="sm" className="gap-1"><FileText className="h-4 w-4" /> View Generated Paper</Button>
+              <Button variant="outline" size="sm" className="gap-1" onClick={() => toast({ title: "Download started" })}><Download className="h-4 w-4" /> Download Word</Button>
+              <Link to="/dashboard/publishing/submit"><Button variant="outline" size="sm" className="gap-1"><Send className="h-4 w-4" /> Submit to Journal</Button></Link>
             </div>
 
-            {/* Applied tags */}
             <div className="flex flex-wrap gap-2">
-              {selectedStandards.map((s) => (
-                <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>
-              ))}
+              {selectedStandards.map((s) => <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>)}
             </div>
 
-            {/* Generated Paper */}
             <div className="bg-card rounded-xl border border-border">
               <div className="p-6 border-b border-border flex items-center justify-between">
                 <h2 className="text-lg font-bold text-foreground">Generated Paper</h2>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><Download className="h-3 w-3" /> Word</Button>
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><Download className="h-3 w-3" /> PDF</Button>
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><Copy className="h-3 w-3" /> Citation</Button>
+                  <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => toast({ title: "Downloading..." })}><Download className="h-3 w-3" /> Word</Button>
+                  <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => toast({ title: "Downloading..." })}><Download className="h-3 w-3" /> PDF</Button>
+                  <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => { navigator.clipboard.writeText("APA Citation copied"); toast({ title: "Citation copied!" }); }}><Copy className="h-3 w-3" /> Citation</Button>
                 </div>
               </div>
               <div className="p-6 space-y-2">
@@ -369,20 +282,14 @@ const GeneratePaper = () => {
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex flex-wrap gap-3">
-              <Button variant="afrika" size="sm" className="gap-1">
-                <Send className="h-4 w-4" /> Submit for Publication
-              </Button>
-              <Button variant="outline" size="sm" className="gap-1">
-                <Save className="h-4 w-4" /> Save Draft
-              </Button>
-              <Button variant="outline" size="sm">Create New Version</Button>
-              <Button variant="ghost" size="sm">Compare Versions</Button>
-              <Button variant="ghost" size="sm">View Edit History</Button>
+              <Link to="/dashboard/publishing/submit"><Button variant="afrika" size="sm" className="gap-1"><Send className="h-4 w-4" /> Submit for Publication</Button></Link>
+              <Button variant="outline" size="sm" className="gap-1" onClick={() => toast({ title: "Draft saved" })}><Save className="h-4 w-4" /> Save Draft</Button>
+              <Button variant="outline" size="sm" onClick={() => toast({ title: "New version created" })}>Create New Version</Button>
+              <Button variant="ghost" size="sm" onClick={() => toast({ title: "Version comparison coming soon" })}>Compare Versions</Button>
+              <Button variant="ghost" size="sm" onClick={() => toast({ title: "Edit history coming soon" })}>View Edit History</Button>
             </div>
 
-            {/* Generate another */}
             <Button variant="outline" className="w-full" onClick={() => { setGenerated(false); setTopic(""); }}>
               Generate Another Paper
             </Button>
