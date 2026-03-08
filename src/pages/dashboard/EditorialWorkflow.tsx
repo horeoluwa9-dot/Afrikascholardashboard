@@ -428,10 +428,10 @@ const EditorialWorkflow = () => {
                   ))}
                 </div>
                 <div className="flex gap-2 mt-3">
-                  <Button variant="afrikaOutline" size="sm" className="gap-1 text-xs">
+                  <Button variant="afrikaOutline" size="sm" className="gap-1 text-xs" onClick={() => toast.success("Reminder sent to pending reviewers")}>
                     <Send className="h-3 w-3" /> Send Reminder
                   </Button>
-                  <Button variant="outline" size="sm" className="gap-1 text-xs">
+                  <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => { setShowDetail(false); setShowAssignReviewer(true); }}>
                     <UserPlus className="h-3 w-3" /> Replace Reviewer
                   </Button>
                 </div>
