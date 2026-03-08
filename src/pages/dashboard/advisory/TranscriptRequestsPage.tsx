@@ -57,7 +57,7 @@ const TranscriptRequestsPage = () => {
             <h1 className="text-2xl font-bold text-foreground">Transcript Requests</h1>
             <p className="text-sm text-muted-foreground mt-1">Request academic transcript processing from institutions.</p>
           </div>
-          <Button className="gap-1.5" onClick={() => setShowCreate(true)}>
+          <Button variant="afrika" className="gap-1.5" onClick={() => setShowCreate(true)}>
             <Plus className="h-4 w-4" /> Request Transcript
           </Button>
         </div>
@@ -178,7 +178,7 @@ const TranscriptRequestsPage = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Button className="w-full" onClick={handleSubmit}>Submit Request</Button>
+            <Button variant="afrika" className="w-full" onClick={handleSubmit}>Submit Request</Button>
           </div>
         </DialogContent>
       </Dialog>

@@ -74,7 +74,7 @@ const DegreeAdvisoryPage = () => {
                   <Label>Career Goals</Label>
                   <Textarea className="mt-1.5" placeholder="Describe your career aspirations..." value={form.goal} onChange={e => setForm(f => ({ ...f, goal: e.target.value }))} rows={3} />
                 </div>
-                <Button className="w-full gap-1.5" onClick={handleSubmit}>
+                <Button variant="afrika" className="w-full gap-1.5" onClick={handleSubmit}>
                   <Send className="h-4 w-4" /> Request Degree Advisory
                 </Button>
               </CardContent>

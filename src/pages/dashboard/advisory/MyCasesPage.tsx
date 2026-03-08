@@ -75,9 +75,9 @@ const MyCasesPage = () => {
             <h2 className="text-lg font-bold text-foreground mb-1">You have not submitted any advisory requests yet.</h2>
             <p className="text-sm text-muted-foreground mb-6">Get started by choosing a service below.</p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/dashboard/advisory/transcripts"><Button variant="outline" className="gap-1.5"><FileText className="h-4 w-4" /> Request Transcript</Button></Link>
-              <Link to="/dashboard/advisory/degree"><Button variant="outline" className="gap-1.5"><GraduationCap className="h-4 w-4" /> Request Degree Advisory</Button></Link>
-              <Link to="/dashboard/advisory/study-africa"><Button variant="outline" className="gap-1.5"><Globe className="h-4 w-4" /> Explore Study in Africa</Button></Link>
+              <Link to="/dashboard/advisory/transcripts"><Button variant="afrika" className="gap-1.5"><FileText className="h-4 w-4" /> Request Transcript</Button></Link>
+              <Link to="/dashboard/advisory/degree"><Button variant="afrika" className="gap-1.5"><GraduationCap className="h-4 w-4" /> Request Degree Advisory</Button></Link>
+              <Link to="/dashboard/advisory/study-africa"><Button variant="afrikaOutline" className="gap-1.5"><Globe className="h-4 w-4" /> Explore Study in Africa</Button></Link>
             </div>
           </div>
         </div>
@@ -198,7 +198,7 @@ const MyCasesPage = () => {
               </div>
 
               <Link to="/dashboard/messages" className="block">
-                <Button variant="outline" size="sm" className="w-full gap-1">
+                <Button variant="afrikaOutline" size="sm" className="w-full gap-1">
                   <MessageCircle className="h-3 w-3" /> Message Advisor
                 </Button>
               </Link>
