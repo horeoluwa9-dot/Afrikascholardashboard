@@ -491,6 +491,48 @@ export type Database = {
         }
         Relationships: []
       }
+      project_collaborations: {
+        Row: {
+          created_at: string
+          description: string | null
+          expected_duration: string | null
+          id: string
+          partner_institution: string
+          research_area: string
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          expected_duration?: string | null
+          id?: string
+          partner_institution: string
+          research_area: string
+          start_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          expected_duration?: string | null
+          id?: string
+          partner_institution?: string
+          research_area?: string
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       publications: {
         Row: {
           created_at: string
@@ -739,6 +781,45 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_requests: {
+        Row: {
+          created_at: string
+          description: string | null
+          expected_duration: string | null
+          expertise_area: string
+          id: string
+          institution_name: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          expected_duration?: string | null
+          expertise_area: string
+          id?: string
+          institution_name: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          expected_duration?: string | null
+          expertise_area?: string
+          id?: string
+          institution_name?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_module_unlocks: {
         Row: {
           id: string
@@ -821,6 +902,7 @@ export type Database = {
         | "publeesh_ai"
         | "instrument_studio"
         | "my_research"
+        | "institutional"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -955,6 +1037,7 @@ export const Constants = {
         "publeesh_ai",
         "instrument_studio",
         "my_research",
+        "institutional",
       ],
     },
   },

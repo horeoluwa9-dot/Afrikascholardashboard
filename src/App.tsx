@@ -40,6 +40,11 @@ import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
 import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
+import InstitutionalOverview from "./pages/dashboard/InstitutionalOverview";
+import TalentRequestsPage from "./pages/dashboard/TalentRequestsPage";
+import LecturerSearchPage from "./pages/dashboard/LecturerSearchPage";
+import ProjectCollaborationsPage from "./pages/dashboard/ProjectCollaborationsPage";
+import MyEngagementsPage from "./pages/dashboard/MyEngagementsPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -100,6 +105,11 @@ const App = () => (
 
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
+            <Route path="/dashboard/institutional" element={<P><InstitutionalOverview /></P>} />
+            <Route path="/dashboard/institutional/talent-requests" element={<P><TalentRequestsPage /></P>} />
+            <Route path="/dashboard/institutional/lecturers" element={<P><LecturerSearchPage /></P>} />
+            <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
+            <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
             <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={["institutional_admin"]}><AdminDashboard /></ProtectedRoute>} />
 
             {/* Legacy redirects */}
