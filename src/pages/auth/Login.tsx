@@ -41,9 +41,8 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-secondary px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/" className="text-2xl font-bold">
-            <span className="text-afrika-orange">Afrika</span>
-            <span className="text-primary">scholar</span>
+          <Link to="/">
+            <img src={afrikaLogo} alt="Afrika Scholar" className="h-10 mx-auto" />
           </Link>
           <h1 className="text-xl font-bold text-primary mt-4">Welcome Back</h1>
           <p className="text-sm text-muted-foreground mt-1">Sign in to your Afrika Scholar account</p>
