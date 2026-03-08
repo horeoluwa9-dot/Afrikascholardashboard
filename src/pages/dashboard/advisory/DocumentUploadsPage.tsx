@@ -65,7 +65,7 @@ const DocumentUploadsPage = () => {
             <h1 className="text-2xl font-bold text-foreground">Document Uploads</h1>
             <p className="text-sm text-muted-foreground mt-1">Upload and manage documents for your advisory cases.</p>
           </div>
-          <Button className="gap-1.5" onClick={() => setShowUpload(true)}>
+          <Button variant="afrika" className="gap-1.5" onClick={() => setShowUpload(true)}>
             <Upload className="h-4 w-4" /> Upload Document
           </Button>
         </div>
