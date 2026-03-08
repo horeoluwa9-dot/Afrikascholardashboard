@@ -74,7 +74,6 @@ const sidebarSections: SidebarSection[] = [
     collapsible: true,
     requiredModule: "my_research",
     items: [
-      { title: "AI Paper Generator", url: "/dashboard/ai-papers", icon: Sparkles },
       { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
@@ -106,7 +105,7 @@ const sidebarSections: SidebarSection[] = [
         title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle,
         children: [
           { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
-          { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
+          { title: "AI Paper Generator", url: "/dashboard/ai-papers", icon: Sparkles },
           { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
         ],
       },
