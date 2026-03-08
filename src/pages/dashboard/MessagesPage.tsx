@@ -283,8 +283,8 @@ const MessagesPage = () => {
                           <span className="font-semibold">{activeConvo.name}</span> wants to start a conversation with you.
                         </p>
                         <div className="flex gap-2 justify-center">
-                          <Button variant="afrika" size="sm">Accept</Button>
-                          <Button variant="outline" size="sm">Ignore</Button>
+                          <Button variant="afrika" size="sm" onClick={() => handleAcceptRequest(activeConvo.id)}>Accept</Button>
+                          <Button variant="outline" size="sm" onClick={() => handleIgnoreRequest(activeConvo.id)}>Ignore</Button>
                         </div>
                       </div>
                     )}
