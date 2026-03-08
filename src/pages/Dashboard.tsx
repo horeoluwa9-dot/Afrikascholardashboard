@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CreditsHowItWorksModal } from "@/components/dashboard/CreditsModal";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import WelcomePanel from "@/components/dashboard/WelcomePanel";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   FileText, Database, BarChart3, Send, Wrench, Compass,
