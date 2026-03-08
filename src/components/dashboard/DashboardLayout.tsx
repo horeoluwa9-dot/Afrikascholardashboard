@@ -8,7 +8,7 @@ import {
   MessageCircle, CreditCard, Settings, TrendingUp,
   Lightbulb, Presentation, PlusCircle, FolderOpen,
   BookOpen, Globe, Handshake, Building2, User, Shield,
-  Briefcase, Library,
+  Briefcase, Library, GraduationCap, FileUp, MapPin,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -121,6 +121,19 @@ const sidebarSections: SidebarSection[] = [
       { title: "Lecturer Search", url: "/dashboard/institutional/lecturers", icon: Search },
       { title: "Collaborations", url: "/dashboard/institutional/collaborations", icon: Handshake },
       { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
+    ],
+  },
+  {
+    label: "Academic Advisory",
+    collapsible: true,
+    items: [
+      { title: "Advisory Overview", url: "/dashboard/advisory", icon: Compass },
+      { title: "Transcript Requests", url: "/dashboard/advisory/transcripts", icon: FileText },
+      { title: "Degree Advisory", url: "/dashboard/advisory/degree", icon: GraduationCap },
+      { title: "Study in Africa", url: "/dashboard/advisory/study-africa", icon: Globe },
+      { title: "Academic Pathways", url: "/dashboard/advisory/pathways", icon: MapPin },
+      { title: "My Cases", url: "/dashboard/advisory/cases", icon: ClipboardList },
+      { title: "Documents", url: "/dashboard/advisory/documents", icon: FileUp },
     ],
   },
 
