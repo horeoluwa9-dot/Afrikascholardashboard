@@ -64,6 +64,33 @@ const MOCK_PROFILES: Record<string, ResearcherProfile> = {
     avatar_url: null,
     isMock: true,
   },
+  "Dr. Ama Mensah": {
+    user_id: "mock-ama-mensah",
+    display_name: "Dr. Ama Mensah",
+    institution: "University of Ghana",
+    discipline: "Energy Policy & Sustainability",
+    bio: "Researching renewable energy transitions, climate policy, and sustainable development across West Africa. Published extensively on comparative energy policy frameworks.",
+    avatar_url: null,
+    isMock: true,
+  },
+  "Dr. Tunde Adeyemi": {
+    user_id: "mock-tunde-adeyemi",
+    display_name: "Dr. Tunde Adeyemi",
+    institution: "University of Lagos",
+    discipline: "Climate Policy & Environmental Science",
+    bio: "Environmental scientist specializing in climate adaptation strategies and policy analysis for West African nations.",
+    avatar_url: null,
+    isMock: true,
+  },
+  "Dr. Fatima Bello": {
+    user_id: "mock-fatima-bello",
+    display_name: "Dr. Fatima Bello",
+    institution: "Ahmadu Bello University",
+    discipline: "Public Health & Epidemiology",
+    bio: "Public health researcher focused on disease surveillance, epidemiological modeling, and health systems strengthening in Northern Nigeria.",
+    avatar_url: null,
+    isMock: true,
+  },
 };
 
 const ResearcherProfilePage = () => {
