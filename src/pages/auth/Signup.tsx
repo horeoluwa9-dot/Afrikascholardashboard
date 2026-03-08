@@ -6,26 +6,29 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+const roleMap: Record<string, string> = {
+  student: "student",
+  academic: "researcher",
+  researcher: "researcher",
+  institution: "institutional_admin",
+  professional: "researcher",
+};
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "",
-    referralCode: "",
+    fullName: "", email: "", password: "", confirmPassword: "", role: "", referralCode: "",
   });
   const [agreed, setAgreed] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const pw = form.password;
   const checks = {
@@ -38,21 +41,30 @@ const Signup = () => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const autoFill = () => {
-    setForm({
-      fullName: "SOT GH",
-      email: "horexoluwa9@gmail.com",
-      password: "Demo1234",
-      confirmPassword: "Demo1234",
-      role: "student",
-      referralCode: "",
-    });
-    setAgreed(true);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/auth/verify-email");
+    if (form.password !== form.confirmPassword) {
+      toast({ title: "Passwords don't match", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: {
+          display_name: form.fullName,
+          role: roleMap[form.role] || "researcher",
+        },
+      },
+    });
+    setLoading(false);
+    if (error) {
+      toast({ title: "Signup failed", description: error.message, variant: "destructive" });
+    } else {
+      navigate("/auth/verify-email");
+    }
   };
 
   return (
@@ -68,22 +80,14 @@ const Signup = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-card rounded-2xl p-8 border border-border shadow-sm space-y-4">
-          <div className="p-3 bg-afrika-orange-light rounded-lg text-center">
-            <button type="button" onClick={autoFill} className="text-xs text-afrika-orange font-semibold hover:underline">
-              Auto-fill demo data for testing
-            </button>
-          </div>
-
           <div>
             <Label htmlFor="fullName">Full Name</Label>
             <Input id="fullName" value={form.fullName} onChange={(e) => handleChange("fullName", e.target.value)} placeholder="Your full name" required className="mt-1" />
           </div>
-
           <div>
             <Label htmlFor="email">Email Address</Label>
             <Input id="email" type="email" value={form.email} onChange={(e) => handleChange("email", e.target.value)} placeholder="you@example.com" required className="mt-1" />
           </div>
-
           <div>
             <Label htmlFor="password">Password</Label>
             <div className="relative mt-1">
@@ -105,7 +109,6 @@ const Signup = () => {
               ))}
             </div>
           </div>
-
           <div>
             <Label htmlFor="confirmPassword">Confirm Password</Label>
             <div className="relative mt-1">
@@ -115,7 +118,6 @@ const Signup = () => {
               </button>
             </div>
           </div>
-
           <div>
             <Label>Role</Label>
             <Select value={form.role} onValueChange={(v) => handleChange("role", v)}>
@@ -129,24 +131,20 @@ const Signup = () => {
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <Label htmlFor="referral">Referral Code (Optional)</Label>
             <Input id="referral" value={form.referralCode} onChange={(e) => handleChange("referralCode", e.target.value)} placeholder="Enter code" className="mt-1" />
           </div>
-
           <div className="flex items-start gap-2">
             <Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(!!v)} id="terms" className="mt-0.5" />
             <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed">
               I agree to the{" "}
-              <Link to="/terms" className="text-afrika-orange hover:underline">Terms of Service</Link>{" "}
-              and{" "}
+              <Link to="/terms" className="text-afrika-orange hover:underline">Terms of Service</Link>{" "}and{" "}
               <Link to="/privacy" className="text-afrika-orange hover:underline">Privacy Policy</Link>
             </label>
           </div>
-
-          <Button variant="afrika" className="w-full" type="submit" disabled={!agreed}>
-            Create Account
+          <Button variant="afrika" className="w-full" type="submit" disabled={!agreed || loading}>
+            {loading ? "Creating account..." : "Create Account"}
           </Button>
         </form>
 

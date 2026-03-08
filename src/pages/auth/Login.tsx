@@ -4,21 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate login — first time goes to onboarding
-    const hasOnboarded = localStorage.getItem("onboarded");
-    if (hasOnboarded) {
-      navigate("/dashboard");
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) {
+      toast({ title: "Login failed", description: error.message, variant: "destructive" });
     } else {
-      navigate("/auth/onboarding");
+      navigate("/dashboard");
     }
   };
 
@@ -49,7 +54,9 @@ const Login = () => {
             </div>
             <Link to="/auth/forgot-password" className="text-xs text-afrika-orange hover:underline mt-1 inline-block">Forgot password?</Link>
           </div>
-          <Button variant="afrika" className="w-full" type="submit">Log In</Button>
+          <Button variant="afrika" className="w-full" type="submit" disabled={loading}>
+            {loading ? "Signing in..." : "Log In"}
+          </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">

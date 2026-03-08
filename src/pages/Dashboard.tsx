@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CreditsHowItWorksModal } from "@/components/dashboard/CreditsModal";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   FileText, Database, BarChart3, Send, Wrench, Compass,
   ArrowRight, Newspaper, CalendarClock, Users2, TrendingUp, Eye,
@@ -43,13 +44,23 @@ const statusColors: Record<string, string> = {
   Published: "bg-afrika-green/10 text-afrika-green",
 };
 
-const Dashboard = () => (
+const Dashboard = () => {
+  const { profile, role } = useAuth();
+  const displayName = profile?.display_name || "Researcher";
+
+  return (
   <DashboardLayout>
     <div className="max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Welcome back, Defi 👋</h1>
+        <h1 className="text-2xl font-bold text-foreground">Welcome back, {displayName} 👋</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Manage your research, publishing, and intelligence tools from one workspace.
+          {role === "institutional_admin"
+            ? "Manage your institution's research output, users, and analytics."
+            : role === "reviewer"
+            ? "Review manuscripts, track submissions, and manage your review queue."
+            : role === "student"
+            ? "Explore datasets, generate papers, and sharpen your research skills."
+            : "Manage your research, publishing, and intelligence tools from one workspace."}
         </p>
       </div>
 
@@ -154,6 +165,7 @@ const Dashboard = () => (
       </div>
     </div>
   </DashboardLayout>
-);
+  );
+};
 
 export default Dashboard;
