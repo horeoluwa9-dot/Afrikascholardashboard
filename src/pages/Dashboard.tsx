@@ -170,6 +170,7 @@ const Dashboard = () => {
       </div>
     </div>
   </DashboardLayout>
-);
+  );
+};
 
 export default Dashboard;
