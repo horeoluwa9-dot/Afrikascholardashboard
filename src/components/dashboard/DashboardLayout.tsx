@@ -118,6 +118,7 @@ const sidebarSections: SidebarSection[] = [
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
       { title: "Talent Requests", url: "/dashboard/institutional/talent-requests", icon: Briefcase },
+      { title: "Advisory Requests", url: "/dashboard/institutional/advisory", icon: ClipboardList },
       { title: "Lecturer Search", url: "/dashboard/institutional/lecturers", icon: Search },
       { title: "Collaborations", url: "/dashboard/institutional/collaborations", icon: Handshake },
       { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },

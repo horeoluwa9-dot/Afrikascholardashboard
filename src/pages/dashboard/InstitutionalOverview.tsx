@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users, FileText, Handshake, CheckCircle, ArrowRight, Building2, Search, Plus,
-  TrendingUp, MessageCircle, Calendar, Briefcase,
+  TrendingUp, MessageCircle, Calendar, Briefcase, ClipboardList,
 } from "lucide-react";
 import { useInstitutional } from "@/hooks/useInstitutional";
 
@@ -105,7 +105,7 @@ const InstitutionalOverview = () => {
         {/* Quick Actions */}
         <div>
           <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link to="/dashboard/institutional/talent-requests">
               <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
                 <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
@@ -115,6 +115,19 @@ const InstitutionalOverview = () => {
                   <div>
                     <p className="text-sm font-semibold text-foreground">View Talent Requests</p>
                     <p className="text-xs text-muted-foreground">Post or manage expertise requests</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link to="/dashboard/institutional/advisory">
+              <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
+                <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-afrika-orange-light flex items-center justify-center shrink-0">
+                    <ClipboardList className="h-5 w-5 text-afrika-orange" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Advisory Requests</p>
+                    <p className="text-xs text-muted-foreground">View sent & received advisories</p>
                   </div>
                 </CardContent>
               </Card>
