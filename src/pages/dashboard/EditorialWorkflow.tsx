@@ -14,7 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   CheckCircle, Circle, Clock, Upload, MessageCircle, FileText,
   ChevronRight, Eye, UserPlus, Send, XCircle, AlertCircle, BookOpen,
-  User, Calendar, Tag
+  User, Calendar, Tag, Search, Star
 } from "lucide-react";
 import { usePublishing, type ManuscriptSubmission } from "@/hooks/usePublishing";
 
