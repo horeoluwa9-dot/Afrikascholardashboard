@@ -94,26 +94,6 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Research Intelligence",
-    collapsible: true,
-    requiredModule: "publeesh_ai",
-    requiresSubscription: true,
-    items: [
-      { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
-      { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
-      { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
-      {
-        title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle,
-        children: [
-          { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
-          { title: "AI Paper Generator", url: "/dashboard/ai-papers", icon: Sparkles },
-          { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
-        ],
-      },
-      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
-    ],
-  },
-  {
     label: "Institutional",
     collapsible: true,
     items: [
@@ -137,6 +117,26 @@ const sidebarSections: SidebarSection[] = [
           { title: "Reports", url: "/dashboard/institutional/admin/reports", icon: ClipboardList },
         ],
       },
+    ],
+  },
+  {
+    label: "Research Intelligence",
+    collapsible: true,
+    requiredModule: "publeesh_ai",
+    requiresSubscription: true,
+    items: [
+      { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
+      { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
+      { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
+      {
+        title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle,
+        children: [
+          { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
+          { title: "AI Paper Generator", url: "/dashboard/ai-papers", icon: Sparkles },
+          { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
+        ],
+      },
+      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
     ],
   },
   {
