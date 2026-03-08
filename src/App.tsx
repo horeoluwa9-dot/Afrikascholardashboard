@@ -39,6 +39,7 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
 import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
+import NotificationsPage from "./pages/dashboard/NotificationsPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
