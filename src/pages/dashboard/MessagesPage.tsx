@@ -109,8 +109,37 @@ const MessagesPage = () => {
   const getInitials = (name: string) =>
     name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
-  const requestCount = sampleConversations.filter((c) => c.status === "request").length;
-  const unreadTotal = sampleConversations.reduce((sum, c) => sum + c.unread, 0);
+  const requestCount = conversations.filter((c) => c.status === "request").length;
+  const unreadTotal = conversations.reduce((sum, c) => sum + c.unread, 0);
+
+  const handleAcceptRequest = (id: string) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, status: "active" as const } : c));
+    toast.success("Message request accepted!");
+  };
+
+  const handleIgnoreRequest = (id: string) => {
+    setConversations(prev => prev.filter(c => c.id !== id));
+    setActiveId(conversations.find(c => c.id !== id)?.id || "c1");
+    toast.success("Message request ignored.");
+  };
+
+  const handleSendMessage = () => {
+    if (!newMessage.trim() || !activeConvo) return;
+    setConversations(prev => prev.map(c =>
+      c.id === activeConvo.id
+        ? { ...c, messages: [...c.messages, { sender: "me" as const, text: newMessage, time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) }], lastMessage: newMessage }
+        : c
+    ));
+    setNewMessage("");
+  };
+
+  const handleConnect = () => {
+    toast.success(`Connection request sent to ${activeConvo?.name}`);
+  };
+
+  const handleCollaborate = () => {
+    navigate("/dashboard/network");
+  };
 
   return (
     <DashboardLayout>
