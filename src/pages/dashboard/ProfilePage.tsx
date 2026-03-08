@@ -97,13 +97,13 @@ const ProfilePage = () => {
                 <h1 className="text-2xl font-bold text-primary-foreground font-serif">{displayName}</h1>
                 <div className="flex items-center gap-2 flex-wrap mt-1">
                   {profile?.academic_title && (
-                    <Badge className="bg-accent/10 text-accent border-accent/30 text-xs">{profile.academic_title}</Badge>
+                    <Badge className="bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30 text-xs">{profile.academic_title}</Badge>
                   )}
                   {role && (
-                    <Badge variant="outline" className="text-xs capitalize">{roleLabels[role]}</Badge>
+                    <Badge variant="outline" className="text-xs capitalize text-primary-foreground border-primary-foreground/30">{roleLabels[role]}</Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-4 mt-2 text-sm text-primary-foreground/70 flex-wrap">
                   {profile?.institution && (
                     <span className="flex items-center gap-1"><Building2 className="h-3.5 w-3.5" />{profile.institution}</span>
                   )}
