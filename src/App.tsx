@@ -51,7 +51,6 @@ import TalentRequestsPage from "./pages/dashboard/TalentRequestsPage";
 import LecturerSearchPage from "./pages/dashboard/LecturerSearchPage";
 import ProjectCollaborationsPage from "./pages/dashboard/ProjectCollaborationsPage";
 import MyEngagementsPage from "./pages/dashboard/MyEngagementsPage";
-import AdvisoryRequestsPage from "./pages/dashboard/AdvisoryRequestsPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -124,7 +123,6 @@ const App = () => (
             <Route path="/dashboard/institutional/lecturers" element={<P><LecturerSearchPage /></P>} />
             <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
             <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
-            <Route path="/dashboard/institutional/advisory" element={<P><AdvisoryRequestsPage /></P>} />
             <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={["institutional_admin"]}><AdminDashboard /></ProtectedRoute>} />
 
             {/* Legacy redirects */}
