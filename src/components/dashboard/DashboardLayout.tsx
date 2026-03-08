@@ -115,7 +115,6 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Institutional",
     collapsible: true,
-    requiredModule: "institutional",
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
       { title: "Talent Requests", url: "/dashboard/institutional/talent-requests", icon: Briefcase },
