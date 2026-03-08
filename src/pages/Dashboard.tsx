@@ -22,7 +22,7 @@ const quickActions = [
   { icon: Database, title: "Explore Datasets", desc: "Get started", link: "/dashboard/data/explorer" },
   { icon: BarChart3, title: "Analyze Data", desc: "Get started", link: "/dashboard/data/analyzer" },
   { icon: Send, title: "Submit to Journal", desc: "Get started", link: "/dashboard/publishing/submit" },
-  { icon: Building2, title: "Assess Institutions", desc: "Evaluate universities", link: "/dashboard/institutions" },
+  { icon: Building2, title: "Assess Institutions", desc: "Evaluate universities", link: "/dashboard/institutional" },
   { icon: Compass, title: "Intelligence Insights", desc: "Get started", link: "/dashboard/intelligence" },
 ];
 
