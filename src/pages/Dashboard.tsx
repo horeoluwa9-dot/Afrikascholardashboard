@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CreditsHowItWorksModal } from "@/components/dashboard/CreditsModal";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import WelcomePanel from "@/components/dashboard/WelcomePanel";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   FileText, Database, BarChart3, Send, Wrench, Compass,
@@ -63,6 +64,9 @@ const Dashboard = () => {
             : "Manage your research, publishing, and intelligence tools from one workspace."}
         </p>
       </div>
+
+      {/* Welcome Panel — first-time users */}
+      <WelcomePanel />
 
       {/* Credit Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
