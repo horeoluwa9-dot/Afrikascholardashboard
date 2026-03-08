@@ -123,6 +123,19 @@ const sidebarSections: SidebarSection[] = [
       { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
     ],
   },
+  {
+    label: "Academic Advisory",
+    collapsible: true,
+    items: [
+      { title: "Advisory Overview", url: "/dashboard/advisory", icon: Compass },
+      { title: "Transcript Requests", url: "/dashboard/advisory/transcripts", icon: FileText },
+      { title: "Degree Advisory", url: "/dashboard/advisory/degree", icon: GraduationCap },
+      { title: "Study in Africa", url: "/dashboard/advisory/study-africa", icon: Globe },
+      { title: "Academic Pathways", url: "/dashboard/advisory/pathways", icon: MapPin },
+      { title: "My Cases", url: "/dashboard/advisory/cases", icon: ClipboardList },
+      { title: "Documents", url: "/dashboard/advisory/documents", icon: FileUp },
+    ],
+  },
 
   // === CORE LINKS (above settings) ===
   {
