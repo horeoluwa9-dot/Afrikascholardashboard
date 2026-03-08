@@ -7,18 +7,15 @@ import WelcomePanel from "@/components/dashboard/WelcomePanel";
 import ResearchIdentityCard from "@/components/dashboard/ResearchIdentityCard";
 import ResearchActivitySection from "@/components/dashboard/ResearchActivitySection";
 import CommunityPreview from "@/components/dashboard/CommunityPreview";
+import { SubscriptionUnlockPanel } from "@/components/dashboard/SubscriptionUnlockPanel";
+import { SubscriptionStatusWidget } from "@/components/dashboard/SubscriptionStatusWidget";
 import { useAuth } from "@/contexts/AuthContext";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
+import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
   FileText, Database, BarChart3, Send, Wrench, Compass,
   ArrowRight, Newspaper, CalendarClock, Users2, TrendingUp, Eye,
 } from "lucide-react";
-
-const credits = [
-  { label: "Paper Credits", used: 5, total: 25, color: "bg-accent" },
-  { label: "Dataset Credits", used: 0, total: 25, color: "bg-primary" },
-  { label: "Analysis Credits", used: 10, total: 35, color: "bg-afrika-green" },
-];
 
 const quickActions = [
   { icon: FileText, title: "Generate Paper", desc: "Get started", link: "/dashboard/generate-paper" },
@@ -52,9 +49,16 @@ const statusColors: Record<string, string> = {
 const Dashboard = () => {
   const { profile, role } = useAuth();
   const { isModuleUnlocked } = useModuleUnlocksContext();
+  const { subscription, isActive } = useSubscriptionContext();
   const displayName = profile?.display_name || "Researcher";
 
   const hasAnyUnlock = isModuleUnlocked("my_research") || isModuleUnlocked("publishing") || isModuleUnlocked("publeesh_ai");
+
+  const credits = isActive && subscription ? [
+    { label: "Paper Credits", used: subscription.paper_credits_used, total: subscription.paper_credits_total, color: "bg-accent" },
+    { label: "Dataset Credits", used: subscription.dataset_credits_used, total: subscription.dataset_credits_total, color: "bg-primary" },
+    { label: "Analysis Credits", used: subscription.analysis_credits_used, total: subscription.analysis_credits_total, color: "bg-afrika-green" },
+  ] : [];
 
   return (
   <DashboardLayout>
@@ -78,46 +82,71 @@ const Dashboard = () => {
       {/* Welcome Panel — first-time users */}
       <WelcomePanel />
 
-      {/* Credit Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {credits.map((c) => (
-          <div key={c.label} className="bg-card rounded-xl p-5 border border-border">
-            <p className="text-xs text-muted-foreground">{c.label}</p>
-            <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-2xl font-bold text-foreground">{c.total - c.used}</span>
-              <span className="text-sm text-muted-foreground">/ {c.total}</span>
-            </div>
-            <div className="h-2 bg-secondary rounded-full mt-3">
-              <div className={`h-full rounded-full ${c.color}`} style={{ width: `${(c.used / c.total) * 100}%` }} />
-            </div>
-            <p className="text-[10px] text-muted-foreground mt-1">{c.used} / {c.total} used</p>
+      {/* Subscription Status Widget (active users) */}
+      {isActive && <SubscriptionStatusWidget />}
+
+      {/* INACTIVE: Show unlock panel + locked tools instead of credits */}
+      {!isActive ? (
+        <SubscriptionUnlockPanel />
+      ) : (
+        <>
+          {/* Credit Cards (active subscribers only) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {credits.map((c) => {
+              const remaining = c.total - c.used;
+              const isZero = remaining <= 0;
+              return (
+                <div key={c.label} className="bg-card rounded-xl p-5 border border-border">
+                  <p className="text-xs text-muted-foreground">{c.label}</p>
+                  <div className="flex items-baseline gap-1 mt-1">
+                    <span className={`text-2xl font-bold ${isZero ? "text-destructive" : "text-foreground"}`}>{remaining}</span>
+                    <span className="text-sm text-muted-foreground">/ {c.total}</span>
+                  </div>
+                  <div className="h-2 bg-secondary rounded-full mt-3">
+                    <div className={`h-full rounded-full ${isZero ? "bg-destructive" : c.color}`} style={{ width: `${(c.used / c.total) * 100}%` }} />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1">{c.used} / {c.total} used</p>
+                  {isZero && (
+                    <div className="mt-2 p-2 bg-destructive/5 rounded-md">
+                      <p className="text-[10px] text-destructive font-medium">
+                        You have used all credits this month.
+                      </p>
+                      <div className="flex gap-2 mt-1">
+                        <Link to="/publeesh/subscription" className="text-[10px] text-accent font-medium hover:underline">Buy Credits</Link>
+                        <Link to="/publeesh/subscription" className="text-[10px] text-accent font-medium hover:underline">Upgrade Plan</Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
-      <CreditsHowItWorksModal />
+          <CreditsHowItWorksModal />
 
-      {/* Research Activity — visible once user has publishing or my_research unlocked */}
-      <ResearchActivitySection visible={hasAnyUnlock} />
+          {/* Research Activity — visible once user has publishing or my_research unlocked */}
+          <ResearchActivitySection visible={hasAnyUnlock} />
 
-      {/* Quick Actions */}
-      <div>
-        <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {quickActions.map((a) => (
-            <Link key={a.title} to={a.link} className="bg-card rounded-xl p-5 border border-border flex items-center gap-4 hover:shadow-md transition-shadow group">
-              <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center shrink-0">
-                <a.icon className="h-5 w-5 text-accent" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground">{a.title}</p>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  {a.desc} <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+          {/* Quick Actions (unlocked) */}
+          <div>
+            <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {quickActions.map((a) => (
+                <Link key={a.title} to={a.link} className="bg-card rounded-xl p-5 border border-border flex items-center gap-4 hover:shadow-md transition-shadow group">
+                  <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                    <a.icon className="h-5 w-5 text-accent" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-foreground">{a.title}</p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      {a.desc} <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Recent Activity + Community Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -139,8 +168,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Intelligence Insights — only if unlocked */}
-      {isModuleUnlocked("research_intelligence") && (
+      {/* Intelligence Insights — only if unlocked AND subscribed */}
+      {isActive && isModuleUnlocked("research_intelligence") && (
         <div>
           <h2 className="text-lg font-bold text-foreground mb-4">Intelligence Insights</h2>
           <div className="bg-card rounded-xl border border-border p-5 space-y-4">

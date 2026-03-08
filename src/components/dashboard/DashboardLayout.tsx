@@ -277,6 +277,28 @@ function AppSidebar() {
           // Hide entire section if role doesn't match
           if (section.requiredRoles && !canAccess(role, section.requiredRoles)) return null;
 
+          // If requires subscription and not subscribed, show locked link
+          if (section.requiresSubscription && !hasSubscription) {
+            if (section.requiredModule && !isModuleUnlocked(section.requiredModule)) return null;
+            return (
+              <SidebarGroup key={gi}>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link to="/publeesh/subscription"
+                          className="flex items-center text-[13px] py-1.5 px-2 rounded-md text-sidebar-foreground/40 hover:text-sidebar-foreground/60 transition-colors">
+                          <Lock className="h-4 w-4 mr-2 shrink-0" />
+                          {!collapsed && <span>{section.label} (Locked)</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            );
+          }
+
           // Hide section if module not yet unlocked
           if (section.requiredModule && !isModuleUnlocked(section.requiredModule)) return null;
 
