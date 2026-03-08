@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import afrikaLogo from "@/assets/afrika-scholar-logo.png";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
