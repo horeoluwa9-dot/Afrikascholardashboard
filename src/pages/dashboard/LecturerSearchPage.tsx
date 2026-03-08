@@ -98,6 +98,8 @@ const ranks = ["All", "Lecturer", "Senior Lecturer", "Associate Professor", "Pro
 
 const LecturerSearchPage = () => {
   const { searchLecturers } = useInstitutional();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [country, setCountry] = useState("All");
   const [field, setField] = useState("All");
@@ -105,6 +107,11 @@ const LecturerSearchPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [dbResults, setDbResults] = useState<any[] | null>(null);
   const [searching, setSearching] = useState(false);
+
+  // Advisory request dialog
+  const [advisoryTarget, setAdvisoryTarget] = useState<LecturerProfile | null>(null);
+  const [advisoryForm, setAdvisoryForm] = useState({ topic: "", description: "", expected_duration: "", institution: "" });
+  const [advisorySaving, setAdvisorySaving] = useState(false);
 
   const handleSearch = async () => {
     setSearching(true);
