@@ -114,14 +114,29 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Institutional Collaboration",
+    label: "Institutional",
     collapsible: true,
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
-      { title: "Talent Requests", url: "/dashboard/institutional/talent-requests", icon: Briefcase },
-      { title: "Lecturer Search", url: "/dashboard/institutional/lecturers", icon: Search },
-      { title: "Collaborations", url: "/dashboard/institutional/collaborations", icon: Handshake },
-      { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
+      {
+        title: "Engagement", url: "/dashboard/institutional/talent-requests", icon: Handshake,
+        children: [
+          { title: "Talent Requests", url: "/dashboard/institutional/talent-requests", icon: Briefcase },
+          { title: "Lecturer Search", url: "/dashboard/institutional/lecturers", icon: Search },
+          { title: "Collaborations", url: "/dashboard/institutional/collaborations", icon: Handshake },
+          { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
+        ],
+      },
+      {
+        title: "Administration", url: "/dashboard/institutional/admin/faculty", icon: Shield,
+        children: [
+          { title: "Faculty Users", url: "/dashboard/institutional/admin/faculty", icon: Users2 },
+          { title: "Seat Management", url: "/dashboard/institutional/admin/seats", icon: CreditCard },
+          { title: "Research Output", url: "/dashboard/institutional/admin/research-output", icon: TrendingUp },
+          { title: "Usage Analytics", url: "/dashboard/institutional/admin/analytics", icon: BarChart3 },
+          { title: "Reports", url: "/dashboard/institutional/admin/reports", icon: ClipboardList },
+        ],
+      },
     ],
   },
   {

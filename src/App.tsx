@@ -51,6 +51,11 @@ import TalentRequestsPage from "./pages/dashboard/TalentRequestsPage";
 import LecturerSearchPage from "./pages/dashboard/LecturerSearchPage";
 import ProjectCollaborationsPage from "./pages/dashboard/ProjectCollaborationsPage";
 import MyEngagementsPage from "./pages/dashboard/MyEngagementsPage";
+import FacultyUsersPage from "./pages/dashboard/institutional/FacultyUsersPage";
+import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPage";
+import ResearchOutputPage from "./pages/dashboard/institutional/ResearchOutputPage";
+import UsageAnalyticsPage from "./pages/dashboard/institutional/UsageAnalyticsPage";
+import InstitutionalReportsPage from "./pages/dashboard/institutional/InstitutionalReportsPage";
 import AdvisoryRequestsPage from "./pages/dashboard/AdvisoryRequestsPage";
 import AdvisoryOverviewPage from "./pages/dashboard/advisory/AdvisoryOverviewPage";
 import TranscriptRequestsPage from "./pages/dashboard/advisory/TranscriptRequestsPage";
@@ -131,7 +136,11 @@ const App = () => (
             <Route path="/dashboard/institutional/lecturers" element={<P><LecturerSearchPage /></P>} />
             <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
             <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
-            <Route path="/dashboard/institutional/advisory" element={<P><AdvisoryRequestsPage /></P>} />
+            <Route path="/dashboard/institutional/admin/faculty" element={<P><FacultyUsersPage /></P>} />
+            <Route path="/dashboard/institutional/admin/seats" element={<P><SeatManagementPage /></P>} />
+            <Route path="/dashboard/institutional/admin/research-output" element={<P><ResearchOutputPage /></P>} />
+            <Route path="/dashboard/institutional/admin/analytics" element={<P><UsageAnalyticsPage /></P>} />
+            <Route path="/dashboard/institutional/admin/reports" element={<P><InstitutionalReportsPage /></P>} />
 
             {/* Advisory Client Dashboard */}
             <Route path="/dashboard/advisory" element={<P><AdvisoryOverviewPage /></P>} />
