@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 import { Briefcase, Building2, Eye, MessageCircle, Search, Plus, Handshake, Calendar } from "lucide-react";
 import { useInstitutional } from "@/hooks/useInstitutional";
 
@@ -97,6 +101,10 @@ const typeLabel: Record<string, string> = {
 
 const MyEngagementsPage = () => {
   const { engagements, loading } = useInstitutional();
+  const navigate = useNavigate();
+
+  // View detail dialog
+  const [viewEngagement, setViewEngagement] = useState<EngagementDisplay | null>(null);
 
   const displayEngagements: EngagementDisplay[] = engagements.length > 0
     ? engagements.map(e => ({
@@ -198,14 +206,12 @@ const MyEngagementsPage = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <Button variant="ghost" size="sm" className="h-8 text-xs gap-1">
+                          <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={() => setViewEngagement(e)}>
                             <Eye className="h-3 w-3" /> View
                           </Button>
-                          <Link to="/dashboard/messages">
-                            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1">
-                              <MessageCircle className="h-3 w-3" /> Message
-                            </Button>
-                          </Link>
+                          <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={() => navigate("/dashboard/messages")}>
+                            <MessageCircle className="h-3 w-3" /> Message
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -216,7 +222,63 @@ const MyEngagementsPage = () => {
           </Card>
         )}
 
-        {/* Empty state CTA - only when truly no DB data */}
+        {/* View Detail Dialog */}
+        <Dialog open={!!viewEngagement} onOpenChange={(open) => !open && setViewEngagement(null)}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>{viewEngagement?.title}</DialogTitle>
+              <DialogDescription>Engagement details</DialogDescription>
+            </DialogHeader>
+            {viewEngagement && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Academic Partner</p>
+                    <p className="text-sm font-medium text-foreground">{viewEngagement.partner}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Institution</p>
+                    <p className="text-sm font-medium text-foreground">{viewEngagement.institution || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Type</p>
+                    <Badge variant="outline" className="text-[10px]">
+                      {typeLabel[viewEngagement.engagement_type] || viewEngagement.engagement_type}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Status</p>
+                    <Badge className={`text-[10px] ${statusColors[viewEngagement.status] || statusColors.active}`}>
+                      {viewEngagement.status.charAt(0).toUpperCase() + viewEngagement.status.slice(1)}
+                    </Badge>
+                  </div>
+                  {viewEngagement.start_date && (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Start Date</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {new Date(viewEngagement.start_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {viewEngagement.description && (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Description</p>
+                    <p className="text-sm text-foreground leading-relaxed">{viewEngagement.description}</p>
+                  </div>
+                )}
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="ghost" size="sm" className="gap-1" onClick={() => { setViewEngagement(null); navigate("/dashboard/messages"); }}>
+                <MessageCircle className="h-3 w-3" /> Message Partner
+              </Button>
+              <Button variant="outline" onClick={() => setViewEngagement(null)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Empty state CTA */}
         {isEmpty && (
           <Card className="border-border border-dashed">
             <CardContent className="py-12 text-center">
