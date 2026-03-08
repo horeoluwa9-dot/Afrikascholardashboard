@@ -84,6 +84,8 @@ const MessagesPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const isMobile = useIsMobile();
   const [showChat, setShowChat] = useState(false);
+  const navigate = useNavigate();
+  const [conversations, setConversations] = useState(sampleConversations);
 
   const tabs = ["All", "Requests", "Unread"];
 
