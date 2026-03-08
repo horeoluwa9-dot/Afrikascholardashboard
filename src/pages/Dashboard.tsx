@@ -63,11 +63,6 @@ const Dashboard = () => {
             : "Manage your research, publishing, and intelligence tools from one workspace."}
         </p>
       </div>
-        <h1 className="text-2xl font-bold text-foreground">Welcome back, Defi 👋</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Manage your research, publishing, and intelligence tools from one workspace.
-        </p>
-      </div>
 
       {/* Credit Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
