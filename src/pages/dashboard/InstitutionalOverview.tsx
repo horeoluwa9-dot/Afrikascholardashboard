@@ -119,6 +119,19 @@ const InstitutionalOverview = () => {
                 </CardContent>
               </Card>
             </Link>
+            <Link to="/dashboard/institutional/advisory">
+              <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
+                <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-afrika-orange-light flex items-center justify-center shrink-0">
+                    <ClipboardList className="h-5 w-5 text-afrika-orange" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Advisory Requests</p>
+                    <p className="text-xs text-muted-foreground">View sent & received advisories</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
             <Link to="/dashboard/institutional/lecturers">
               <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
                 <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
