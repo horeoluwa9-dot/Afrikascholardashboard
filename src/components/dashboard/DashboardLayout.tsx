@@ -113,7 +113,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Institutional",
+    label: "Institutional Collaboration",
     collapsible: true,
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
