@@ -14,7 +14,7 @@ import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
   FileText, Database, BarChart3, Send, Wrench, Compass,
-  ArrowRight, Newspaper, CalendarClock, Users2, TrendingUp, Eye, Building2,
+  ArrowRight, Newspaper, CalendarClock, Users2, TrendingUp, Eye, Building2, Handshake,
 } from "lucide-react";
 
 const quickActions = [
@@ -23,6 +23,7 @@ const quickActions = [
   { icon: BarChart3, title: "Analyze Data", desc: "Get started", link: "/dashboard/data/analyzer" },
   { icon: Send, title: "Submit to Journal", desc: "Get started", link: "/dashboard/publishing/submit" },
   { icon: Building2, title: "Institutional Collaboration", desc: "Build academic partnerships", link: "/dashboard/institutional" },
+  { icon: Handshake, title: "Advisory Requests", desc: "Find & request advisors", link: "/dashboard/institutional/lecturers" },
   { icon: Compass, title: "Intelligence Insights", desc: "Get started", link: "/dashboard/intelligence" },
 ];
 
