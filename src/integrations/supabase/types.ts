@@ -135,6 +135,63 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          analysis_credits_total: number
+          analysis_credits_used: number
+          billing_cycle: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          dataset_credits_total: number
+          dataset_credits_used: number
+          id: string
+          paper_credits_total: number
+          paper_credits_used: number
+          paystack_reference: string | null
+          plan: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_credits_total?: number
+          analysis_credits_used?: number
+          billing_cycle?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          dataset_credits_total?: number
+          dataset_credits_used?: number
+          id?: string
+          paper_credits_total?: number
+          paper_credits_used?: number
+          paystack_reference?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_credits_total?: number
+          analysis_credits_used?: number
+          billing_cycle?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          dataset_credits_total?: number
+          dataset_credits_used?: number
+          id?: string
+          paper_credits_total?: number
+          paper_credits_used?: number
+          paystack_reference?: string | null
+          plan?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_module_unlocks: {
         Row: {
           id: string
