@@ -26,7 +26,7 @@ const actions = [
     icon: Globe,
     title: "Assess Institutions",
     desc: "Evaluate universities and academic programs across Africa.",
-    link: "/dashboard/institutions",
+    link: "/dashboard/institutional",
   },
 ];
 
