@@ -181,11 +181,11 @@ const CommunityPage = () => {
               <div key={post.id} className="bg-card rounded-xl border border-border p-5 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Link to={`/dashboard/messages?user=${encodeURIComponent(post.author)}`} className="h-9 w-9 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-xs font-bold hover:ring-2 hover:ring-accent/50 transition-all cursor-pointer">
+                    <Link to={`/dashboard/researcher?user=${encodeURIComponent(post.author)}`} className="h-9 w-9 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-xs font-bold hover:ring-2 hover:ring-accent/50 transition-all cursor-pointer">
                       {post.author[1].toUpperCase()}
                     </Link>
                     <div>
-                      <Link to={`/dashboard/messages?user=${encodeURIComponent(post.author)}`} className="text-sm font-medium text-foreground hover:text-accent transition-colors cursor-pointer">
+                      <Link to={`/dashboard/researcher?user=${encodeURIComponent(post.author)}`} className="text-sm font-medium text-foreground hover:text-accent transition-colors cursor-pointer">
                         {post.author}
                       </Link>
                       <p className="text-[10px] text-muted-foreground">{post.role}</p>
