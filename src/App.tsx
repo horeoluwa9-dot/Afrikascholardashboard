@@ -34,6 +34,7 @@ import NetworkPage from "./pages/dashboard/NetworkPage";
 import InstitutionRequestsPage from "./pages/dashboard/InstitutionRequestsPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -86,6 +87,7 @@ const App = () => (
             <Route path="/dashboard/library" element={<P><LibraryPage /></P>} />
             <Route path="/dashboard/network" element={<P><NetworkPage /></P>} />
             <Route path="/dashboard/profile" element={<P><ProfilePage /></P>} />
+            <Route path="/dashboard/researcher" element={<P><ResearcherProfilePage /></P>} />
 
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
