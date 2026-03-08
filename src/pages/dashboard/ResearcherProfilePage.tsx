@@ -122,10 +122,10 @@ const ResearcherProfilePage = () => {
       if (data && data.length > 0) {
         setProfile(data[0]);
       } else {
-        // Fall back to mock profile for community demo users
+        // Fall back to mock profile — check by @username key or by display name
         const mockKey = username.startsWith("@") ? username : `@${username}`;
-        const mock = MOCK_PROFILES[mockKey];
-        setProfile(mock || null);
+        const mock = MOCK_PROFILES[mockKey] || MOCK_PROFILES[username] || null;
+        setProfile(mock);
       }
       setLoading(false);
     };
