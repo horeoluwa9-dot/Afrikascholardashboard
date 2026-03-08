@@ -134,6 +134,57 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_papers: {
+        Row: {
+          citation_style: string
+          content: Json
+          created_at: string
+          credits_used: number
+          id: string
+          paper_type: string
+          research_field: string | null
+          sections: Json
+          sources: Json
+          status: string
+          target_journal: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          citation_style?: string
+          content?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          paper_type?: string
+          research_field?: string | null
+          sections?: Json
+          sources?: Json
+          status?: string
+          target_journal?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          citation_style?: string
+          content?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          paper_type?: string
+          research_field?: string | null
+          sections?: Json
+          sources?: Json
+          status?: string
+          target_journal?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
