@@ -6,8 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Clock, CheckCircle, BookOpen, Plus, ArrowRight, Send } from "lucide-react";
 import { usePublishing } from "@/hooks/usePublishing";
 
+// Demo fallback submissions
+const DEMO_SUBMISSIONS = [
+  { id: "demo-1", user_id: "demo", title: "AI-Assisted Epidemiological Modeling in Sub-Saharan Africa", abstract: "This study explores how machine learning models can enhance epidemiological forecasting.", keywords: "AI, Epidemiology, Public Health", research_field: "Public Health", journal_name: "African Journal of Public Health", journal_id: null, manuscript_url: null, cover_letter: null, co_authors: [{ name: "Dr. Ama Mensah", institution: "University of Ghana" }], status: "submitted", workflow_stage: "peer_review", reviewer_feedback: [], submitted_at: "2026-03-02T00:00:00Z", updated_at: "2026-03-05T00:00:00Z" },
+  { id: "demo-2", user_id: "demo", title: "Climate Policy Innovation in West Africa", abstract: "An analysis of renewable energy policy frameworks across West African nations.", keywords: "Climate, Policy, Energy", research_field: "Environmental Policy", journal_name: "African Policy Research Review", journal_id: null, manuscript_url: null, cover_letter: null, co_authors: [{ name: "Dr. Kofi Mensah", institution: "Kwame Nkrumah University" }], status: "published", workflow_stage: "publication", reviewer_feedback: [], submitted_at: "2026-01-15T00:00:00Z", updated_at: "2026-02-28T00:00:00Z" },
+  { id: "demo-3", user_id: "demo", title: "Digital Financial Inclusion and Economic Growth in East Africa", abstract: "Examining the impact of digital financial services on economic development.", keywords: "FinTech, Inclusion, Economics", research_field: "Economics", journal_name: "East African Economic Review", journal_id: null, manuscript_url: null, cover_letter: null, co_authors: [], status: "accepted", workflow_stage: "decision", reviewer_feedback: [], submitted_at: "2026-02-10T00:00:00Z", updated_at: "2026-03-01T00:00:00Z" },
+] as any[];
+
 const PublishingOverview = () => {
-  const { submissions, loading } = usePublishing();
+  const { submissions: dbSubmissions, loading } = usePublishing();
+
+  const submissions = dbSubmissions.length > 0 ? dbSubmissions : DEMO_SUBMISSIONS;
 
   const submitted = submissions.length;
   const underReview = submissions.filter(s => ["editorial_screening", "peer_review"].includes(s.workflow_stage)).length;
