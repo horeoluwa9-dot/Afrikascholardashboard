@@ -23,7 +23,7 @@ const quickActions = [
   { icon: BarChart3, title: "Analyze Data", desc: "Get started", link: "/dashboard/data/analyzer" },
   { icon: Send, title: "Submit to Journal", desc: "Get started", link: "/dashboard/publishing/submit" },
   { icon: Building2, title: "Institutional Collaboration", desc: "Build academic partnerships", link: "/dashboard/institutional" },
-  { icon: Handshake, title: "Advisory Requests", desc: "Find & request advisors", link: "/dashboard/institutional/lecturers" },
+  { icon: Handshake, title: "Advisory Requests", desc: "Manage advisory engagements", link: "/dashboard/institutional/advisory" },
   { icon: Compass, title: "Intelligence Insights", desc: "Get started", link: "/dashboard/intelligence" },
 ];
 
