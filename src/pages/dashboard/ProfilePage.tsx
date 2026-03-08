@@ -87,24 +87,23 @@ const ProfilePage = () => {
         </div>
 
         {/* ====== PROFILE HEADER ====== */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
-          <div className="h-32 bg-gradient-to-r from-primary via-primary/80 to-accent/40 relative" />
-          <div className="px-6 pb-6">
-            <div className="flex flex-col sm:flex-row sm:items-end gap-4 -mt-12">
+        <div className="rounded-xl border border-border overflow-hidden">
+          <div className="bg-gradient-to-r from-primary via-primary/80 to-accent/40 px-6 pb-6 pt-8">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-4">
               <div className="h-24 w-24 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-3xl font-bold border-4 border-card shadow-lg shrink-0">
                 {initials}
               </div>
-              <div className="flex-1 min-w-0 pt-14 sm:pt-2">
-                <h1 className="text-2xl font-bold text-foreground font-serif">{displayName}</h1>
+              <div className="flex-1 min-w-0 pt-2">
+                <h1 className="text-2xl font-bold text-primary-foreground font-serif">{displayName}</h1>
                 <div className="flex items-center gap-2 flex-wrap mt-1">
                   {profile?.academic_title && (
-                    <Badge className="bg-accent/10 text-accent border-accent/30 text-xs">{profile.academic_title}</Badge>
+                    <Badge className="bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30 text-xs">{profile.academic_title}</Badge>
                   )}
                   {role && (
-                    <Badge variant="outline" className="text-xs capitalize">{roleLabels[role]}</Badge>
+                    <Badge variant="outline" className="text-xs capitalize text-primary-foreground border-primary-foreground/30">{roleLabels[role]}</Badge>
                   )}
                 </div>
-                <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-4 mt-2 text-sm text-primary-foreground/70 flex-wrap">
                   {profile?.institution && (
                     <span className="flex items-center gap-1"><Building2 className="h-3.5 w-3.5" />{profile.institution}</span>
                   )}
