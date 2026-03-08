@@ -119,6 +119,8 @@ const App = () => (
             <Route path="/dashboard/publishing/track" element={<P><TrackSubmissions /></P>} />
             <Route path="/dashboard/publishing/workflow" element={<P><EditorialWorkflow /></P>} />
             <Route path="/dashboard/publishing/journals" element={<P><JournalManagement /></P>} />
+            <Route path="/dashboard/publishing/reviews" element={<P><PeerReviewsPage /></P>} />
+            <Route path="/dashboard/publishing/reviews/workspace/:id" element={<P><ReviewWorkspacePage /></P>} />
             <Route path="/dashboard/instrument-studio" element={<P><InstrumentStudio /></P>} />
             <Route path="/dashboard/instrument-studio/my" element={<P><MyInstruments /></P>} />
             <Route path="/dashboard/instrument-studio/slides" element={<P><AISlideBuilder /></P>} />
