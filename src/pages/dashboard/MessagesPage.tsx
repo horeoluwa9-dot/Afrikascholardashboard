@@ -8,7 +8,9 @@ import {
   ChevronRight, MessageCircle, Send, Search, User, Users,
   ExternalLink, BookOpen, Handshake, Check, CheckCheck, Globe,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
 
 /* ── Sample Data ── */
 
@@ -83,10 +85,12 @@ const MessagesPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const isMobile = useIsMobile();
   const [showChat, setShowChat] = useState(false);
+  const navigate = useNavigate();
+  const [conversations, setConversations] = useState(sampleConversations);
 
   const tabs = ["All", "Requests", "Unread"];
 
-  const filtered = sampleConversations.filter((c) => {
+  const filtered = conversations.filter((c) => {
     if (tab === "Requests") return c.status === "request";
     if (tab === "Unread") return c.unread > 0;
     return true;
@@ -96,7 +100,7 @@ const MessagesPage = () => {
     return c.name.toLowerCase().includes(q) || c.institution.toLowerCase().includes(q);
   });
 
-  const activeConvo = sampleConversations.find((c) => c.id === activeId) || null;
+  const activeConvo = conversations.find((c) => c.id === activeId) || null;
 
   const handleSelect = (id: string) => {
     setActiveId(id);
@@ -106,8 +110,37 @@ const MessagesPage = () => {
   const getInitials = (name: string) =>
     name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
 
-  const requestCount = sampleConversations.filter((c) => c.status === "request").length;
-  const unreadTotal = sampleConversations.reduce((sum, c) => sum + c.unread, 0);
+  const requestCount = conversations.filter((c) => c.status === "request").length;
+  const unreadTotal = conversations.reduce((sum, c) => sum + c.unread, 0);
+
+  const handleAcceptRequest = (id: string) => {
+    setConversations(prev => prev.map(c => c.id === id ? { ...c, status: "active" as const } : c));
+    toast.success("Message request accepted!");
+  };
+
+  const handleIgnoreRequest = (id: string) => {
+    setConversations(prev => prev.filter(c => c.id !== id));
+    setActiveId(conversations.find(c => c.id !== id)?.id || "c1");
+    toast.success("Message request ignored.");
+  };
+
+  const handleSendMessage = () => {
+    if (!newMessage.trim() || !activeConvo) return;
+    setConversations(prev => prev.map(c =>
+      c.id === activeConvo.id
+        ? { ...c, messages: [...c.messages, { sender: "me" as const, text: newMessage, time: new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) }], lastMessage: newMessage }
+        : c
+    ));
+    setNewMessage("");
+  };
+
+  const handleConnect = () => {
+    toast.success(`Connection request sent to ${activeConvo?.name}`);
+  };
+
+  const handleCollaborate = () => {
+    navigate("/dashboard/network");
+  };
 
   return (
     <DashboardLayout>
@@ -251,8 +284,8 @@ const MessagesPage = () => {
                           <span className="font-semibold">{activeConvo.name}</span> wants to start a conversation with you.
                         </p>
                         <div className="flex gap-2 justify-center">
-                          <Button variant="afrika" size="sm">Accept</Button>
-                          <Button variant="outline" size="sm">Ignore</Button>
+                          <Button variant="afrika" size="sm" onClick={() => handleAcceptRequest(activeConvo.id)}>Accept</Button>
+                          <Button variant="outline" size="sm" onClick={() => handleIgnoreRequest(activeConvo.id)}>Ignore</Button>
                         </div>
                       </div>
                     )}
@@ -283,10 +316,11 @@ const MessagesPage = () => {
                       <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                         placeholder="Write a message..."
                         className="flex-1"
                       />
-                      <Button variant="afrika" size="sm" disabled={!newMessage.trim()}>
+                      <Button variant="afrika" size="sm" disabled={!newMessage.trim()} onClick={handleSendMessage}>
                         <Send className="h-4 w-4" />
                       </Button>
                     </div>
@@ -331,21 +365,25 @@ const MessagesPage = () => {
 
                   {/* Actions */}
                   <div className="space-y-2">
-                    <Button variant="afrika" size="sm" className="w-full gap-1.5 text-xs">
-                      <User className="h-3 w-3" /> View Profile
-                    </Button>
-                    <Button variant="afrikaOutline" size="sm" className="w-full gap-1.5 text-xs">
-                      <ExternalLink className="h-3 w-3" /> View Publications
-                    </Button>
+                    <Link to={`/dashboard/researcher?user=${encodeURIComponent(activeConvo.name)}`}>
+                      <Button variant="afrika" size="sm" className="w-full gap-1.5 text-xs">
+                        <User className="h-3 w-3" /> View Profile
+                      </Button>
+                    </Link>
+                    <Link to="/dashboard/my-papers">
+                      <Button variant="afrikaOutline" size="sm" className="w-full gap-1.5 text-xs">
+                        <ExternalLink className="h-3 w-3" /> View Publications
+                      </Button>
+                    </Link>
                   </div>
 
                   {/* Quick Actions */}
                   <div className="border-t border-border pt-4 space-y-2">
                     <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quick Actions</p>
-                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start">
+                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start" onClick={handleConnect}>
                       <Users className="h-3 w-3" /> Connect
                     </Button>
-                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start">
+                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start" onClick={handleCollaborate}>
                       <Handshake className="h-3 w-3" /> Collaborate
                     </Button>
                   </div>
