@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users, FileText, Handshake, CheckCircle, ArrowRight, Building2, Search, Plus,
-  TrendingUp, MessageCircle, Calendar, Briefcase, ClipboardList,
 } from "lucide-react";
 import { useInstitutional } from "@/hooks/useInstitutional";
 
