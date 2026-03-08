@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      academic_credentials: {
+        Row: {
+          created_at: string
+          degree: string
+          field_of_study: string
+          id: string
+          university: string
+          user_id: string
+          year_of_graduation: number | null
+        }
+        Insert: {
+          created_at?: string
+          degree: string
+          field_of_study: string
+          id?: string
+          university: string
+          user_id: string
+          year_of_graduation?: number | null
+        }
+        Update: {
+          created_at?: string
+          degree?: string
+          field_of_study?: string
+          id?: string
+          university?: string
+          user_id?: string
+          year_of_graduation?: number | null
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -101,36 +131,111 @@ export type Database = {
       }
       profiles: {
         Row: {
+          academic_title: string | null
+          available_for_collaboration: boolean | null
           avatar_url: string | null
           bio: string | null
+          collaboration_description: string | null
+          country: string | null
           created_at: string
+          department: string | null
           discipline: string | null
           display_name: string | null
           id: string
           institution: string | null
+          position: string | null
+          profile_visibility: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          academic_title?: string | null
+          available_for_collaboration?: boolean | null
           avatar_url?: string | null
           bio?: string | null
+          collaboration_description?: string | null
+          country?: string | null
           created_at?: string
+          department?: string | null
           discipline?: string | null
           display_name?: string | null
           id?: string
           institution?: string | null
+          position?: string | null
+          profile_visibility?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          academic_title?: string | null
+          available_for_collaboration?: boolean | null
           avatar_url?: string | null
           bio?: string | null
+          collaboration_description?: string | null
+          country?: string | null
           created_at?: string
+          department?: string | null
           discipline?: string | null
           display_name?: string | null
           id?: string
           institution?: string | null
+          position?: string | null
+          profile_visibility?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      publications: {
+        Row: {
+          created_at: string
+          id: string
+          journal: string | null
+          pdf_url: string | null
+          status: string
+          title: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          journal?: string | null
+          pdf_url?: string | null
+          status?: string
+          title: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          journal?: string | null
+          pdf_url?: string | null
+          status?: string
+          title?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
+      research_interests: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
           user_id?: string
         }
         Relationships: []
