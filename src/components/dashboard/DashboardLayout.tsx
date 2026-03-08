@@ -99,48 +99,16 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Research Intelligence",
-    collapsible: true,
-    requiredModule: "research_intelligence",
-    requiresSubscription: true,
-    items: [
-      { title: "Journals", url: "/dashboard/intelligence?tab=journals", icon: Compass },
-      { title: "Conferences", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
-      { title: "Research Trends", url: "/dashboard/intelligence?tab=trends", icon: TrendingUp },
-      { title: "Research Gaps", url: "/dashboard/intelligence?tab=gaps", icon: Search },
-      { title: "Stakeholders", url: "/dashboard/intelligence?tab=stakeholders", icon: Users2 },
-    ],
-  },
-  {
-    label: "Publeesh AI",
+    label: "Research Intelligence (Publeesh)",
     collapsible: true,
     requiredModule: "publeesh_ai",
+    requiresSubscription: true,
     items: [
       { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
       { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
-    ],
-  },
-  {
-    label: "Instrument Studio",
-    collapsible: true,
-    requiredModule: "instrument_studio",
-    requiredRoles: RESEARCH_ROLES,
-    items: [
-      { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
-      { title: "My Instruments", url: "/dashboard/instrument-studio/my", icon: FolderOpen },
-      { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
-    ],
-  },
-
-  // === ADMIN SECTIONS ===
-  {
-    label: "",
-    collapsible: false,
-    requiredRoles: ADMIN_ONLY,
-    items: [
-      { title: "Institution Requests", url: "/dashboard/institution-requests", icon: Building2 },
-      { title: "Admin Panel", url: "/dashboard/admin", icon: Shield },
+      { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
+      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
     ],
   },
 
@@ -149,7 +117,6 @@ const sidebarSections: SidebarSection[] = [
     label: "",
     collapsible: false,
     items: [
-      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
       { title: "Settings", url: "/dashboard/settings", icon: Settings },
     ],
   },
