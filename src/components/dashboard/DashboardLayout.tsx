@@ -1,11 +1,13 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock } from "lucide-react";
+import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles } from "lucide-react";
 import {
   LayoutDashboard, FileText, FilePlus, Database, BarChart3,
-  Compass, CalendarClock, Users2, Search, Send, ClipboardList,
+  Compass, CalendarClock, Users2, Send, ClipboardList,
   MessageCircle, CreditCard, Settings, TrendingUp,
   Lightbulb, Presentation, PlusCircle, FolderOpen,
+  BookOpen, Globe, Handshake, Building2, User, Shield,
+  Briefcase, Library,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -27,6 +29,7 @@ import { NavLink } from "@/components/NavLink";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 import { useAuth, AppRole } from "@/contexts/AuthContext";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Input } from "@/components/ui/input";
 
 interface SidebarItem {
   title: string;
@@ -42,10 +45,10 @@ interface SidebarSection {
   requiredRoles?: AppRole[];
 }
 
-// Role access definitions
-const FULL_ACCESS: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
+const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
 const RESEARCH_ROLES: AppRole[] = ["researcher", "institutional_admin"];
 const NON_STUDENT: AppRole[] = ["researcher", "reviewer", "institutional_admin"];
+const ADMIN_ONLY: AppRole[] = ["institutional_admin"];
 
 const sidebarSections: SidebarSection[] = [
   {
@@ -63,31 +66,32 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Data & Analysis",
-    collapsible: true,
-    items: [
-      { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
-      { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
-    ],
-  },
-  {
     label: "Publishing",
     collapsible: true,
     requiredRoles: NON_STUDENT,
     items: [
-      { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send, requiredRoles: NON_STUDENT },
-      { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList, requiredRoles: NON_STUDENT },
+      { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
+      { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList },
     ],
   },
   {
-    label: "Intelligence Hub",
+    label: "Research Intelligence",
     collapsible: true,
     items: [
       { title: "Journals", url: "/dashboard/intelligence?tab=journals", icon: Compass },
       { title: "Conferences", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
-      { title: "Stakeholders", url: "/dashboard/intelligence?tab=stakeholders", icon: Users2 },
+      { title: "Research Trends", url: "/dashboard/intelligence?tab=trends", icon: TrendingUp },
       { title: "Research Gaps", url: "/dashboard/intelligence?tab=gaps", icon: Search },
-      { title: "Trends", url: "/dashboard/intelligence?tab=trends", icon: TrendingUp },
+      { title: "Stakeholders", url: "/dashboard/intelligence?tab=stakeholders", icon: Users2 },
+    ],
+  },
+  {
+    label: "Publeesh AI",
+    collapsible: true,
+    items: [
+      { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
+      { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
+      { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
     ],
   },
   {
@@ -95,8 +99,8 @@ const sidebarSections: SidebarSection[] = [
     collapsible: true,
     requiredRoles: RESEARCH_ROLES,
     items: [
-      { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle, requiredRoles: RESEARCH_ROLES },
-      { title: "My Instruments", url: "/dashboard/instrument-studio/my", icon: FolderOpen, requiredRoles: RESEARCH_ROLES },
+      { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
+      { title: "My Instruments", url: "/dashboard/instrument-studio/my", icon: FolderOpen },
       { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
     ],
   },
@@ -105,6 +109,25 @@ const sidebarSections: SidebarSection[] = [
     collapsible: false,
     items: [
       { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+      { title: "Library", url: "/dashboard/library", icon: BookOpen },
+      { title: "Network", url: "/dashboard/network", icon: Globe },
+    ],
+  },
+  {
+    label: "",
+    collapsible: false,
+    requiredRoles: ADMIN_ONLY,
+    items: [
+      { title: "Institution Requests", url: "/dashboard/institution-requests", icon: Building2 },
+      { title: "Admin Panel", url: "/dashboard/admin", icon: Shield },
+    ],
+  },
+  {
+    label: "",
+    collapsible: false,
+    items: [
+      { title: "Messages", url: "/dashboard/messages", icon: MessagesIcon },
+      { title: "Profile", url: "/dashboard/profile", icon: User },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
       { title: "Settings", url: "/dashboard/settings", icon: Settings },
     ],
@@ -113,7 +136,7 @@ const sidebarSections: SidebarSection[] = [
 
 function canAccess(role: AppRole | null, requiredRoles?: AppRole[]): boolean {
   if (!requiredRoles) return true;
-  if (!role) return false;
+  if (!role) return true; // allow access if no role loaded yet
   return requiredRoles.includes(role);
 }
 
@@ -173,9 +196,7 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
                             <Lock className="h-3 w-3 ml-auto" />
                           </div>
                         </TooltipTrigger>
-                        <TooltipContent side="right">
-                          <p className="text-xs">Upgrade your role to access this feature</p>
-                        </TooltipContent>
+                        <TooltipContent side="right"><p className="text-xs">Upgrade your role to access</p></TooltipContent>
                       </Tooltip>
                     </SidebarMenuItem>
                   );
@@ -184,14 +205,10 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <Link
-                        to={item.url}
+                      <Link to={item.url}
                         className={`flex items-center text-[13px] py-1.5 px-2 rounded-md transition-colors ${
-                          active
-                            ? "bg-sidebar-accent text-accent font-semibold"
-                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                        }`}
-                      >
+                          active ? "bg-sidebar-accent text-accent font-semibold" : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                        }`}>
                         <item.icon className="h-4 w-4 mr-2 shrink-0" />
                         {!collapsed && <span>{item.title}</span>}
                       </Link>
@@ -214,31 +231,29 @@ function AppSidebar() {
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
-
   const roleLabelMap: Record<string, string> = {
-    researcher: "Researcher",
-    student: "Student",
-    reviewer: "Reviewer",
-    institutional_admin: "Admin",
+    researcher: "Researcher", student: "Student", reviewer: "Reviewer", institutional_admin: "Admin",
   };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
-        {!collapsed && (
+        {!collapsed ? (
           <Link to="/" className="flex items-center gap-1">
             <span className="text-lg font-bold">
               <span className="text-accent">Afrika</span>
               <span className="text-sidebar-foreground">Scholar</span>
             </span>
           </Link>
-        )}
-        {collapsed && (
+        ) : (
           <span className="text-lg font-bold text-accent mx-auto">A</span>
         )}
       </div>
       <SidebarContent className="pt-2 overflow-y-auto">
         {sidebarSections.map((section, gi) => {
+          // Hide entire section if role doesn't match
+          if (section.requiredRoles && !canAccess(role, section.requiredRoles)) return null;
+
           if (section.collapsible && section.label) {
             return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} />;
           }
@@ -254,12 +269,9 @@ function AppSidebar() {
                   {section.items.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
-                        <NavLink
-                          to={item.url}
-                          end={item.url === "/dashboard"}
+                        <NavLink to={item.url} end={item.url === "/dashboard"}
                           className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-[13px] py-1.5"
-                          activeClassName="bg-sidebar-accent text-accent font-semibold"
-                        >
+                          activeClassName="bg-sidebar-accent text-accent font-semibold">
                           <item.icon className="h-4 w-4 mr-2 shrink-0" />
                           {!collapsed && <span>{item.title}</span>}
                         </NavLink>
@@ -274,15 +286,13 @@ function AppSidebar() {
       </SidebarContent>
       {!collapsed && (
         <div className="mt-auto border-t border-sidebar-border p-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">
-              {initial}
-            </div>
+          <Link to="/dashboard/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">{initial}</div>
             <div className="text-xs">
               <p className="font-semibold text-sidebar-foreground">{displayName}</p>
               <p className="text-sidebar-foreground/50">{role ? roleLabelMap[role] || role : "Free"}</p>
             </div>
-          </div>
+          </Link>
         </div>
       )}
     </Sidebar>
@@ -291,6 +301,7 @@ function AppSidebar() {
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [showLogout, setShowLogout] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState("");
   const navigate = useNavigate();
   const { profile, role, signOut } = useAuth();
 
@@ -309,14 +320,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <AppSidebar />
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-16 flex items-center justify-between border-b border-border bg-background px-4 lg:px-6 sticky top-0 z-30">
-            <SidebarTrigger className="mr-2" />
+            <div className="flex items-center gap-3">
+              <SidebarTrigger />
+              {/* Global Search */}
+              <div className="relative hidden md:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search..." value={globalSearch} onChange={(e) => setGlobalSearch(e.target.value)}
+                  className="pl-9 w-64 h-9 text-sm" />
+              </div>
+            </div>
             <div className="flex items-center gap-3 ml-auto">
               <Link to="/dashboard/billing" className="text-xs font-medium text-accent hover:underline hidden sm:block">
-                Pro Credits: 55
+                AI Credits: 55
               </Link>
-              <Badge variant="outline" className="text-xs font-medium border-accent text-accent capitalize">
-                {role || "Free"}
-              </Badge>
               <Link to="/dashboard/messages" className="relative">
                 <MessagesIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-[10px] flex items-center justify-center font-bold">1</span>
@@ -324,25 +340,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <NotificationsPanel />
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
-                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
-                    {initial}
-                  </div>
+                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">{initial}</div>
                   <ChevronDown className="h-3 w-3 text-muted-foreground" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild><Link to="/dashboard/profile">My Profile</Link></DropdownMenuItem>
                   <DropdownMenuItem asChild><Link to="/dashboard/settings">Settings</Link></DropdownMenuItem>
-                  <DropdownMenuItem asChild><Link to="/dashboard/billing">Billing</Link></DropdownMenuItem>
-                  <DropdownMenuItem asChild><Link to="/dashboard/messages">Messages</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/dashboard/billing">Subscription</Link></DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setShowLogout(true)} className="text-destructive">
-                    <LogOut className="h-3 w-3 mr-2" /> Sign Out
+                    <LogOut className="h-3 w-3 mr-2" /> Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
           </header>
-          <main className="flex-1 overflow-auto p-4 lg:p-8">
-            {children}
-          </main>
+          <main className="flex-1 overflow-auto p-4 lg:p-8">{children}</main>
         </div>
       </div>
 

@@ -29,6 +29,11 @@ import AISlideBuilder from "./pages/dashboard/AISlideBuilder";
 import SettingsPage from "./pages/dashboard/SettingsPage";
 import BillingPage from "./pages/dashboard/BillingPage";
 import MessagesPage from "./pages/dashboard/MessagesPage";
+import LibraryPage from "./pages/dashboard/LibraryPage";
+import NetworkPage from "./pages/dashboard/NetworkPage";
+import InstitutionRequestsPage from "./pages/dashboard/InstitutionRequestsPage";
+import ProfilePage from "./pages/dashboard/ProfilePage";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -61,6 +66,7 @@ const App = () => (
             <Route path="/auth/verify-email" element={<VerifyEmail />} />
             <Route path="/auth/onboarding" element={<Onboarding />} />
 
+            {/* Dashboard - All authenticated users */}
             <Route path="/dashboard" element={<P><Dashboard /></P>} />
             <Route path="/dashboard/generate-paper" element={<P><GeneratePaper /></P>} />
             <Route path="/dashboard/my-papers" element={<P><MyPapers /></P>} />
@@ -77,11 +83,17 @@ const App = () => (
             <Route path="/dashboard/billing" element={<P><BillingPage /></P>} />
             <Route path="/dashboard/settings" element={<P><SettingsPage /></P>} />
             <Route path="/dashboard/messages" element={<P><MessagesPage /></P>} />
+            <Route path="/dashboard/library" element={<P><LibraryPage /></P>} />
+            <Route path="/dashboard/network" element={<P><NetworkPage /></P>} />
+            <Route path="/dashboard/profile" element={<P><ProfilePage /></P>} />
+
+            {/* Institution / Admin routes */}
+            <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
+            <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={["institutional_admin"]}><AdminDashboard /></ProtectedRoute>} />
 
             {/* Legacy redirects */}
             <Route path="/dashboard/publeesh" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard/publishing" element={<Navigate to="/dashboard/publishing/submit" replace />} />
-            <Route path="/dashboard/network" element={<Navigate to="/dashboard/community" replace />} />
             <Route path="/dashboard/datasets" element={<Navigate to="/dashboard/data/explorer" replace />} />
             <Route path="/dashboard/analyzer" element={<Navigate to="/dashboard/data/analyzer" replace />} />
             <Route path="/dashboard/intelligence/journals" element={<Navigate to="/dashboard/intelligence?tab=journals" replace />} />
