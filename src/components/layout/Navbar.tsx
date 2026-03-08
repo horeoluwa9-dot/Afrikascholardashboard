@@ -28,11 +28,8 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-primary-foreground shadow-sm border-b border-border">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-1">
-          <span className="text-xl font-bold">
-            <span className="text-afrika-orange">Afrika</span>
-            <span className="text-primary">scholar</span>
-          </span>
+        <Link to="/" className="flex items-center">
+          <img src={afrikaLogo} alt="Afrika Scholar" className="h-8" />
         </Link>
 
         {/* Desktop Nav */}
