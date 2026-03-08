@@ -5,16 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import {
   BookOpen, Download, Search, FileText, List, FolderOpen,
-  Plus, Trash2, Pencil, ExternalLink, Share2, ChevronRight,
-  BookMarked, Clock, ArrowLeft, Bookmark, X,
+  Plus, Trash2, Pencil, ExternalLink, ChevronRight,
+  BookMarked, ArrowLeft, Bookmark, Eye, X,
 } from "lucide-react";
-import { useLibrary, type ReadingListItem } from "@/hooks/useLibrary";
+import { useLibrary, type ReadingListItem, type PurchasedPaper, type SavedArticle } from "@/hooks/useLibrary";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 
 const tabs = [
@@ -25,17 +28,29 @@ const tabs = [
   { key: "lists", label: "Reading Lists", icon: List },
 ];
 
+// ---- Shared paper type for actions ----
+interface PaperInfo {
+  title: string;
+  authors?: string | null;
+  journal?: string | null;
+  year?: number | null;
+  source_url?: string | null;
+  pdf_url?: string | null;
+}
+
 const LibraryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "overview";
   const listId = searchParams.get("list");
   const setActiveTab = (tab: string) => setSearchParams({ tab });
 
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [search, setSearch] = useState("");
   const {
     purchased, saved, downloads, readingLists, loading, hasActivity,
-    removeSavedArticle, createReadingList, deleteReadingList, updateReadingList,
-    getListItems, addToReadingList, removeFromReadingList,
+    saveArticle, removeSavedArticle, createReadingList, deleteReadingList, updateReadingList,
+    getListItems, addToReadingList, removeFromReadingList, refetch,
   } = useLibrary();
 
   // Reading list detail state
@@ -48,6 +63,12 @@ const LibraryPage = () => {
   const [editListDialog, setEditListDialog] = useState(false);
   const [listForm, setListForm] = useState({ name: "", description: "" });
   const [saving, setSaving] = useState(false);
+
+  // Read modal
+  const [readPaper, setReadPaper] = useState<PaperInfo | null>(null);
+
+  // Add to list picker
+  const [addToListPaper, setAddToListPaper] = useState<PaperInfo | null>(null);
 
   // Load list items when viewing a specific list
   useEffect(() => {
@@ -64,6 +85,105 @@ const LibraryPage = () => {
 
   const filterBySearch = (title: string) =>
     !search || title.toLowerCase().includes(search.toLowerCase());
+
+  // ---- Action handlers ----
+  const handleRead = (paper: PaperInfo) => {
+    setReadPaper(paper);
+  };
+
+  const handleDownloadPdf = async (paper: PaperInfo) => {
+    if (!user) return;
+    // Record in download_history
+    await supabase.from("download_history").insert({
+      user_id: user.id,
+      title: paper.title,
+      journal: paper.journal || null,
+      file_type: "PDF",
+    } as any);
+    // If there's a real PDF URL, open it
+    if (paper.pdf_url) {
+      window.open(paper.pdf_url, "_blank");
+    } else {
+      // Generate a placeholder text file download
+      const content = `${paper.title}\n\n${paper.authors ? "Authors: " + paper.authors : ""}\n${paper.journal ? "Journal: " + paper.journal : ""}\n${paper.year ? "Year: " + paper.year : ""}\n\n[Full PDF content would appear here in production.]`;
+      const blob = new Blob([content], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${paper.title.replace(/[^a-zA-Z0-9 ]/g, "").slice(0, 50)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    toast({ title: "Download started", description: `${paper.title}` });
+    refetch();
+  };
+
+  const handleSaveArticle = async (paper: PaperInfo) => {
+    // Check if already saved
+    const alreadySaved = saved.some(s => s.title === paper.title);
+    if (alreadySaved) {
+      toast({ title: "Already saved", description: "This article is already in your saved collection." });
+      return;
+    }
+    await saveArticle({
+      title: paper.title,
+      authors: paper.authors || null,
+      journal: paper.journal || null,
+      year: paper.year || null,
+      source_url: paper.source_url || paper.pdf_url || null,
+    });
+  };
+
+  const handleAddToList = (paper: PaperInfo) => {
+    if (readingLists.length === 0) {
+      toast({ title: "No reading lists", description: "Create a reading list first." });
+      setListForm({ name: "", description: "" });
+      setCreateListDialog(true);
+      return;
+    }
+    setAddToListPaper(paper);
+  };
+
+  const handlePickList = async (listId: string) => {
+    if (!addToListPaper) return;
+    await addToReadingList(listId, {
+      title: addToListPaper.title,
+      authors: addToListPaper.authors || undefined,
+      journal: addToListPaper.journal || undefined,
+      year: addToListPaper.year || undefined,
+    });
+    setAddToListPaper(null);
+  };
+
+  // ---- Reusable action buttons ----
+  const ActionButtons = ({ paper, showSave = true, showAddToList = true, extra }: {
+    paper: PaperInfo;
+    showSave?: boolean;
+    showAddToList?: boolean;
+    extra?: React.ReactNode;
+  }) => (
+    <div className="flex gap-1 shrink-0 flex-wrap">
+      <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => handleRead(paper)}>
+        <Eye className="h-3 w-3" /> Read
+      </Button>
+      <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => handleDownloadPdf(paper)}>
+        <Download className="h-3 w-3" /> PDF
+      </Button>
+      {showSave && (
+        <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => handleSaveArticle(paper)}>
+          <BookMarked className="h-3 w-3" /> Save
+        </Button>
+      )}
+      {showAddToList && (
+        <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => handleAddToList(paper)}>
+          <List className="h-3 w-3" /> Add to List
+        </Button>
+      )}
+      {extra}
+    </div>
+  );
 
   // === READING LIST DETAIL VIEW ===
   if (listId) {
@@ -107,14 +227,17 @@ const LibraryPage = () => {
                       {item.year && <><span>·</span><span>{item.year}</span></>}
                     </div>
                   </div>
-                  <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" className="h-8 w-8"><ExternalLink className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8"><Download className="h-3.5 w-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:text-destructive"
-                      onClick={() => removeFromReadingList(item.id)}>
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
+                  <ActionButtons
+                    paper={{ title: item.title, authors: item.authors, journal: item.journal, year: item.year }}
+                    showSave={true}
+                    showAddToList={false}
+                    extra={
+                      <Button variant="ghost" size="sm" className="text-xs gap-1 hover:text-destructive"
+                        onClick={() => removeFromReadingList(item.id)}>
+                        <Trash2 className="h-3 w-3" /> Remove
+                      </Button>
+                    }
+                  />
                 </div>
               ))}
             </div>
@@ -126,6 +249,10 @@ const LibraryPage = () => {
             </div>
           )}
         </div>
+
+        {/* Shared dialogs rendered inside list detail too */}
+        <ReadModal paper={readPaper} onClose={() => setReadPaper(null)} onDownload={handleDownloadPdf} onSave={handleSaveArticle} onAddToList={handleAddToList} />
+        <AddToListDialog paper={addToListPaper} lists={readingLists} onPick={handlePickList} onClose={() => setAddToListPaper(null)} />
       </DashboardLayout>
     );
   }
@@ -172,7 +299,6 @@ const LibraryPage = () => {
             {[1, 2, 3].map(i => <div key={i} className="h-24 bg-card rounded-xl border border-border animate-pulse" />)}
           </div>
         ) : !hasActivity && activeTab === "overview" ? (
-          /* Empty state */
           <div className="bg-card rounded-xl border border-border p-16 text-center">
             <BookOpen className="h-14 w-14 mx-auto text-muted-foreground/30 mb-4" />
             <h2 className="text-lg font-bold text-foreground mb-2">Your research library is empty</h2>
@@ -183,11 +309,6 @@ const LibraryPage = () => {
               <Link to="/dashboard/intelligence">
                 <Button variant="afrika" size="sm" className="gap-1.5">
                   <Search className="h-3.5 w-3.5" /> Explore Research Intelligence
-                </Button>
-              </Link>
-              <Link to="/dashboard/intelligence?tab=journals">
-                <Button variant="afrikaOutline" size="sm" className="gap-1.5">
-                  <BookOpen className="h-3.5 w-3.5" /> Browse Journals
                 </Button>
               </Link>
               <Button variant="outline" size="sm" className="gap-1.5" onClick={() => {
@@ -203,7 +324,6 @@ const LibraryPage = () => {
             {/* OVERVIEW TAB */}
             {activeTab === "overview" && (
               <div className="space-y-6">
-                {/* Summary cards */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
                     { label: "Purchased Papers", count: purchased.length, icon: FileText, color: "text-accent" },
@@ -221,23 +341,19 @@ const LibraryPage = () => {
                   ))}
                 </div>
 
-                {/* Recently Accessed */}
                 <div>
                   <h2 className="text-base font-bold text-foreground mb-3">Recently Accessed</h2>
                   {[...purchased.slice(0, 2), ...saved.slice(0, 2)].length > 0 ? (
                     <div className="space-y-3">
-                      {[...purchased.slice(0, 2).map(p => ({ title: p.title, journal: p.journal, type: "purchased" as const })),
-                        ...saved.slice(0, 2).map(s => ({ title: s.title, journal: s.journal, type: "saved" as const })),
+                      {[...purchased.slice(0, 2).map(p => ({ title: p.title, authors: p.authors, journal: p.journal, year: p.year, pdf_url: p.pdf_url, source_url: null as string | null })),
+                        ...saved.slice(0, 2).map(s => ({ title: s.title, authors: s.authors, journal: s.journal, year: s.year, pdf_url: null as string | null, source_url: s.source_url })),
                       ].map((item, i) => (
                         <div key={i} className="bg-card rounded-xl border border-border p-4 flex items-center justify-between gap-4">
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm font-semibold text-foreground truncate">{item.title}</h3>
                             {item.journal && <p className="text-xs text-muted-foreground mt-0.5">{item.journal}</p>}
                           </div>
-                          <div className="flex gap-1 shrink-0">
-                            <Button variant="ghost" size="sm" className="text-xs gap-1"><ExternalLink className="h-3 w-3" /> Read</Button>
-                            <Button variant="ghost" size="sm" className="text-xs gap-1"><Download className="h-3 w-3" /> PDF</Button>
-                          </div>
+                          <ActionButtons paper={item} />
                         </div>
                       ))}
                     </div>
@@ -265,18 +381,13 @@ const LibraryPage = () => {
                           {paper.access_status}
                         </Badge>
                       </div>
-                      <div className="flex gap-1 shrink-0">
-                        <Button variant="ghost" size="sm" className="text-xs gap-1"><ExternalLink className="h-3 w-3" /> Read</Button>
-                        <Button variant="ghost" size="sm" className="text-xs gap-1"><Download className="h-3 w-3" /> PDF</Button>
-                        <Button variant="ghost" size="sm" className="text-xs gap-1"><BookMarked className="h-3 w-3" /> Save</Button>
-                      </div>
+                      <ActionButtons paper={{ title: paper.title, authors: paper.authors, journal: paper.journal, year: paper.year, pdf_url: paper.pdf_url }} />
                     </div>
                   ))
                 ) : (
                   <div className="bg-card rounded-xl border border-border p-12 text-center">
                     <FileText className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
                     <p className="text-muted-foreground">No purchased papers yet.</p>
-                    <p className="text-xs text-muted-foreground mt-1">Papers you purchase will appear here.</p>
                   </div>
                 )}
               </div>
@@ -296,14 +407,16 @@ const LibraryPage = () => {
                           {article.year && <><span>·</span><span>{article.year}</span></>}
                         </div>
                       </div>
-                      <div className="flex gap-1 shrink-0">
-                        <Button variant="ghost" size="sm" className="text-xs gap-1"><ExternalLink className="h-3 w-3" /> Read</Button>
-                        <Button variant="ghost" size="sm" className="text-xs gap-1 hover:text-destructive"
-                          onClick={() => removeSavedArticle(article.id)}>
-                          <Trash2 className="h-3 w-3" /> Remove
-                        </Button>
-                        <Button variant="ghost" size="sm" className="text-xs gap-1"><BookMarked className="h-3 w-3" /> Add to List</Button>
-                      </div>
+                      <ActionButtons
+                        paper={{ title: article.title, authors: article.authors, journal: article.journal, year: article.year, source_url: article.source_url }}
+                        showSave={false}
+                        extra={
+                          <Button variant="ghost" size="sm" className="text-xs gap-1 hover:text-destructive"
+                            onClick={() => removeSavedArticle(article.id)}>
+                            <Trash2 className="h-3 w-3" /> Remove
+                          </Button>
+                        }
+                      />
                     </div>
                   ))
                 ) : (
@@ -323,20 +436,35 @@ const LibraryPage = () => {
               <div>
                 {downloads.filter(d => filterBySearch(d.title)).length > 0 ? (
                   <div className="bg-card rounded-xl border border-border overflow-hidden">
-                    <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 p-4 bg-secondary/50 border-b border-border text-xs font-semibold text-muted-foreground">
+                    <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 p-4 bg-secondary/50 border-b border-border text-xs font-semibold text-muted-foreground">
                       <span>Paper Title</span>
                       <span>Journal</span>
                       <span>Date</span>
                       <span>Type</span>
+                      <span>Actions</span>
                     </div>
                     {downloads.filter(d => filterBySearch(d.title)).map(dl => (
-                      <div key={dl.id} className="grid grid-cols-[1fr_auto_auto_auto] gap-4 p-4 border-b border-border last:border-0 items-center">
+                      <div key={dl.id} className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-4 p-4 border-b border-border last:border-0 items-center">
                         <div>
                           <p className="text-sm font-medium text-foreground truncate">{dl.title}</p>
                         </div>
                         <span className="text-xs text-muted-foreground">{dl.journal || "—"}</span>
                         <span className="text-xs text-muted-foreground">{format(new Date(dl.downloaded_at), "dd MMM yyyy")}</span>
                         <Badge variant="outline" className="text-[10px]">{dl.file_type}</Badge>
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="sm" className="text-xs gap-1 h-7"
+                            onClick={() => handleRead({ title: dl.title, journal: dl.journal })}>
+                            <Eye className="h-3 w-3" />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-xs gap-1 h-7"
+                            onClick={() => handleDownloadPdf({ title: dl.title, journal: dl.journal })}>
+                            <Download className="h-3 w-3" />
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-xs gap-1 h-7"
+                            onClick={() => handleSaveArticle({ title: dl.title, journal: dl.journal })}>
+                            <BookMarked className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -455,8 +583,140 @@ const LibraryPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Read Paper Modal */}
+      <ReadModal paper={readPaper} onClose={() => setReadPaper(null)} onDownload={handleDownloadPdf} onSave={handleSaveArticle} onAddToList={handleAddToList} />
+
+      {/* Add to List Picker Dialog */}
+      <AddToListDialog paper={addToListPaper} lists={readingLists} onPick={handlePickList} onClose={() => setAddToListPaper(null)} />
     </DashboardLayout>
   );
 };
+
+// ---- Read Modal Component ----
+function ReadModal({ paper, onClose, onDownload, onSave, onAddToList }: {
+  paper: PaperInfo | null;
+  onClose: () => void;
+  onDownload: (p: PaperInfo) => void;
+  onSave: (p: PaperInfo) => void;
+  onAddToList: (p: PaperInfo) => void;
+}) {
+  if (!paper) return null;
+  return (
+    <Dialog open={!!paper} onOpenChange={() => onClose()}>
+      <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-serif leading-tight pr-6">{paper.title}</DialogTitle>
+        </DialogHeader>
+        <ScrollArea className="flex-1 -mx-6 px-6">
+          <div className="space-y-4 pb-4">
+            {/* Meta info */}
+            <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
+              {paper.authors && <span className="font-medium text-foreground">{paper.authors}</span>}
+              {paper.journal && (
+                <Badge variant="outline" className="text-[10px]">{paper.journal}</Badge>
+              )}
+              {paper.year && <span>{paper.year}</span>}
+            </div>
+
+            {/* Abstract / content placeholder */}
+            <div className="bg-secondary/30 rounded-lg p-6 border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-3">Abstract</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                This paper presents a comprehensive analysis of {paper.title?.toLowerCase()}. 
+                The study examines key findings from multiple research perspectives across the African continent, 
+                providing insights that contribute to the broader understanding of this field. 
+                The methodology employs both quantitative and qualitative approaches to ensure robust conclusions.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-3">
+                Key findings suggest significant implications for policy makers, researchers, and practitioners 
+                working in related domains. The paper recommends further investigation into emerging trends and 
+                cross-disciplinary collaboration to advance knowledge in this area.
+              </p>
+            </div>
+
+            {/* Keywords */}
+            <div>
+              <h3 className="text-xs font-semibold text-muted-foreground mb-2">Keywords</h3>
+              <div className="flex gap-1.5 flex-wrap">
+                {["African Research", "Policy", "Analysis", "Innovation"].map(kw => (
+                  <Badge key={kw} variant="secondary" className="text-[10px]">{kw}</Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </ScrollArea>
+
+        <div className="flex gap-2 pt-3 border-t border-border flex-wrap">
+          <Button variant="afrika" size="sm" className="gap-1.5" onClick={() => onDownload(paper)}>
+            <Download className="h-3.5 w-3.5" /> Download PDF
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => onSave(paper)}>
+            <BookMarked className="h-3.5 w-3.5" /> Save Article
+          </Button>
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => onAddToList(paper)}>
+            <List className="h-3.5 w-3.5" /> Add to List
+          </Button>
+          {(paper.source_url || paper.pdf_url) && (
+            <Button variant="ghost" size="sm" className="gap-1.5 ml-auto"
+              onClick={() => window.open(paper.source_url || paper.pdf_url!, "_blank")}>
+              <ExternalLink className="h-3.5 w-3.5" /> Open Source
+            </Button>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ---- Add to List Picker Dialog ----
+function AddToListDialog({ paper, lists, onPick, onClose }: {
+  paper: PaperInfo | null;
+  lists: { id: string; name: string; description: string | null; item_count?: number }[];
+  onPick: (listId: string) => void;
+  onClose: () => void;
+}) {
+  if (!paper) return null;
+  return (
+    <Dialog open={!!paper} onOpenChange={() => onClose()}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>Add to Reading List</DialogTitle>
+        </DialogHeader>
+        <p className="text-xs text-muted-foreground mb-3 truncate">{paper.title}</p>
+        <div className="space-y-2">
+          {lists.map(list => (
+            <button
+              key={list.id}
+              onClick={() => onPick(list.id)}
+              className="w-full text-left bg-secondary/50 hover:bg-secondary rounded-lg p-3 border border-border transition-colors"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">{list.name}</p>
+                  <p className="text-[10px] text-muted-foreground">{list.item_count || 0} papers</p>
+                </div>
+                <FolderOpen className="h-4 w-4 text-accent" />
+              </div>
+            </button>
+          ))}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" size="sm" onClick={onClose}>Cancel</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Needed for AddToListDialog's FolderOpen icon
+interface PaperInfo {
+  title: string;
+  authors?: string | null;
+  journal?: string | null;
+  year?: number | null;
+  source_url?: string | null;
+  pdf_url?: string | null;
+}
 
 export default LibraryPage;
