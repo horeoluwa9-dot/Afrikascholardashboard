@@ -41,8 +41,16 @@ const demoIssues = [
   },
 ];
 
+// Demo fallback journals
+const DEMO_JOURNALS = [
+  { id: "demo-j1", name: "African Journal of Public Health", description: "A leading journal for public health research across the African continent.", issn: "2456-7890", publisher: "Afrika Scholar Press", website_url: "https://ajph.example.com", created_by: "demo", created_at: "2025-06-01T00:00:00Z" },
+  { id: "demo-j2", name: "Journal of African Energy Studies", description: "Publishing cutting-edge research on energy policy, renewable technologies, and sustainability across Africa.", issn: "3456-7891", publisher: "Afrika Scholar Press", website_url: "https://jaes.example.com", created_by: "demo", created_at: "2025-09-15T00:00:00Z" },
+  { id: "demo-j3", name: "African Policy Research Review", description: "Peer-reviewed journal covering governance, public policy, and institutional development in Africa.", issn: "4567-8912", publisher: "Afrika Scholar Press", website_url: "https://aprr.example.com", created_by: "demo", created_at: "2025-03-01T00:00:00Z" },
+] as any[];
+
 const JournalManagement = () => {
-  const { myJournals, submissions, createJournal, getBoardMembers, addBoardMember, removeBoardMember } = usePublishing();
+  const { myJournals: dbMyJournals, submissions, createJournal, getBoardMembers, addBoardMember, removeBoardMember } = usePublishing();
+  const myJournals = dbMyJournals.length > 0 ? dbMyJournals : DEMO_JOURNALS;
   const { user } = useAuth();
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ name: "", description: "", issn: "", publisher: "", website_url: "" });
