@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,8 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Plus, Handshake, MessageCircle, Eye, Building2, Calendar, ArrowRight } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
+import { Plus, MessageCircle, Eye, Building2, Calendar } from "lucide-react";
 import { useInstitutional } from "@/hooks/useInstitutional";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 
@@ -75,11 +77,16 @@ const statusColors: Record<string, string> = {
 const ProjectCollaborationsPage = () => {
   const { collaborations, loading, createCollaboration } = useInstitutional();
   const { unlockModule } = useModuleUnlocksContext();
+  const navigate = useNavigate();
+
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({
     title: "", partner_institution: "", research_area: "", description: "", expected_duration: "", start_date: null as string | null,
   });
   const [saving, setSaving] = useState(false);
+
+  // View detail dialog
+  const [viewCollab, setViewCollab] = useState<CollabDisplay | null>(null);
 
   const displayCollabs: CollabDisplay[] = collaborations.length > 0
     ? collaborations.map(c => ({ ...c, description: c.description || null, expected_duration: c.expected_duration || null }))
@@ -149,14 +156,12 @@ const ProjectCollaborationsPage = () => {
                   </div>
 
                   <div className="flex gap-2 pt-1">
-                    <Button variant="outline" size="sm" className="gap-1 text-xs flex-1">
+                    <Button variant="outline" size="sm" className="gap-1 text-xs flex-1" onClick={() => setViewCollab(c)}>
                       <Eye className="h-3 w-3" /> View Project
                     </Button>
-                    <Link to="/dashboard/messages" className="flex-1">
-                      <Button variant="ghost" size="sm" className="gap-1 text-xs w-full">
-                        <MessageCircle className="h-3 w-3" /> Message Team
-                      </Button>
-                    </Link>
+                    <Button variant="ghost" size="sm" className="gap-1 text-xs flex-1" onClick={() => navigate("/dashboard/messages")}>
+                      <MessageCircle className="h-3 w-3" /> Message Team
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -164,11 +169,66 @@ const ProjectCollaborationsPage = () => {
           </div>
         )}
 
+        {/* View Detail Dialog */}
+        <Dialog open={!!viewCollab} onOpenChange={(open) => !open && setViewCollab(null)}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>{viewCollab?.title}</DialogTitle>
+              <DialogDescription>Collaboration details</DialogDescription>
+            </DialogHeader>
+            {viewCollab && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Partner Institution</p>
+                    <p className="text-sm font-medium text-foreground">{viewCollab.partner_institution}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Research Area</p>
+                    <p className="text-sm font-medium text-foreground">{viewCollab.research_area}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Expected Duration</p>
+                    <p className="text-sm font-medium text-foreground">{viewCollab.expected_duration || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Status</p>
+                    <Badge className={`text-[10px] ${statusColors[viewCollab.status] || statusColors.active}`}>
+                      {viewCollab.status.charAt(0).toUpperCase() + viewCollab.status.slice(1)}
+                    </Badge>
+                  </div>
+                  {viewCollab.start_date && (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Start Date</p>
+                      <p className="text-sm font-medium text-foreground">
+                        {new Date(viewCollab.start_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {viewCollab.description && (
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Description</p>
+                    <p className="text-sm text-foreground leading-relaxed">{viewCollab.description}</p>
+                  </div>
+                )}
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="ghost" size="sm" className="gap-1" onClick={() => { setViewCollab(null); navigate("/dashboard/messages"); }}>
+                <MessageCircle className="h-3 w-3" /> Message Team
+              </Button>
+              <Button variant="outline" onClick={() => setViewCollab(null)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Create Dialog */}
         <Dialog open={showCreate} onOpenChange={setShowCreate}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>Start Research Collaboration</DialogTitle>
+              <DialogDescription>Create a new collaborative research project.</DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
