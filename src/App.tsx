@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import PubleeshLanding from "./pages/PubleeshLanding";
 import PricingPage from "./pages/PricingPage";
 import Login from "./pages/auth/Login";
@@ -34,67 +36,73 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const P = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute>{children}</ProtectedRoute>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/publeesh" replace />} />
-          <Route path="/publeesh" element={<PubleeshLanding />} />
-          <Route path="/publeesh/pricing" element={<PricingPage />} />
-          <Route path="/publeesh/features" element={<Features />} />
-          <Route path="/publeesh/institutional-demo" element={<InstitutionalDemo />} />
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Navigate to="/publeesh" replace />} />
+            <Route path="/publeesh" element={<PubleeshLanding />} />
+            <Route path="/publeesh/pricing" element={<PricingPage />} />
+            <Route path="/publeesh/features" element={<Features />} />
+            <Route path="/publeesh/institutional-demo" element={<InstitutionalDemo />} />
 
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/signup" element={<Signup />} />
-          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-          <Route path="/auth/reset-password" element={<ResetPassword />} />
-          <Route path="/auth/verify-email" element={<VerifyEmail />} />
-          <Route path="/auth/onboarding" element={<Onboarding />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/signup" element={<Signup />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
+            <Route path="/auth/verify-email" element={<VerifyEmail />} />
+            <Route path="/auth/onboarding" element={<Onboarding />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/generate-paper" element={<GeneratePaper />} />
-          <Route path="/dashboard/my-papers" element={<MyPapers />} />
-          <Route path="/dashboard/pro-tip" element={<ProTip />} />
-          <Route path="/dashboard/data/explorer" element={<DatasetExplorer />} />
-          <Route path="/dashboard/data/analyzer" element={<DatasetAnalyzer />} />
-          <Route path="/dashboard/intelligence" element={<IntelligenceHub />} />
-          <Route path="/dashboard/publishing/submit" element={<SubmitManuscript />} />
-          <Route path="/dashboard/publishing/track" element={<TrackSubmissions />} />
-          <Route path="/dashboard/instrument-studio" element={<InstrumentStudio />} />
-          <Route path="/dashboard/instrument-studio/my" element={<MyInstruments />} />
-          <Route path="/dashboard/instrument-studio/slides" element={<AISlideBuilder />} />
-          <Route path="/dashboard/community" element={<CommunityPage />} />
-          <Route path="/dashboard/billing" element={<BillingPage />} />
-          <Route path="/dashboard/settings" element={<SettingsPage />} />
-          <Route path="/dashboard/messages" element={<MessagesPage />} />
+            <Route path="/dashboard" element={<P><Dashboard /></P>} />
+            <Route path="/dashboard/generate-paper" element={<P><GeneratePaper /></P>} />
+            <Route path="/dashboard/my-papers" element={<P><MyPapers /></P>} />
+            <Route path="/dashboard/pro-tip" element={<P><ProTip /></P>} />
+            <Route path="/dashboard/data/explorer" element={<P><DatasetExplorer /></P>} />
+            <Route path="/dashboard/data/analyzer" element={<P><DatasetAnalyzer /></P>} />
+            <Route path="/dashboard/intelligence" element={<P><IntelligenceHub /></P>} />
+            <Route path="/dashboard/publishing/submit" element={<P><SubmitManuscript /></P>} />
+            <Route path="/dashboard/publishing/track" element={<P><TrackSubmissions /></P>} />
+            <Route path="/dashboard/instrument-studio" element={<P><InstrumentStudio /></P>} />
+            <Route path="/dashboard/instrument-studio/my" element={<P><MyInstruments /></P>} />
+            <Route path="/dashboard/instrument-studio/slides" element={<P><AISlideBuilder /></P>} />
+            <Route path="/dashboard/community" element={<P><CommunityPage /></P>} />
+            <Route path="/dashboard/billing" element={<P><BillingPage /></P>} />
+            <Route path="/dashboard/settings" element={<P><SettingsPage /></P>} />
+            <Route path="/dashboard/messages" element={<P><MessagesPage /></P>} />
 
-          {/* Legacy redirects */}
-          <Route path="/dashboard/publeesh" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard/publishing" element={<Navigate to="/dashboard/publishing/submit" replace />} />
-          <Route path="/dashboard/network" element={<Navigate to="/dashboard/community" replace />} />
-          <Route path="/dashboard/datasets" element={<Navigate to="/dashboard/data/explorer" replace />} />
-          <Route path="/dashboard/analyzer" element={<Navigate to="/dashboard/data/analyzer" replace />} />
-          <Route path="/dashboard/intelligence/journals" element={<Navigate to="/dashboard/intelligence?tab=journals" replace />} />
-          <Route path="/dashboard/intelligence/conferences" element={<Navigate to="/dashboard/intelligence?tab=conferences" replace />} />
-          <Route path="/dashboard/intelligence/stakeholders" element={<Navigate to="/dashboard/intelligence?tab=stakeholders" replace />} />
-          <Route path="/dashboard/intelligence/gaps" element={<Navigate to="/dashboard/intelligence?tab=gaps" replace />} />
-          <Route path="/dashboard/notifications" element={<Navigate to="/dashboard" replace />} />
+            {/* Legacy redirects */}
+            <Route path="/dashboard/publeesh" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard/publishing" element={<Navigate to="/dashboard/publishing/submit" replace />} />
+            <Route path="/dashboard/network" element={<Navigate to="/dashboard/community" replace />} />
+            <Route path="/dashboard/datasets" element={<Navigate to="/dashboard/data/explorer" replace />} />
+            <Route path="/dashboard/analyzer" element={<Navigate to="/dashboard/data/analyzer" replace />} />
+            <Route path="/dashboard/intelligence/journals" element={<Navigate to="/dashboard/intelligence?tab=journals" replace />} />
+            <Route path="/dashboard/intelligence/conferences" element={<Navigate to="/dashboard/intelligence?tab=conferences" replace />} />
+            <Route path="/dashboard/intelligence/stakeholders" element={<Navigate to="/dashboard/intelligence?tab=stakeholders" replace />} />
+            <Route path="/dashboard/intelligence/gaps" element={<Navigate to="/dashboard/intelligence?tab=gaps" replace />} />
+            <Route path="/dashboard/notifications" element={<Navigate to="/dashboard" replace />} />
 
-          <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
+            <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
 
-          <Route path="/about" element={<PubleeshLanding />} />
-          <Route path="/publications" element={<PubleeshLanding />} />
-          <Route path="/network" element={<PubleeshLanding />} />
-          <Route path="/institution" element={<PubleeshLanding />} />
-          <Route path="/advisory" element={<PubleeshLanding />} />
-          <Route path="/publishing" element={<PubleeshLanding />} />
-          <Route path="/publishing/submit" element={<PubleeshLanding />} />
+            <Route path="/about" element={<PubleeshLanding />} />
+            <Route path="/publications" element={<PubleeshLanding />} />
+            <Route path="/network" element={<PubleeshLanding />} />
+            <Route path="/institution" element={<PubleeshLanding />} />
+            <Route path="/advisory" element={<PubleeshLanding />} />
+            <Route path="/publishing" element={<PubleeshLanding />} />
+            <Route path="/publishing/submit" element={<PubleeshLanding />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

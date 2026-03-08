@@ -1,10 +1,10 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronRight as ChevronRightIcon, LogOut, MessageCircle as MessagesIcon } from "lucide-react";
+import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock } from "lucide-react";
 import {
   LayoutDashboard, FileText, FilePlus, Database, BarChart3,
   Compass, CalendarClock, Users2, Search, Send, ClipboardList,
-  Wrench, MessageCircle, CreditCard, Settings, TrendingUp,
+  MessageCircle, CreditCard, Settings, TrendingUp,
   Lightbulb, Presentation, PlusCircle, FolderOpen,
 } from "lucide-react";
 import {
@@ -25,18 +25,27 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
+import { useAuth, AppRole } from "@/contexts/AuthContext";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface SidebarItem {
   title: string;
   url: string;
   icon: any;
+  requiredRoles?: AppRole[];
 }
 
 interface SidebarSection {
   label: string;
   collapsible: boolean;
   items: SidebarItem[];
+  requiredRoles?: AppRole[];
 }
+
+// Role access definitions
+const FULL_ACCESS: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
+const RESEARCH_ROLES: AppRole[] = ["researcher", "institutional_admin"];
+const NON_STUDENT: AppRole[] = ["researcher", "reviewer", "institutional_admin"];
 
 const sidebarSections: SidebarSection[] = [
   {
@@ -64,9 +73,10 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Publishing",
     collapsible: true,
+    requiredRoles: NON_STUDENT,
     items: [
-      { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
-      { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList },
+      { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send, requiredRoles: NON_STUDENT },
+      { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList, requiredRoles: NON_STUDENT },
     ],
   },
   {
@@ -83,9 +93,10 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Instrument Studio",
     collapsible: true,
+    requiredRoles: RESEARCH_ROLES,
     items: [
-      { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
-      { title: "My Instruments", url: "/dashboard/instrument-studio/my", icon: FolderOpen },
+      { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle, requiredRoles: RESEARCH_ROLES },
+      { title: "My Instruments", url: "/dashboard/instrument-studio/my", icon: FolderOpen, requiredRoles: RESEARCH_ROLES },
       { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
     ],
   },
@@ -100,17 +111,21 @@ const sidebarSections: SidebarSection[] = [
   },
 ];
 
-function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSection; collapsed: boolean }) {
+function canAccess(role: AppRole | null, requiredRoles?: AppRole[]): boolean {
+  if (!requiredRoles) return true;
+  if (!role) return false;
+  return requiredRoles.includes(role);
+}
+
+function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: SidebarSection; collapsed: boolean; userRole: AppRole | null }) {
   const location = useLocation();
   const isActive = section.items.some((item) => {
-    if (item.url.includes("?")) {
-      return location.pathname === item.url.split("?")[0];
-    }
+    if (item.url.includes("?")) return location.pathname === item.url.split("?")[0];
     return location.pathname === item.url || location.pathname.startsWith(item.url + "/");
   });
   const [open, setOpen] = useState(isActive);
+  const sectionLocked = !canAccess(userRole, section.requiredRoles);
 
-  // Determine which specific sub-item is active
   const getIsItemActive = (item: SidebarItem) => {
     if (item.url.includes("?")) {
       const [path, query] = item.url.split("?");
@@ -122,9 +137,7 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
       }
       return true;
     }
-    if (item.url === "/dashboard/instrument-studio") {
-      return location.pathname === item.url;
-    }
+    if (item.url === "/dashboard/instrument-studio") return location.pathname === item.url;
     return location.pathname === item.url || location.pathname.startsWith(item.url + "/");
   };
 
@@ -133,7 +146,10 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
       <SidebarGroup>
         <CollapsibleTrigger className="w-full">
           <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors font-semibold">
-            <span>{section.label}</span>
+            <span className="flex items-center gap-1.5">
+              {section.label}
+              {sectionLocked && <Lock className="h-2.5 w-2.5 text-sidebar-foreground/30" />}
+            </span>
             {!collapsed && (
               <ChevronDown className={`h-3 w-3 transition-transform ${open ? "" : "-rotate-90"}`} />
             )}
@@ -144,6 +160,27 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
             <SidebarMenu>
               {section.items.map((item) => {
                 const active = getIsItemActive(item);
+                const locked = !canAccess(userRole, item.requiredRoles);
+
+                if (locked) {
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center text-[13px] py-1.5 px-2 rounded-md text-sidebar-foreground/30 cursor-not-allowed">
+                            <item.icon className="h-4 w-4 mr-2 shrink-0" />
+                            {!collapsed && <span>{item.title}</span>}
+                            <Lock className="h-3 w-3 ml-auto" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                          <p className="text-xs">Upgrade your role to access this feature</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </SidebarMenuItem>
+                  );
+                }
+
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
@@ -173,6 +210,17 @@ function CollapsibleSidebarGroup({ section, collapsed }: { section: SidebarSecti
 function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const { profile, role } = useAuth();
+
+  const displayName = profile?.display_name || "User";
+  const initial = displayName.charAt(0).toUpperCase();
+
+  const roleLabelMap: Record<string, string> = {
+    researcher: "Researcher",
+    student: "Student",
+    reviewer: "Reviewer",
+    institutional_admin: "Admin",
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -192,7 +240,7 @@ function AppSidebar() {
       <SidebarContent className="pt-2 overflow-y-auto">
         {sidebarSections.map((section, gi) => {
           if (section.collapsible && section.label) {
-            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} />;
+            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} />;
           }
           return (
             <SidebarGroup key={gi}>
@@ -228,11 +276,11 @@ function AppSidebar() {
         <div className="mt-auto border-t border-sidebar-border p-4">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">
-              D
+              {initial}
             </div>
             <div className="text-xs">
-              <p className="font-semibold text-sidebar-foreground">Defi</p>
-              <p className="text-sidebar-foreground/50">Pro plan</p>
+              <p className="font-semibold text-sidebar-foreground">{displayName}</p>
+              <p className="text-sidebar-foreground/50">{role ? roleLabelMap[role] || role : "Free"}</p>
             </div>
           </div>
         </div>
@@ -244,6 +292,16 @@ function AppSidebar() {
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [showLogout, setShowLogout] = useState(false);
   const navigate = useNavigate();
+  const { profile, role, signOut } = useAuth();
+
+  const displayName = profile?.display_name || "User";
+  const initial = displayName.charAt(0).toUpperCase();
+
+  const handleSignOut = async () => {
+    setShowLogout(false);
+    await signOut();
+    navigate("/auth/login");
+  };
 
   return (
     <SidebarProvider>
@@ -256,8 +314,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <Link to="/dashboard/billing" className="text-xs font-medium text-accent hover:underline hidden sm:block">
                 Pro Credits: 55
               </Link>
-              <Badge variant="outline" className="text-xs font-medium border-accent text-accent">
-                Pro (Trial)
+              <Badge variant="outline" className="text-xs font-medium border-accent text-accent capitalize">
+                {role || "Free"}
               </Badge>
               <Link to="/dashboard/messages" className="relative">
                 <MessagesIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
@@ -267,7 +325,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
                   <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">
-                    D
+                    {initial}
                   </div>
                   <ChevronDown className="h-3 w-3 text-muted-foreground" />
                 </DropdownMenuTrigger>
@@ -294,7 +352,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <p className="text-sm text-muted-foreground">You will be redirected to the login page.</p>
           <div className="flex gap-2 mt-3">
             <Button variant="outline" size="sm" className="flex-1" onClick={() => setShowLogout(false)}>Cancel</Button>
-            <Button variant="destructive" size="sm" className="flex-1" onClick={() => { setShowLogout(false); navigate("/auth/login"); }}>Continue</Button>
+            <Button variant="destructive" size="sm" className="flex-1" onClick={handleSignOut}>Continue</Button>
           </div>
         </DialogContent>
       </Dialog>
