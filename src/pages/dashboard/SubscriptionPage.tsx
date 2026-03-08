@@ -32,7 +32,7 @@ const plans = [
   },
   {
     name: "Researcher",
-    price: "$19",
+    price: "₦25,000",
     period: "/month",
     description: "Full research tools for individual researchers.",
     features: [
