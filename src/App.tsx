@@ -54,6 +54,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ModuleUnlocksProvider>
           <Routes>
             <Route path="/" element={<Navigate to="/publeesh" replace />} />
             <Route path="/publeesh" element={<PubleeshLanding />} />
