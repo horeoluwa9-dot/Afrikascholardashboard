@@ -3,43 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, CheckCircle2, XCircle, FlaskConical, GraduationCap, Briefcase } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-
-const identityOptions = [
-  {
-    value: "researcher",
-    label: "Researcher",
-    description: "Conduct and publish research, analyze data, and collaborate on academic work.",
-    icon: FlaskConical,
-  },
-  {
-    value: "academic",
-    label: "Academic / Lecturer",
-    description: "Teach, supervise students, and participate in academic publishing and peer review.",
-    icon: GraduationCap,
-  },
-  {
-    value: "professional",
-    label: "Professional",
-    description: "Apply research and academic insights within industry, policy, or professional environments.",
-    icon: Briefcase,
-  },
-];
-
-const roleMap: Record<string, string> = {
-  researcher: "researcher",
-  academic: "researcher",
-  professional: "researcher",
-};
 
 const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [form, setForm] = useState({ fullName: "", email: "", password: "", confirmPassword: "", identity: "" });
+  const [form, setForm] = useState({ fullName: "", email: "", password: "", confirmPassword: "" });
   const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -56,14 +28,13 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) { toast({ title: "Passwords don't match", variant: "destructive" }); return; }
-    if (!form.identity) { toast({ title: "Please select your identity", variant: "destructive" }); return; }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { display_name: form.fullName, identity_type: form.identity, role: roleMap[form.identity] || "researcher" },
+        data: { display_name: form.fullName },
       },
     });
     setLoading(false);
@@ -128,45 +99,7 @@ const Signup = () => {
               </div>
             </div>
 
-            {/* Identity Selection Cards */}
-            <div className="space-y-2">
-              <Label>I am a</Label>
-              <div className="grid gap-2">
-                {identityOptions.map((opt) => {
-                  const selected = form.identity === opt.value;
-                  const Icon = opt.icon;
-                  return (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => handleChange("identity", opt.value)}
-                      className={cn(
-                        "flex items-start gap-3 rounded-xl border-2 p-3 text-left transition-all",
-                        selected
-                          ? "border-afrika-orange bg-afrika-orange/5"
-                          : "border-border bg-background hover:border-muted-foreground/30"
-                      )}
-                    >
-                      <div className={cn(
-                        "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-                        selected ? "bg-afrika-orange text-white" : "bg-muted text-muted-foreground"
-                      )}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className={cn("text-sm font-semibold", selected ? "text-afrika-orange" : "text-foreground")}>{opt.label}</p>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{opt.description}</p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                This helps personalize your dashboard. Additional features unlock automatically as you use the platform.
-              </p>
-            </div>
-
-            <Button variant="afrika" className="w-full" type="submit" disabled={!form.identity || loading}>
+            <Button variant="afrika" className="w-full" type="submit" disabled={loading}>
               {loading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
