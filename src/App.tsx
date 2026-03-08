@@ -132,6 +132,15 @@ const App = () => (
             <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
             <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
             <Route path="/dashboard/institutional/advisory" element={<P><AdvisoryRequestsPage /></P>} />
+
+            {/* Advisory Client Dashboard */}
+            <Route path="/dashboard/advisory" element={<P><AdvisoryOverviewPage /></P>} />
+            <Route path="/dashboard/advisory/transcripts" element={<P><TranscriptRequestsPage /></P>} />
+            <Route path="/dashboard/advisory/degree" element={<P><DegreeAdvisoryPage /></P>} />
+            <Route path="/dashboard/advisory/study-africa" element={<P><StudyInAfricaPage /></P>} />
+            <Route path="/dashboard/advisory/pathways" element={<P><AcademicPathwaysPage /></P>} />
+            <Route path="/dashboard/advisory/cases" element={<P><MyCasesPage /></P>} />
+            <Route path="/dashboard/advisory/documents" element={<P><DocumentUploadsPage /></P>} />
             <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={["institutional_admin"]}><AdminDashboard /></ProtectedRoute>} />
 
             {/* Legacy redirects */}
