@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ModuleUnlocksProvider } from "@/contexts/ModuleUnlocksContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PubleeshLanding from "./pages/PubleeshLanding";
 import PricingPage from "./pages/PricingPage";
