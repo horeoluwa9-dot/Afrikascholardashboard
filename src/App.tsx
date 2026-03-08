@@ -111,7 +111,7 @@ const App = () => (
             <Route path="/dashboard/intelligence/conferences" element={<Navigate to="/dashboard/intelligence?tab=conferences" replace />} />
             <Route path="/dashboard/intelligence/stakeholders" element={<Navigate to="/dashboard/intelligence?tab=stakeholders" replace />} />
             <Route path="/dashboard/intelligence/gaps" element={<Navigate to="/dashboard/intelligence?tab=gaps" replace />} />
-            <Route path="/dashboard/notifications" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard/notifications" element={<P><NotificationsPage /></P>} />
 
             <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
 
