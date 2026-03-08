@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      academic_connections: {
+        Row: {
+          created_at: string
+          id: string
+          receiver_id: string
+          requester_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          receiver_id: string
+          requester_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          receiver_id?: string
+          requester_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       academic_credentials: {
         Row: {
           created_at: string
@@ -41,6 +65,72 @@ export type Database = {
           university?: string
           user_id?: string
           year_of_graduation?: number | null
+        }
+        Relationships: []
+      }
+      advisory_profiles: {
+        Row: {
+          created_at: string
+          hourly_rate: string | null
+          id: string
+          is_available: boolean | null
+          services: string[] | null
+          specialization: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hourly_rate?: string | null
+          id?: string
+          is_available?: boolean | null
+          services?: string[] | null
+          specialization: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hourly_rate?: string | null
+          id?: string
+          is_available?: boolean | null
+          services?: string[] | null
+          specialization?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      advisory_requests: {
+        Row: {
+          advisor_id: string
+          created_at: string
+          description: string | null
+          expected_duration: string | null
+          id: string
+          institution: string | null
+          requester_id: string
+          status: string
+          topic: string
+        }
+        Insert: {
+          advisor_id: string
+          created_at?: string
+          description?: string | null
+          expected_duration?: string | null
+          id?: string
+          institution?: string | null
+          requester_id: string
+          status?: string
+          topic: string
+        }
+        Update: {
+          advisor_id?: string
+          created_at?: string
+          description?: string | null
+          expected_duration?: string | null
+          id?: string
+          institution?: string | null
+          requester_id?: string
+          status?: string
+          topic?: string
         }
         Relationships: []
       }
@@ -118,6 +208,125 @@ export type Database = {
           journal?: string | null
           title?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      engagements: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          engagement_type: string
+          id: string
+          institution: string | null
+          start_date: string | null
+          status: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          engagement_type?: string
+          id?: string
+          institution?: string | null
+          start_date?: string | null
+          status?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          engagement_type?: string
+          id?: string
+          institution?: string | null
+          start_date?: string | null
+          status?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          cover_letter_url: string | null
+          created_at: string
+          cv_url: string | null
+          id: string
+          job_id: string
+          research_statement: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          cover_letter_url?: string | null
+          created_at?: string
+          cv_url?: string | null
+          id?: string
+          job_id: string
+          research_statement?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          cover_letter_url?: string | null
+          created_at?: string
+          cv_url?: string | null
+          id?: string
+          job_id?: string
+          research_statement?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_opportunities: {
+        Row: {
+          application_deadline: string | null
+          created_at: string
+          description: string | null
+          id: string
+          institution: string
+          job_type: string | null
+          location: string | null
+          posted_by: string | null
+          requirements: string | null
+          title: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          institution: string
+          job_type?: string | null
+          location?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          title: string
+        }
+        Update: {
+          application_deadline?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          institution?: string
+          job_type?: string | null
+          location?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          title?: string
         }
         Relationships: []
       }
