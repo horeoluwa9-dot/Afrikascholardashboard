@@ -364,21 +364,25 @@ const MessagesPage = () => {
 
                   {/* Actions */}
                   <div className="space-y-2">
-                    <Button variant="afrika" size="sm" className="w-full gap-1.5 text-xs">
-                      <User className="h-3 w-3" /> View Profile
-                    </Button>
-                    <Button variant="afrikaOutline" size="sm" className="w-full gap-1.5 text-xs">
-                      <ExternalLink className="h-3 w-3" /> View Publications
-                    </Button>
+                    <Link to={`/dashboard/researcher?user=${encodeURIComponent(activeConvo.name)}`}>
+                      <Button variant="afrika" size="sm" className="w-full gap-1.5 text-xs">
+                        <User className="h-3 w-3" /> View Profile
+                      </Button>
+                    </Link>
+                    <Link to="/dashboard/my-papers">
+                      <Button variant="afrikaOutline" size="sm" className="w-full gap-1.5 text-xs">
+                        <ExternalLink className="h-3 w-3" /> View Publications
+                      </Button>
+                    </Link>
                   </div>
 
                   {/* Quick Actions */}
                   <div className="border-t border-border pt-4 space-y-2">
                     <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quick Actions</p>
-                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start">
+                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start" onClick={handleConnect}>
                       <Users className="h-3 w-3" /> Connect
                     </Button>
-                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start">
+                    <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs justify-start" onClick={handleCollaborate}>
                       <Handshake className="h-3 w-3" /> Collaborate
                     </Button>
                   </div>
