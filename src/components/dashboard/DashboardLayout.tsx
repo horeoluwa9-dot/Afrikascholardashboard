@@ -100,6 +100,7 @@ const sidebarSections: SidebarSection[] = [
     label: "Research Intelligence",
     collapsible: true,
     requiredModule: "research_intelligence",
+    requiresSubscription: true,
     items: [
       { title: "Journals", url: "/dashboard/intelligence?tab=journals", icon: Compass },
       { title: "Conferences", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
