@@ -99,7 +99,7 @@ const MessagesPage = () => {
     return c.name.toLowerCase().includes(q) || c.institution.toLowerCase().includes(q);
   });
 
-  const activeConvo = sampleConversations.find((c) => c.id === activeId) || null;
+  const activeConvo = conversations.find((c) => c.id === activeId) || null;
 
   const handleSelect = (id: string) => {
     setActiveId(id);
