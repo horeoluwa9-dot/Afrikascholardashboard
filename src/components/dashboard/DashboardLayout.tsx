@@ -109,7 +109,6 @@ const sidebarSections: SidebarSection[] = [
     collapsible: false,
     items: [
       { title: "Community", url: "/dashboard/community", icon: MessageCircle },
-      { title: "Messages", url: "/dashboard/messages", icon: MessagesIcon },
       { title: "Library", url: "/dashboard/library", icon: BookOpen },
       { title: "Network", url: "/dashboard/network", icon: Globe },
     ],
