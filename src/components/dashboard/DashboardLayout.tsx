@@ -167,7 +167,7 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
     <Collapsible open={open} onOpenChange={setOpen}>
       <SidebarGroup>
         <CollapsibleTrigger className="w-full">
-          <SidebarGroupLabel className="text-sidebar-foreground/70 text-[13px] tracking-wide cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors font-semibold">
+          <SidebarGroupLabel className="text-sidebar-foreground/70 text-[13px] tracking-wide cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors font-semibold px-2">
             <span className="flex items-center gap-1.5">
               {section.label}
               {sectionLocked && <Lock className="h-2.5 w-2.5 text-sidebar-foreground/30" />}
