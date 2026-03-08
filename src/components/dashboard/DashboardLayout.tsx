@@ -132,7 +132,6 @@ const sidebarSections: SidebarSection[] = [
       { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
     ],
   },
-  },
 
   // === SETTINGS ===
   {
