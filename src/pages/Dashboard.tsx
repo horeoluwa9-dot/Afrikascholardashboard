@@ -4,7 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { CreditsHowItWorksModal } from "@/components/dashboard/CreditsModal";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WelcomePanel from "@/components/dashboard/WelcomePanel";
+import ResearchIdentityCard from "@/components/dashboard/ResearchIdentityCard";
+import ResearchActivitySection from "@/components/dashboard/ResearchActivitySection";
+import CommunityPreview from "@/components/dashboard/CommunityPreview";
 import { useAuth } from "@/contexts/AuthContext";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import {
   FileText, Database, BarChart3, Send, Wrench, Compass,
   ArrowRight, Newspaper, CalendarClock, Users2, TrendingUp, Eye,
@@ -47,7 +51,10 @@ const statusColors: Record<string, string> = {
 
 const Dashboard = () => {
   const { profile, role } = useAuth();
+  const { isModuleUnlocked } = useModuleUnlocksContext();
   const displayName = profile?.display_name || "Researcher";
+
+  const hasAnyUnlock = isModuleUnlocked("my_research") || isModuleUnlocked("publishing") || isModuleUnlocked("publeesh_ai");
 
   return (
   <DashboardLayout>
@@ -64,6 +71,9 @@ const Dashboard = () => {
             : "Manage your research, publishing, and intelligence tools from one workspace."}
         </p>
       </div>
+
+      {/* Research Identity Card */}
+      <ResearchIdentityCard />
 
       {/* Welcome Panel — first-time users */}
       <WelcomePanel />
@@ -86,6 +96,9 @@ const Dashboard = () => {
       </div>
       <CreditsHowItWorksModal />
 
+      {/* Research Activity — visible once user has publishing or my_research unlocked */}
+      <ResearchActivitySection visible={hasAnyUnlock} />
+
       {/* Quick Actions */}
       <div>
         <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
@@ -106,7 +119,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Recent Activity + Intelligence */}
+      {/* Recent Activity + Community Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           <h2 className="text-lg font-bold text-foreground mb-4">Recent Activity</h2>
@@ -120,6 +133,14 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Community Preview */}
+        <div>
+          <CommunityPreview />
+        </div>
+      </div>
+
+      {/* Intelligence Insights — only if unlocked */}
+      {isModuleUnlocked("research_intelligence") && (
         <div>
           <h2 className="text-lg font-bold text-foreground mb-4">Intelligence Insights</h2>
           <div className="bg-card rounded-xl border border-border p-5 space-y-4">
@@ -142,31 +163,33 @@ const Dashboard = () => {
             </Link>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Recent Papers - shows actual papers */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-foreground">Recent Papers</h2>
-          <Link to="/dashboard/my-papers">
-            <Button variant="ghost" size="sm" className="text-xs gap-1">View All <ArrowRight className="h-3 w-3" /></Button>
-          </Link>
-        </div>
-        <div className="space-y-3">
-          {recentPapers.map((paper) => (
-            <Link key={paper.id} to="/dashboard/my-papers" className="bg-card rounded-xl border border-border p-4 flex items-center justify-between hover:shadow-sm transition-shadow block">
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-semibold text-foreground truncate">{paper.title}</h3>
-                <div className="flex items-center gap-3 mt-1">
-                  <Badge className={`text-[10px] ${statusColors[paper.status]}`}>{paper.status}</Badge>
-                  <span className="text-xs text-muted-foreground flex items-center gap-1"><Eye className="h-3 w-3" /> {paper.views}</span>
-                </div>
-              </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 ml-4" />
+      {/* Recent Papers - shows only if my_research is unlocked */}
+      {isModuleUnlocked("my_research") && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-foreground">Recent Papers</h2>
+            <Link to="/dashboard/my-papers">
+              <Button variant="ghost" size="sm" className="text-xs gap-1">View All <ArrowRight className="h-3 w-3" /></Button>
             </Link>
-          ))}
+          </div>
+          <div className="space-y-3">
+            {recentPapers.map((paper) => (
+              <Link key={paper.id} to="/dashboard/my-papers" className="bg-card rounded-xl border border-border p-4 flex items-center justify-between hover:shadow-sm transition-shadow block">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-semibold text-foreground truncate">{paper.title}</h3>
+                  <div className="flex items-center gap-3 mt-1">
+                    <Badge className={`text-[10px] ${statusColors[paper.status]}`}>{paper.status}</Badge>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1"><Eye className="h-3 w-3" /> {paper.views}</span>
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 ml-4" />
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   </DashboardLayout>
   );
