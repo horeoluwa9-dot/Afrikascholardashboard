@@ -90,10 +90,10 @@ const StudyInAfricaPage = () => {
                   <Clock className="h-3 w-3" /> {p.duration}
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="text-xs gap-1 flex-1" onClick={() => setViewProgram(p)}>
+                  <Button variant="afrikaOutline" size="sm" className="text-xs gap-1 flex-1" onClick={() => setViewProgram(p)}>
                     <Eye className="h-3 w-3" /> View
                   </Button>
-                  <Button size="sm" className="text-xs gap-1 flex-1">
+                  <Button variant="afrika" size="sm" className="text-xs gap-1 flex-1">
                     <Handshake className="h-3 w-3" /> Request Advisory
                   </Button>
                 </div>
