@@ -94,6 +94,33 @@ export type Database = {
         }
         Relationships: []
       }
+      download_history: {
+        Row: {
+          downloaded_at: string
+          file_type: string
+          id: string
+          journal: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          downloaded_at?: string
+          file_type?: string
+          id?: string
+          journal?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          downloaded_at?: string
+          file_type?: string
+          id?: string
+          journal?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -219,6 +246,110 @@ export type Database = {
         }
         Relationships: []
       }
+      purchased_papers: {
+        Row: {
+          access_status: string
+          authors: string | null
+          id: string
+          journal: string | null
+          pdf_url: string | null
+          purchased_at: string
+          title: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          access_status?: string
+          authors?: string | null
+          id?: string
+          journal?: string | null
+          pdf_url?: string | null
+          purchased_at?: string
+          title: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          access_status?: string
+          authors?: string | null
+          id?: string
+          journal?: string | null
+          pdf_url?: string | null
+          purchased_at?: string
+          title?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
+      reading_list_items: {
+        Row: {
+          added_at: string
+          authors: string | null
+          id: string
+          journal: string | null
+          reading_list_id: string
+          title: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          added_at?: string
+          authors?: string | null
+          id?: string
+          journal?: string | null
+          reading_list_id: string
+          title: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          added_at?: string
+          authors?: string | null
+          id?: string
+          journal?: string | null
+          reading_list_id?: string
+          title?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_list_items_reading_list_id_fkey"
+            columns: ["reading_list_id"]
+            isOneToOne: false
+            referencedRelation: "reading_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reading_lists: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       research_interests: {
         Row: {
           created_at: string
@@ -237,6 +368,39 @@ export type Database = {
           id?: string
           name?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      saved_articles: {
+        Row: {
+          authors: string | null
+          id: string
+          journal: string | null
+          saved_at: string
+          source_url: string | null
+          title: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          authors?: string | null
+          id?: string
+          journal?: string | null
+          saved_at?: string
+          source_url?: string | null
+          title: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          authors?: string | null
+          id?: string
+          journal?: string | null
+          saved_at?: string
+          source_url?: string | null
+          title?: string
+          user_id?: string
+          year?: number | null
         }
         Relationships: []
       }
