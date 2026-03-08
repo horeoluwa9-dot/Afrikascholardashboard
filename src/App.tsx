@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ModuleUnlocksProvider } from "@/contexts/ModuleUnlocksContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PubleeshLanding from "./pages/PubleeshLanding";
 import PricingPage from "./pages/PricingPage";
@@ -36,6 +37,8 @@ import InstitutionRequestsPage from "./pages/dashboard/InstitutionRequestsPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
+import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
+import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -55,12 +58,15 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ModuleUnlocksProvider>
+          <SubscriptionProvider>
           <Routes>
             <Route path="/" element={<Navigate to="/publeesh" replace />} />
             <Route path="/publeesh" element={<PubleeshLanding />} />
             <Route path="/publeesh/pricing" element={<PricingPage />} />
             <Route path="/publeesh/features" element={<Features />} />
             <Route path="/publeesh/institutional-demo" element={<InstitutionalDemo />} />
+            <Route path="/publeesh/subscription" element={<P><SubscriptionPage /></P>} />
+            <Route path="/publeesh/payment-success" element={<P><PaymentSuccessPage /></P>} />
 
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
@@ -118,6 +124,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </SubscriptionProvider>
           </ModuleUnlocksProvider>
         </AuthProvider>
       </BrowserRouter>

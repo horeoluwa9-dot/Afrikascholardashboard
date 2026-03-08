@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles } from "lucide-react";
+import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
   LayoutDashboard, FileText, FilePlus, Database, BarChart3,
   Compass, CalendarClock, Users2, Send, ClipboardList,
@@ -47,6 +48,8 @@ interface SidebarSection {
   requiredRoles?: AppRole[];
   /** If set, this section is only visible when the module is unlocked */
   requiredModule?: ModuleType;
+  /** If true, section shows as locked link to subscription when not subscribed */
+  requiresSubscription?: boolean;
 }
 
 const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
@@ -99,6 +102,7 @@ const sidebarSections: SidebarSection[] = [
     label: "Research Intelligence",
     collapsible: true,
     requiredModule: "research_intelligence",
+    requiresSubscription: true,
     items: [
       { title: "Journals", url: "/dashboard/intelligence?tab=journals", icon: Compass },
       { title: "Conferences", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
@@ -246,6 +250,7 @@ function AppSidebar() {
   const collapsed = state === "collapsed";
   const { profile, role } = useAuth();
   const { isModuleUnlocked } = useModuleUnlocksContext();
+  const { isActive: hasSubscription } = useSubscriptionContext();
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
@@ -271,6 +276,28 @@ function AppSidebar() {
         {sidebarSections.map((section, gi) => {
           // Hide entire section if role doesn't match
           if (section.requiredRoles && !canAccess(role, section.requiredRoles)) return null;
+
+          // If requires subscription and not subscribed, show locked link
+          if (section.requiresSubscription && !hasSubscription) {
+            if (section.requiredModule && !isModuleUnlocked(section.requiredModule)) return null;
+            return (
+              <SidebarGroup key={gi}>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link to="/publeesh/subscription"
+                          className="flex items-center text-[13px] py-1.5 px-2 rounded-md text-sidebar-foreground/40 hover:text-sidebar-foreground/60 transition-colors">
+                          <Lock className="h-4 w-4 mr-2 shrink-0" />
+                          {!collapsed && <span>{section.label} (Locked)</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            );
+          }
 
           // Hide section if module not yet unlocked
           if (section.requiredModule && !isModuleUnlocked(section.requiredModule)) return null;
