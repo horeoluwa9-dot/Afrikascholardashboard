@@ -8,7 +8,7 @@ import {
   MessageCircle, CreditCard, Settings, TrendingUp,
   Lightbulb, Presentation, PlusCircle, FolderOpen,
   BookOpen, Globe, Handshake, Building2, User, Shield,
-  Briefcase, Library,
+  Briefcase, Library, GraduationCap, FileUp, MapPin,
 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
