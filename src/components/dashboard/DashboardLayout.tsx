@@ -48,6 +48,8 @@ interface SidebarSection {
   requiredRoles?: AppRole[];
   /** If set, this section is only visible when the module is unlocked */
   requiredModule?: ModuleType;
+  /** If true, section shows as locked link to subscription when not subscribed */
+  requiresSubscription?: boolean;
 }
 
 const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
