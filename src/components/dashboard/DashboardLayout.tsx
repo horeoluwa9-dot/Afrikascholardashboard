@@ -317,11 +317,8 @@ function AppSidebar() {
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <div className="h-16 flex items-center px-4 border-b border-sidebar-border">
         {!collapsed ? (
-          <Link to="/" className="flex items-center gap-1">
-            <span className="text-lg font-bold">
-              <span className="text-accent">Afrika</span>
-              <span className="text-sidebar-foreground">Scholar</span>
-            </span>
+          <Link to="/" className="flex items-center">
+            <img src={afrikaLogo} alt="Afrika Scholar" className="h-7" />
           </Link>
         ) : (
           <span className="text-lg font-bold text-accent mx-auto">A</span>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import afrikaLogo from "@/assets/afrika-scholar-logo.png";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
