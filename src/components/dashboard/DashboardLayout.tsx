@@ -109,7 +109,6 @@ const sidebarSections: SidebarSection[] = [
     collapsible: false,
     items: [
       { title: "Community", url: "/dashboard/community", icon: MessageCircle },
-      { title: "Messages", url: "/dashboard/messages", icon: MessagesIcon },
       { title: "Library", url: "/dashboard/library", icon: BookOpen },
       { title: "Network", url: "/dashboard/network", icon: Globe },
     ],
@@ -168,7 +167,7 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
     <Collapsible open={open} onOpenChange={setOpen}>
       <SidebarGroup>
         <CollapsibleTrigger className="w-full">
-          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors font-semibold">
+          <SidebarGroupLabel className="text-sidebar-foreground/50 text-[11px] tracking-wide cursor-pointer flex items-center justify-between w-full hover:text-sidebar-foreground/70 transition-colors font-semibold">
             <span className="flex items-center gap-1.5">
               {section.label}
               {sectionLocked && <Lock className="h-2.5 w-2.5 text-sidebar-foreground/30" />}
@@ -260,8 +259,8 @@ function AppSidebar() {
           return (
             <SidebarGroup key={gi}>
               {section.label && (
-                <SidebarGroupLabel className="text-sidebar-foreground/50 text-[10px] uppercase tracking-widest font-semibold">
-                  {section.label}
+                <SidebarGroupLabel className="text-sidebar-foreground/50 text-[11px] tracking-wide font-semibold">
+                   {section.label}
                 </SidebarGroupLabel>
               )}
               <SidebarGroupContent>
