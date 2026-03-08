@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   ChevronRight, MessageCircle, Send, Search, User, Users,
   ExternalLink, BookOpen, Handshake, Check, CheckCheck, Globe,
-} from "lucide-react";
+import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 /* ── Sample Data ── */
