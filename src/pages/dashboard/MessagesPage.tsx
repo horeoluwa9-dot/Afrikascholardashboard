@@ -315,10 +315,11 @@ const MessagesPage = () => {
                       <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                         placeholder="Write a message..."
                         className="flex-1"
                       />
-                      <Button variant="afrika" size="sm" disabled={!newMessage.trim()}>
+                      <Button variant="afrika" size="sm" disabled={!newMessage.trim()} onClick={handleSendMessage}>
                         <Send className="h-4 w-4" />
                       </Button>
                     </div>
