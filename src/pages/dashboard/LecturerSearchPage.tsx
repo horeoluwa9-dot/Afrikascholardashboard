@@ -1,19 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Search, Building2, BookOpen, MapPin, MessageCircle, Eye, Handshake,
   SlidersHorizontal, GraduationCap,
 } from "lucide-react";
 import { useInstitutional } from "@/hooks/useInstitutional";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface LecturerProfile {
   user_id: string;
@@ -91,6 +98,8 @@ const ranks = ["All", "Lecturer", "Senior Lecturer", "Associate Professor", "Pro
 
 const LecturerSearchPage = () => {
   const { searchLecturers } = useInstitutional();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [country, setCountry] = useState("All");
   const [field, setField] = useState("All");
@@ -98,6 +107,11 @@ const LecturerSearchPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [dbResults, setDbResults] = useState<any[] | null>(null);
   const [searching, setSearching] = useState(false);
+
+  // Advisory request dialog
+  const [advisoryTarget, setAdvisoryTarget] = useState<LecturerProfile | null>(null);
+  const [advisoryForm, setAdvisoryForm] = useState({ topic: "", description: "", expected_duration: "", institution: "" });
+  const [advisorySaving, setAdvisorySaving] = useState(false);
 
   const handleSearch = async () => {
     setSearching(true);
@@ -110,6 +124,44 @@ const LecturerSearchPage = () => {
       setDbResults(data);
     } finally {
       setSearching(false);
+    }
+  };
+
+  const handleRequestAdvisory = (l: LecturerProfile) => {
+    setAdvisoryForm({ topic: l.discipline, description: "", expected_duration: "", institution: "" });
+    setAdvisoryTarget(l);
+  };
+
+  const handleSubmitAdvisory = async () => {
+    if (!advisoryTarget || !user || advisoryTarget.user_id.startsWith("s")) {
+      toast.info("Sign in and use a real researcher profile to submit advisory requests.");
+      return;
+    }
+    setAdvisorySaving(true);
+    try {
+      const { error } = await supabase.from("advisory_requests").insert({
+        advisor_id: advisoryTarget.user_id,
+        requester_id: user.id,
+        topic: advisoryForm.topic,
+        description: advisoryForm.description || null,
+        expected_duration: advisoryForm.expected_duration || null,
+        institution: advisoryForm.institution || null,
+      });
+      if (error) throw error;
+      toast.success(`Advisory request sent to ${advisoryTarget.display_name}`);
+      setAdvisoryTarget(null);
+    } catch {
+      toast.error("Failed to send advisory request");
+    } finally {
+      setAdvisorySaving(false);
+    }
+  };
+
+  const handleMessage = (l: LecturerProfile) => {
+    if (l.user_id.startsWith("s")) {
+      navigate("/dashboard/messages");
+    } else {
+      navigate(`/dashboard/messages?to=${l.user_id}&name=${encodeURIComponent(l.display_name)}`);
     }
   };
 
@@ -237,19 +289,30 @@ const LecturerSearchPage = () => {
                       {l.bio && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{l.bio}</p>}
                     </div>
                     <div className="flex flex-col gap-2 shrink-0">
-                      <Link to={l.user_id.startsWith("s") ? "#" : `/dashboard/researcher?id=${l.user_id}`}>
-                        <Button variant="outline" size="sm" className="gap-1 text-xs w-full">
-                          <Eye className="h-3 w-3" /> View Profile
-                        </Button>
-                      </Link>
-                      <Button variant="afrikaOutline" size="sm" className="gap-1 text-xs">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1 text-xs w-full"
+                        onClick={() => navigate(l.user_id.startsWith("s") ? "/dashboard/network" : `/dashboard/researcher?id=${l.user_id}`)}
+                      >
+                        <Eye className="h-3 w-3" /> View Profile
+                      </Button>
+                      <Button
+                        variant="afrikaOutline"
+                        size="sm"
+                        className="gap-1 text-xs"
+                        onClick={() => handleRequestAdvisory(l)}
+                      >
                         <Handshake className="h-3 w-3" /> Request Advisory
                       </Button>
-                      <Link to="/dashboard/messages">
-                        <Button variant="ghost" size="sm" className="gap-1 text-xs w-full">
-                          <MessageCircle className="h-3 w-3" /> Message
-                        </Button>
-                      </Link>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1 text-xs w-full"
+                        onClick={() => handleMessage(l)}
+                      >
+                        <MessageCircle className="h-3 w-3" /> Message
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -267,6 +330,42 @@ const LecturerSearchPage = () => {
           </Card>
         )}
       </div>
+
+      {/* Advisory Request Dialog */}
+      <Dialog open={!!advisoryTarget} onOpenChange={(open) => !open && setAdvisoryTarget(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Request Advisory</DialogTitle>
+            <DialogDescription>
+              Send an advisory request to {advisoryTarget?.display_name} at {advisoryTarget?.institution}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Topic *</Label>
+              <Input className="mt-1.5" placeholder="e.g. Energy Policy Research" value={advisoryForm.topic} onChange={e => setAdvisoryForm(f => ({ ...f, topic: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Your Institution</Label>
+              <Input className="mt-1.5" placeholder="e.g. Ministry of Energy Ghana" value={advisoryForm.institution} onChange={e => setAdvisoryForm(f => ({ ...f, institution: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Description</Label>
+              <Textarea className="mt-1.5" rows={3} placeholder="Describe the advisory support you need..." value={advisoryForm.description} onChange={e => setAdvisoryForm(f => ({ ...f, description: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Expected Duration</Label>
+              <Input className="mt-1.5" placeholder="e.g. 3 months" value={advisoryForm.expected_duration} onChange={e => setAdvisoryForm(f => ({ ...f, expected_duration: e.target.value }))} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAdvisoryTarget(null)}>Cancel</Button>
+            <Button variant="afrika" onClick={handleSubmitAdvisory} disabled={advisorySaving || !advisoryForm.topic}>
+              {advisorySaving ? "Sending..." : "Send Request"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
