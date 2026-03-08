@@ -250,6 +250,7 @@ function AppSidebar() {
   const collapsed = state === "collapsed";
   const { profile, role } = useAuth();
   const { isModuleUnlocked } = useModuleUnlocksContext();
+  const { isActive: hasSubscription } = useSubscriptionContext();
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
