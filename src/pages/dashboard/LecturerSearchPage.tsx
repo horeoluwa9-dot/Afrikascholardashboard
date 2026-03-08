@@ -289,19 +289,30 @@ const LecturerSearchPage = () => {
                       {l.bio && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{l.bio}</p>}
                     </div>
                     <div className="flex flex-col gap-2 shrink-0">
-                      <Link to={l.user_id.startsWith("s") ? "#" : `/dashboard/researcher?id=${l.user_id}`}>
-                        <Button variant="outline" size="sm" className="gap-1 text-xs w-full">
-                          <Eye className="h-3 w-3" /> View Profile
-                        </Button>
-                      </Link>
-                      <Button variant="afrikaOutline" size="sm" className="gap-1 text-xs">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1 text-xs w-full"
+                        onClick={() => navigate(l.user_id.startsWith("s") ? "/dashboard/network" : `/dashboard/researcher?id=${l.user_id}`)}
+                      >
+                        <Eye className="h-3 w-3" /> View Profile
+                      </Button>
+                      <Button
+                        variant="afrikaOutline"
+                        size="sm"
+                        className="gap-1 text-xs"
+                        onClick={() => handleRequestAdvisory(l)}
+                      >
                         <Handshake className="h-3 w-3" /> Request Advisory
                       </Button>
-                      <Link to="/dashboard/messages">
-                        <Button variant="ghost" size="sm" className="gap-1 text-xs w-full">
-                          <MessageCircle className="h-3 w-3" /> Message
-                        </Button>
-                      </Link>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1 text-xs w-full"
+                        onClick={() => handleMessage(l)}
+                      >
+                        <MessageCircle className="h-3 w-3" /> Message
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -319,6 +330,42 @@ const LecturerSearchPage = () => {
           </Card>
         )}
       </div>
+
+      {/* Advisory Request Dialog */}
+      <Dialog open={!!advisoryTarget} onOpenChange={(open) => !open && setAdvisoryTarget(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Request Advisory</DialogTitle>
+            <DialogDescription>
+              Send an advisory request to {advisoryTarget?.display_name} at {advisoryTarget?.institution}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Topic *</Label>
+              <Input className="mt-1.5" placeholder="e.g. Energy Policy Research" value={advisoryForm.topic} onChange={e => setAdvisoryForm(f => ({ ...f, topic: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Your Institution</Label>
+              <Input className="mt-1.5" placeholder="e.g. Ministry of Energy Ghana" value={advisoryForm.institution} onChange={e => setAdvisoryForm(f => ({ ...f, institution: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Description</Label>
+              <Textarea className="mt-1.5" rows={3} placeholder="Describe the advisory support you need..." value={advisoryForm.description} onChange={e => setAdvisoryForm(f => ({ ...f, description: e.target.value }))} />
+            </div>
+            <div>
+              <Label>Expected Duration</Label>
+              <Input className="mt-1.5" placeholder="e.g. 3 months" value={advisoryForm.expected_duration} onChange={e => setAdvisoryForm(f => ({ ...f, expected_duration: e.target.value }))} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAdvisoryTarget(null)}>Cancel</Button>
+            <Button variant="afrika" onClick={handleSubmitAdvisory} disabled={advisorySaving || !advisoryForm.topic}>
+              {advisorySaving ? "Sending..." : "Send Request"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   );
 };
