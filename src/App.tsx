@@ -23,6 +23,8 @@ import SavedPapers from "./pages/dashboard/ai-paper-generator/SavedPapers";
 import PublishingOverview from "./pages/dashboard/PublishingOverview";
 import EditorialWorkflow from "./pages/dashboard/EditorialWorkflow";
 import JournalManagement from "./pages/dashboard/JournalManagement";
+import PeerReviewsPage from "./pages/dashboard/PeerReviewsPage";
+import ReviewWorkspacePage from "./pages/dashboard/ReviewWorkspacePage";
 import MyPapers from "./pages/dashboard/MyPapers";
 import ProTip from "./pages/dashboard/ProTip";
 import DatasetExplorer from "./pages/dashboard/DatasetExplorer";
