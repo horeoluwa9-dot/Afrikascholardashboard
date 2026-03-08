@@ -211,6 +211,44 @@ export type Database = {
         }
         Relationships: []
       }
+      editorial_board_members: {
+        Row: {
+          added_at: string
+          display_name: string | null
+          id: string
+          institution: string | null
+          journal_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          display_name?: string | null
+          id?: string
+          institution?: string | null
+          journal_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          display_name?: string | null
+          id?: string
+          institution?: string | null
+          journal_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editorial_board_members_journal_id_fkey"
+            columns: ["journal_id"]
+            isOneToOne: false
+            referencedRelation: "journals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       engagements: {
         Row: {
           created_at: string
@@ -329,6 +367,107 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      journals: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          issn: string | null
+          name: string
+          publisher: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          issn?: string | null
+          name: string
+          publisher?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          issn?: string | null
+          name?: string
+          publisher?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      manuscript_submissions: {
+        Row: {
+          abstract: string | null
+          co_authors: Json | null
+          cover_letter: string | null
+          id: string
+          journal_id: string | null
+          journal_name: string
+          keywords: string | null
+          manuscript_url: string | null
+          research_field: string | null
+          reviewer_feedback: Json | null
+          status: string
+          submitted_at: string
+          title: string
+          updated_at: string
+          user_id: string
+          workflow_stage: string
+        }
+        Insert: {
+          abstract?: string | null
+          co_authors?: Json | null
+          cover_letter?: string | null
+          id?: string
+          journal_id?: string | null
+          journal_name: string
+          keywords?: string | null
+          manuscript_url?: string | null
+          research_field?: string | null
+          reviewer_feedback?: Json | null
+          status?: string
+          submitted_at?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          workflow_stage?: string
+        }
+        Update: {
+          abstract?: string | null
+          co_authors?: Json | null
+          cover_letter?: string | null
+          id?: string
+          journal_id?: string | null
+          journal_name?: string
+          keywords?: string | null
+          manuscript_url?: string | null
+          research_field?: string | null
+          reviewer_feedback?: Json | null
+          status?: string
+          submitted_at?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          workflow_stage?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manuscript_submissions_journal_id_fkey"
+            columns: ["journal_id"]
+            isOneToOne: false
+            referencedRelation: "journals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
