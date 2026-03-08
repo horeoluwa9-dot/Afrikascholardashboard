@@ -1,21 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Supabase sends recovery token via URL hash
+    const hash = window.location.hash;
+    if (hash && hash.includes("type=recovery")) {
+      // Session is automatically established by supabase-js
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setDone(true);
-    setTimeout(() => navigate("/auth/login"), 2000);
+    if (password !== confirm) {
+      toast({ title: "Passwords don't match", variant: "destructive" });
+      return;
+    }
+    setLoading(true);
+    const { error } = await supabase.auth.updateUser({ password });
+    setLoading(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      setDone(true);
+      setTimeout(() => navigate("/auth/login"), 2000);
+    }
   };
 
   return (
@@ -50,8 +73,8 @@ const ResetPassword = () => {
                 <Label htmlFor="confirm">Confirm Password</Label>
                 <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required className="mt-1" />
               </div>
-              <Button variant="afrika" className="w-full" type="submit" disabled={password !== confirm || password.length < 8}>
-                Update Password
+              <Button variant="afrika" className="w-full" type="submit" disabled={password !== confirm || password.length < 8 || loading}>
+                {loading ? "Updating..." : "Update Password"}
               </Button>
             </form>
           )}

@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookOpen, Globe, Users, CheckCircle2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const intents = [
   { id: "publeesh", icon: BookOpen, label: "Use Publeesh", desc: "AI-powered research intelligence" },
@@ -11,26 +13,32 @@ const intents = [
   { id: "network", icon: Users, label: "Join Network", desc: "Connect with researchers across Africa" },
 ];
 
+const disciplineOptions = [
+  "Social Sciences", "Health Sciences", "Engineering", "Arts & Humanities",
+  "Law & Policy", "Agriculture", "Business & Economics", "Education",
+  "Computer Science", "Environmental Science",
+];
+
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [intent, setIntent] = useState("");
   const [country, setCountry] = useState("");
   const [institution, setInstitution] = useState("");
   const [disciplines, setDisciplines] = useState<string[]>([]);
 
-  const disciplineOptions = [
-    "Social Sciences", "Health Sciences", "Engineering", "Arts & Humanities",
-    "Law & Policy", "Agriculture", "Business & Economics", "Education",
-    "Computer Science", "Environmental Science",
-  ];
-
   const toggleDiscipline = (d: string) => {
     setDisciplines((prev) => prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]);
   };
 
-  const finish = () => {
-    localStorage.setItem("onboarded", "true");
+  const finish = async () => {
+    if (user) {
+      await supabase.from("profiles").update({
+        institution,
+        discipline: disciplines.join(", "),
+      }).eq("user_id", user.id);
+    }
     navigate("/dashboard");
   };
 
@@ -56,13 +64,8 @@ const Onboarding = () => {
               <h2 className="text-lg font-bold text-primary text-center">What brings you here?</h2>
               <div className="space-y-3">
                 {intents.map((i) => (
-                  <button
-                    key={i.id}
-                    onClick={() => setIntent(i.id)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${
-                      intent === i.id ? "border-afrika-orange bg-afrika-orange-light" : "border-border hover:border-muted-foreground"
-                    }`}
-                  >
+                  <button key={i.id} onClick={() => setIntent(i.id)}
+                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${intent === i.id ? "border-afrika-orange bg-afrika-orange-light" : "border-border hover:border-muted-foreground"}`}>
                     <div className={`h-10 w-10 rounded-full flex items-center justify-center ${intent === i.id ? "bg-afrika-orange" : "bg-secondary"}`}>
                       <i.icon className={`h-5 w-5 ${intent === i.id ? "text-accent-foreground" : "text-muted-foreground"}`} />
                     </div>
@@ -74,9 +77,7 @@ const Onboarding = () => {
                   </button>
                 ))}
               </div>
-              <Button variant="afrika" className="w-full" onClick={() => setStep(2)} disabled={!intent}>
-                Continue
-              </Button>
+              <Button variant="afrika" className="w-full" onClick={() => setStep(2)} disabled={!intent}>Continue</Button>
             </div>
           )}
 
@@ -112,23 +113,14 @@ const Onboarding = () => {
                 <Label>Disciplines</Label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {disciplineOptions.map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => toggleDiscipline(d)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                        disciplines.includes(d)
-                          ? "bg-afrika-orange text-accent-foreground"
-                          : "bg-secondary text-secondary-foreground hover:bg-muted"
-                      }`}
-                    >
+                    <button key={d} onClick={() => toggleDiscipline(d)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${disciplines.includes(d) ? "bg-afrika-orange text-accent-foreground" : "bg-secondary text-secondary-foreground hover:bg-muted"}`}>
                       {d}
                     </button>
                   ))}
                 </div>
               </div>
-              <Button variant="afrika" className="w-full" onClick={finish}>
-                Continue to Dashboard
-              </Button>
+              <Button variant="afrika" className="w-full" onClick={finish}>Continue to Dashboard</Button>
               <Button variant="ghost" className="w-full" onClick={() => setStep(2)}>Back</Button>
             </div>
           )}
