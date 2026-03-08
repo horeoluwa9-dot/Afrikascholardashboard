@@ -24,9 +24,9 @@ const actions = [
   },
   {
     icon: Globe,
-    title: "Explore Research",
-    desc: "Browse publications",
-    link: "/dashboard/library",
+    title: "Assess Institutions",
+    desc: "Evaluate universities and academic programs across Africa.",
+    link: "/dashboard/institutions",
   },
 ];
 

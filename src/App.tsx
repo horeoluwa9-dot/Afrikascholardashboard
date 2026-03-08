@@ -40,6 +40,8 @@ import MessagesPage from "./pages/dashboard/MessagesPage";
 import LibraryPage from "./pages/dashboard/LibraryPage";
 import NetworkPage from "./pages/dashboard/NetworkPage";
 import InstitutionRequestsPage from "./pages/dashboard/InstitutionRequestsPage";
+import InstitutionAssessmentPage from "./pages/dashboard/InstitutionAssessmentPage";
+import InstitutionDetailsPage from "./pages/dashboard/InstitutionDetailsPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
@@ -116,6 +118,8 @@ const App = () => (
             <Route path="/dashboard/profile" element={<P><ProfilePage /></P>} />
             <Route path="/dashboard/researcher" element={<P><ResearcherProfilePage /></P>} />
 
+            <Route path="/dashboard/institutions" element={<P><InstitutionAssessmentPage /></P>} />
+            <Route path="/dashboard/institutions/:id" element={<P><InstitutionDetailsPage /></P>} />
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
             <Route path="/dashboard/institutional" element={<P><InstitutionalOverview /></P>} />
