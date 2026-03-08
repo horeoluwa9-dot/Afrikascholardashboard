@@ -135,6 +135,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_module_unlocks: {
+        Row: {
+          id: string
+          module: Database["public"]["Enums"]["module_type"]
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          module: Database["public"]["Enums"]["module_type"]
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          module?: Database["public"]["Enums"]["module_type"]
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -162,6 +183,13 @@ export type Database = {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      has_module_unlocked: {
+        Args: {
+          _module: Database["public"]["Enums"]["module_type"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -173,9 +201,22 @@ export type Database = {
         Args: { _conversation_id: string; _user_id: string }
         Returns: boolean
       }
+      unlock_module: {
+        Args: {
+          _module: Database["public"]["Enums"]["module_type"]
+          _user_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "researcher" | "student" | "reviewer" | "institutional_admin"
+      module_type:
+        | "publishing"
+        | "research_intelligence"
+        | "publeesh_ai"
+        | "instrument_studio"
+        | "my_research"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -304,6 +345,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["researcher", "student", "reviewer", "institutional_admin"],
+      module_type: [
+        "publishing",
+        "research_intelligence",
+        "publeesh_ai",
+        "instrument_studio",
+        "my_research",
+      ],
     },
   },
 } as const
