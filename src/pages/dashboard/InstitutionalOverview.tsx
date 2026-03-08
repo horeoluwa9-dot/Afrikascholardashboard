@@ -105,7 +105,7 @@ const InstitutionalOverview = () => {
         {/* Quick Actions */}
         <div>
           <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Link to="/dashboard/institutional/talent-requests">
               <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
                 <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
