@@ -1,7 +1,10 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, Users2, FileText, Clock, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BarChart3, Users2, FileText, Clock, TrendingUp, Download } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const METRICS = [
   { label: "Monthly Active Users", value: 14, change: "+3", icon: Users2, bg: "bg-accent/10", color: "text-accent" },
@@ -27,12 +30,21 @@ const TOP_USERS = [
 ];
 
 export default function UsageAnalyticsPage() {
+  const handleExport = () => {
+    toast.success("Analytics report exported successfully");
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Usage Analytics</h1>
-          <p className="text-sm text-muted-foreground mt-1">Monitor how your institution uses the platform.</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Usage Analytics</h1>
+            <p className="text-sm text-muted-foreground mt-1">Monitor how your institution uses the platform.</p>
+          </div>
+          <Button variant="outline" className="gap-2" onClick={handleExport}>
+            <Download className="h-4 w-4" /> Export
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -73,7 +85,11 @@ export default function UsageAnalyticsPage() {
             <CardContent className="p-0">
               <div className="divide-y divide-border">
                 {TOP_USERS.map((u, i) => (
-                  <div key={i} className="flex items-center justify-between px-5 py-3">
+                  <Link
+                    key={i}
+                    to={`/dashboard/researcher?user=${encodeURIComponent(u.name)}`}
+                    className="flex items-center justify-between px-5 py-3 hover:bg-secondary/20 transition-colors"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="h-8 w-8 rounded-full bg-accent/10 flex items-center justify-center text-xs font-bold text-accent">
                         {u.name.charAt(0)}
@@ -83,7 +99,7 @@ export default function UsageAnalyticsPage() {
                     <div className="text-right">
                       <p className="text-xs text-muted-foreground">{u.papers} papers · {u.sessions} sessions</p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </CardContent>
