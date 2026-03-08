@@ -3,26 +3,43 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff, CheckCircle2, XCircle } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Eye, EyeOff, CheckCircle2, XCircle, FlaskConical, GraduationCap, Briefcase } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+
+const identityOptions = [
+  {
+    value: "researcher",
+    label: "Researcher",
+    description: "Conduct and publish research, analyze data, and collaborate on academic work.",
+    icon: FlaskConical,
+  },
+  {
+    value: "academic",
+    label: "Academic / Lecturer",
+    description: "Teach, supervise students, and participate in academic publishing and peer review.",
+    icon: GraduationCap,
+  },
+  {
+    value: "professional",
+    label: "Professional",
+    description: "Apply research and academic insights within industry, policy, or professional environments.",
+    icon: Briefcase,
+  },
+];
 
 const roleMap: Record<string, string> = {
   researcher: "researcher",
   academic: "researcher",
   professional: "researcher",
-  institution: "institutional_admin",
-  student: "student",
 };
 
 const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [form, setForm] = useState({ fullName: "", email: "", password: "", confirmPassword: "", role: "", referralCode: "" });
-  const [agreed, setAgreed] = useState(false);
+  const [form, setForm] = useState({ fullName: "", email: "", password: "", confirmPassword: "", identity: "" });
   const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,13 +56,14 @@ const Signup = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) { toast({ title: "Passwords don't match", variant: "destructive" }); return; }
+    if (!form.identity) { toast({ title: "Please select your identity", variant: "destructive" }); return; }
     setLoading(true);
     const { error } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { display_name: form.fullName, role: roleMap[form.role] || "researcher" },
+        data: { display_name: form.fullName, identity_type: form.identity, role: roleMap[form.identity] || "researcher" },
       },
     });
     setLoading(false);
@@ -109,30 +127,46 @@ const Signup = () => {
                 </button>
               </div>
             </div>
-            <div>
+
+            {/* Identity Selection Cards */}
+            <div className="space-y-2">
               <Label>I am a</Label>
-              <Select value={form.role} onValueChange={(v) => handleChange("role", v)}>
-                <SelectTrigger className="mt-1"><SelectValue placeholder="Select your role" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="researcher">Researcher</SelectItem>
-                  <SelectItem value="academic">Academic / Lecturer</SelectItem>
-                  <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="student">Student</SelectItem>
-                  <SelectItem value="institution">Institution Representative</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="grid gap-2">
+                {identityOptions.map((opt) => {
+                  const selected = form.identity === opt.value;
+                  const Icon = opt.icon;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => handleChange("identity", opt.value)}
+                      className={cn(
+                        "flex items-start gap-3 rounded-xl border-2 p-3 text-left transition-all",
+                        selected
+                          ? "border-afrika-orange bg-afrika-orange/5"
+                          : "border-border bg-background hover:border-muted-foreground/30"
+                      )}
+                    >
+                      <div className={cn(
+                        "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+                        selected ? "bg-afrika-orange text-white" : "bg-muted text-muted-foreground"
+                      )}>
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className={cn("text-sm font-semibold", selected ? "text-afrika-orange" : "text-foreground")}>{opt.label}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{opt.description}</p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                This helps personalize your dashboard. Additional features unlock automatically as you use the platform.
+              </p>
             </div>
-            <div>
-              <Label htmlFor="referral">Referral Code (Optional)</Label>
-              <Input id="referral" value={form.referralCode} onChange={(e) => handleChange("referralCode", e.target.value)} placeholder="Enter code" className="mt-1" />
-            </div>
-            <div className="flex items-start gap-2">
-              <Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(!!v)} id="terms" className="mt-0.5" />
-              <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed">
-                I agree to the <Link to="/terms" className="text-afrika-orange hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-afrika-orange hover:underline">Privacy Policy</Link>
-              </label>
-            </div>
-            <Button variant="afrika" className="w-full" type="submit" disabled={!agreed || loading}>
+
+            <Button variant="afrika" className="w-full" type="submit" disabled={!form.identity || loading}>
               {loading ? "Creating account..." : "Create Account"}
             </Button>
           </form>
