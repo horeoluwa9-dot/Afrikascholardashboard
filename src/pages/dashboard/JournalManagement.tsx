@@ -581,7 +581,4 @@ const JournalManagement = () => {
   );
 };
 
-// Need these icons used in the metrics section inside detail view
-import { Clock, CheckCircle } from "lucide-react";
-
 export default JournalManagement;
