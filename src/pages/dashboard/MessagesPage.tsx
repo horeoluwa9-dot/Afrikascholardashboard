@@ -9,6 +9,7 @@ import {
   ExternalLink, BookOpen, Handshake, Check, CheckCheck, Globe,
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
 
 /* ── Sample Data ── */
 
