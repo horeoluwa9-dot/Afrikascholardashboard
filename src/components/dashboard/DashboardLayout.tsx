@@ -127,7 +127,6 @@ const sidebarSections: SidebarSection[] = [
     label: "",
     collapsible: false,
     items: [
-      { title: "Messages", url: "/dashboard/messages", icon: MessagesIcon },
       { title: "Profile", url: "/dashboard/profile", icon: User },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
       { title: "Settings", url: "/dashboard/settings", icon: Settings },

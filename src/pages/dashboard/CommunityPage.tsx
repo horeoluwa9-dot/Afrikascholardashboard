@@ -265,9 +265,6 @@ const CommunityPage = () => {
               <Link to="/dashboard/my-papers" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1.5 transition-colors">
                 <Library className="h-3.5 w-3.5 text-accent" /> My Library
               </Link>
-              <Link to="/dashboard/messages" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1.5 transition-colors">
-                <MessageCircle className="h-3.5 w-3.5 text-accent" /> Messages
-              </Link>
               <Link to="/dashboard/settings" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1.5 transition-colors">
                 <Bell className="h-3.5 w-3.5 text-accent" /> Notifications
               </Link>
