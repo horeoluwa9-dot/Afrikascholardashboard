@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles } from "lucide-react";
+import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
   LayoutDashboard, FileText, FilePlus, Database, BarChart3,
   Compass, CalendarClock, Users2, Send, ClipboardList,
