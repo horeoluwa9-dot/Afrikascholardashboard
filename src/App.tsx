@@ -34,6 +34,7 @@ import NetworkPage from "./pages/dashboard/NetworkPage";
 import InstitutionRequestsPage from "./pages/dashboard/InstitutionRequestsPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
