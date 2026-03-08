@@ -31,6 +31,41 @@ const tabs = [
   { key: "engagements", label: "Engagements", icon: Handshake },
 ];
 
+// ── Demo fallback data ──
+const DEMO_PROFILES = [
+  { user_id: "demo-1", display_name: "Dr. Ama Mensah", discipline: "Epidemiology", institution: "University of Ghana", country: "Ghana", academic_title: "PhD", position: "Senior Lecturer", avatar_url: null },
+  { user_id: "demo-2", display_name: "Dr. Tunde Adeyemi", discipline: "Data Science", institution: "University of Ibadan", country: "Nigeria", academic_title: "PhD", position: "Associate Professor", avatar_url: null },
+  { user_id: "demo-3", display_name: "Dr. Fatima Bello", discipline: "Public Health", institution: "Ahmadu Bello University", country: "Nigeria", academic_title: "PhD", position: "Researcher", avatar_url: null },
+  { user_id: "demo-4", display_name: "Dr. Grace Nwoye", discipline: "Environmental Science", institution: "University of Cape Town", country: "South Africa", academic_title: "PhD", position: "Postdoctoral Fellow", avatar_url: null },
+  { user_id: "demo-5", display_name: "Prof. Ibrahim Sadiq", discipline: "Renewable Energy", institution: "University of Nairobi", country: "Kenya", academic_title: "Prof", position: "Professor", avatar_url: null },
+  { user_id: "demo-6", display_name: "Dr. Kofi Mensah", discipline: "Agricultural Economics", institution: "Kwame Nkrumah University", country: "Ghana", academic_title: "PhD", position: "Lecturer", avatar_url: null },
+];
+
+const DEMO_ADVISORY = [
+  { id: "demo-adv-1", user_id: "demo-1", specialization: "Epidemiological Modeling", services: ["Research Methodology", "Grant Writing", "Data Analysis"], hourly_rate: "$80/hr", is_available: true, profile: { display_name: "Dr. Ama Mensah", institution: "University of Ghana", avatar_url: null } },
+  { id: "demo-adv-2", user_id: "demo-5", specialization: "Energy Policy & Sustainability", services: ["Policy Analysis", "Project Evaluation", "Peer Review"], hourly_rate: "$100/hr", is_available: true, profile: { display_name: "Prof. Ibrahim Sadiq", institution: "University of Nairobi", avatar_url: null } },
+  { id: "demo-adv-3", user_id: "demo-2", specialization: "Machine Learning for Health", services: ["Statistical Analysis", "Dataset Curation", "Technical Writing"], hourly_rate: "$90/hr", is_available: true, profile: { display_name: "Dr. Tunde Adeyemi", institution: "University of Ibadan", avatar_url: null } },
+];
+
+const DEMO_JOBS = [
+  { id: "demo-job-1", title: "Senior Research Fellow — AI & Public Health", institution: "African Institute of Health Sciences", location: "Accra, Ghana", description: "Lead AI-driven epidemiological research across West African healthcare systems. Collaborate with international teams on predictive health modeling.", requirements: "PhD in Computer Science, Public Health, or related field. 5+ years research experience.", job_type: "full-time", application_deadline: "2026-04-30T00:00:00Z", created_at: "2026-03-01T00:00:00Z", posted_by: null },
+  { id: "demo-job-2", title: "Postdoctoral Researcher — Climate Policy", institution: "University of Cape Town", location: "Cape Town, South Africa", description: "Investigate climate policy frameworks across African nations with a focus on renewable energy transitions.", requirements: "PhD in Environmental Science or Policy. Strong publication record.", job_type: "contract", application_deadline: "2026-05-15T00:00:00Z", created_at: "2026-03-03T00:00:00Z", posted_by: null },
+  { id: "demo-job-3", title: "Lecturer in Agricultural Economics", institution: "Makerere University", location: "Kampala, Uganda", description: "Teach undergraduate and graduate courses in agricultural economics. Conduct research on food security in East Africa.", requirements: "PhD in Agricultural Economics. Teaching experience preferred.", job_type: "full-time", application_deadline: "2026-06-01T00:00:00Z", created_at: "2026-03-05T00:00:00Z", posted_by: null },
+  { id: "demo-job-4", title: "Research Assistant — Renewable Energy Data", institution: "University of Nairobi", location: "Nairobi, Kenya", description: "Support data collection and analysis for a multi-country renewable energy adoption study.", requirements: "Master's degree in progress or completed. Proficiency in R or Python.", job_type: "part-time", application_deadline: "2026-04-15T00:00:00Z", created_at: "2026-03-06T00:00:00Z", posted_by: null },
+];
+
+const DEMO_ENGAGEMENTS = [
+  { id: "demo-eng-1", user_id: "demo", title: "Advisory — Health Data Analytics", institution: "WHO Africa Regional Office", engagement_type: "advisory", status: "active", start_date: "2026-01-15T00:00:00Z", end_date: null, description: "Providing advisory support on health data analytics infrastructure for 6 West African countries.", created_at: "2026-01-15T00:00:00Z" },
+  { id: "demo-eng-2", user_id: "demo", title: "Collaborative Research — Food Security", institution: "African Development Bank", engagement_type: "collaboration", status: "active", start_date: "2025-11-01T00:00:00Z", end_date: "2026-06-30T00:00:00Z", description: "Joint research project analyzing food security patterns and agricultural productivity across the Sahel region.", created_at: "2025-11-01T00:00:00Z" },
+  { id: "demo-eng-3", user_id: "demo", title: "Peer Review — Journal of African Energy Studies", institution: "Afrika Scholar Publishing", engagement_type: "peer_review", status: "completed", start_date: "2026-02-01T00:00:00Z", end_date: "2026-02-28T00:00:00Z", description: "Completed peer review of 3 manuscripts on renewable energy policy in sub-Saharan Africa.", created_at: "2026-02-01T00:00:00Z" },
+];
+
+const DEMO_CONNECTIONS = [
+  { id: "demo-conn-1", requester_id: "demo", receiver_id: "demo-1", status: "accepted", created_at: "2026-01-10T00:00:00Z", profile: DEMO_PROFILES[0] },
+  { id: "demo-conn-2", requester_id: "demo", receiver_id: "demo-2", status: "accepted", created_at: "2026-02-05T00:00:00Z", profile: DEMO_PROFILES[1] },
+  { id: "demo-conn-3", requester_id: "demo-3", receiver_id: "demo", status: "pending", created_at: "2026-03-07T00:00:00Z", profile: DEMO_PROFILES[2] },
+];
+
 const NetworkPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -43,10 +78,19 @@ const NetworkPage = () => {
   const [filterCountry, setFilterCountry] = useState("");
 
   const {
-    connections, advisoryProfiles, advisoryRequests, jobs, applications, engagements,
-    allProfiles, loading, connectedUserIds, pendingUserIds,
+    connections: dbConnections, advisoryProfiles: dbAdvisoryProfiles, advisoryRequests: dbAdvisoryRequests,
+    jobs: dbJobs, applications, engagements: dbEngagements,
+    allProfiles: dbAllProfiles, loading, connectedUserIds, pendingUserIds,
     sendConnectionRequest, submitAdvisoryRequest, submitApplication, withdrawApplication,
   } = useNetwork();
+
+  // Use real data if available, otherwise fall back to demo data
+  const allProfiles = dbAllProfiles.length > 0 ? dbAllProfiles : DEMO_PROFILES;
+  const connections = dbConnections.length > 0 ? dbConnections : DEMO_CONNECTIONS as any[];
+  const advisoryProfiles = dbAdvisoryProfiles.length > 0 ? dbAdvisoryProfiles : DEMO_ADVISORY as any[];
+  const advisoryRequests = dbAdvisoryRequests;
+  const jobs = dbJobs.length > 0 ? dbJobs : DEMO_JOBS as any[];
+  const engagements = dbEngagements.length > 0 ? dbEngagements : DEMO_ENGAGEMENTS as any[];
 
   // Dialogs
   const [advisoryDialog, setAdvisoryDialog] = useState(false);
