@@ -527,61 +527,113 @@ const EditorialWorkflow = () => {
 
         {/* ===== Assign Reviewer Dialog ===== */}
         <Dialog open={showAssignReviewer} onOpenChange={setShowAssignReviewer}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>Assign Reviewer</DialogTitle>
               <p className="text-xs text-muted-foreground mt-1">
-                Assign an academic reviewer to evaluate this manuscript.
+                Search and assign an academic reviewer for: <strong className="text-foreground">{selected?.title}</strong>
               </p>
             </DialogHeader>
-            <div className="space-y-3">
-              <div>
-                <Label>Reviewer Name *</Label>
+            <div className="space-y-4">
+              {/* Reviewer Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  className="mt-1"
-                  placeholder="e.g. Dr. Fatima Bello"
-                  value={reviewerForm.name}
-                  onChange={e => setReviewerForm(f => ({ ...f, name: e.target.value }))}
+                  className="pl-10"
+                  placeholder="Search by name, institution, or research area..."
+                  value={reviewerSearch}
+                  onChange={e => setReviewerSearch(e.target.value)}
                 />
               </div>
-              <div>
-                <Label>Institution</Label>
-                <Input
-                  className="mt-1"
-                  placeholder="e.g. University of Lagos"
-                  value={reviewerForm.institution}
-                  onChange={e => setReviewerForm(f => ({ ...f, institution: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label>Area of Expertise</Label>
-                <Input
-                  className="mt-1"
-                  placeholder="e.g. Epidemiology"
-                  value={reviewerForm.expertise}
-                  onChange={e => setReviewerForm(f => ({ ...f, expertise: e.target.value }))}
-                />
+
+              {/* Reviewer Directory */}
+              {reviewerSearch.trim() && (
+                <div className="border border-border rounded-lg divide-y divide-border max-h-[200px] overflow-y-auto">
+                  {REVIEWER_DIRECTORY
+                    .filter(r =>
+                      r.name.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+                      r.institution.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+                      r.expertise.toLowerCase().includes(reviewerSearch.toLowerCase())
+                    )
+                    .map((r, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between px-4 py-3 hover:bg-secondary/50 transition-colors cursor-pointer"
+                        onClick={() => {
+                          setReviewerForm({ name: r.name, institution: r.institution, expertise: r.expertise });
+                          setReviewerSearch("");
+                        }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-full bg-accent/10 flex items-center justify-center">
+                            <User className="h-4 w-4 text-accent" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-foreground">{r.name}</p>
+                            <p className="text-xs text-muted-foreground">{r.institution} · {r.expertise}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Star className="h-3 w-3 text-accent fill-accent" /> {r.rating}
+                        </div>
+                      </div>
+                    ))}
+                  {REVIEWER_DIRECTORY.filter(r =>
+                    r.name.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+                    r.institution.toLowerCase().includes(reviewerSearch.toLowerCase()) ||
+                    r.expertise.toLowerCase().includes(reviewerSearch.toLowerCase())
+                  ).length === 0 && (
+                    <p className="text-xs text-muted-foreground text-center py-4">No reviewers found</p>
+                  )}
+                </div>
+              )}
+
+              {/* Manual Entry */}
+              <div className="space-y-3">
+                <div>
+                  <Label>Reviewer Name *</Label>
+                  <Input className="mt-1" placeholder="e.g. Dr. Fatima Bello" value={reviewerForm.name} onChange={e => setReviewerForm(f => ({ ...f, name: e.target.value }))} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Institution</Label>
+                    <Input className="mt-1" placeholder="e.g. University of Lagos" value={reviewerForm.institution} onChange={e => setReviewerForm(f => ({ ...f, institution: e.target.value }))} />
+                  </div>
+                  <div>
+                    <Label>Research Area</Label>
+                    <Input className="mt-1" placeholder="e.g. Epidemiology" value={reviewerForm.expertise} onChange={e => setReviewerForm(f => ({ ...f, expertise: e.target.value }))} />
+                  </div>
+                </div>
               </div>
 
               {/* Currently assigned */}
               <div className="pt-2">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                  Currently Assigned
-                </p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Currently Assigned</p>
                 {demoReviewers.map((r, i) => (
                   <div key={i} className="flex items-center gap-2 py-2 border-b border-border last:border-0">
                     <User className="h-3 w-3 text-muted-foreground" />
                     <span className="text-sm text-foreground">{r.name}</span>
-                    <Badge className="text-[10px] bg-secondary text-secondary-foreground ml-auto">
-                      {r.status}
-                    </Badge>
+                    <span className="text-xs text-muted-foreground ml-1">· {r.expertise}</span>
+                    <div className="flex items-center gap-1 ml-auto text-xs text-muted-foreground">
+                      <Star className="h-3 w-3 text-accent fill-accent" /> {r.rating}
+                    </div>
+                    <Badge className="text-[10px] bg-secondary text-secondary-foreground ml-2">{r.status}</Badge>
                   </div>
                 ))}
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setShowAssignReviewer(false)}>Cancel</Button>
-              <Button variant="afrika" disabled={!reviewerForm.name}>
+              <Button variant="outline" onClick={() => { setShowAssignReviewer(false); setReviewerSearch(""); }}>Cancel</Button>
+              <Button
+                variant="afrika"
+                disabled={!reviewerForm.name}
+                onClick={() => {
+                  toast.success(`${reviewerForm.name} assigned as reviewer. Notification sent.`);
+                  setShowAssignReviewer(false);
+                  setReviewerForm({ name: "", institution: "", expertise: "" });
+                  setReviewerSearch("");
+                }}
+              >
                 <UserPlus className="h-3 w-3 mr-1" /> Assign Reviewer
               </Button>
             </DialogFooter>
