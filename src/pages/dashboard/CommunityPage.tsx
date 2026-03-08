@@ -231,7 +231,7 @@ const CommunityPage = () => {
                       </div>
                     </DialogContent>
                   </Dialog>
-                  <Link to={`/dashboard/messages?user=${encodeURIComponent(post.author)}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  <Link to={`/dashboard/researcher?user=${encodeURIComponent(post.author)}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
                     <MessageCircle className="h-3.5 w-3.5" /> Message
                   </Link>
                   <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors ml-auto">

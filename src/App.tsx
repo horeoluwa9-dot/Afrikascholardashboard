@@ -87,6 +87,7 @@ const App = () => (
             <Route path="/dashboard/library" element={<P><LibraryPage /></P>} />
             <Route path="/dashboard/network" element={<P><NetworkPage /></P>} />
             <Route path="/dashboard/profile" element={<P><ProfilePage /></P>} />
+            <Route path="/dashboard/researcher" element={<P><ResearcherProfilePage /></P>} />
 
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
