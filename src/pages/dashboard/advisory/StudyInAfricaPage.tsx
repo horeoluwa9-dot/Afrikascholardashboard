@@ -127,8 +127,8 @@ const StudyInAfricaPage = () => {
                 <p className="text-foreground">{viewProgram.description}</p>
               </div>
               <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1 gap-1"><GraduationCap className="h-3 w-3" /> Apply</Button>
-                <Button variant="outline" size="sm" className="flex-1 gap-1"><Handshake className="h-3 w-3" /> Request Advisory</Button>
+                <Button variant="afrika" size="sm" className="flex-1 gap-1"><GraduationCap className="h-3 w-3" /> Apply</Button>
+                <Button variant="afrikaOutline" size="sm" className="flex-1 gap-1"><Handshake className="h-3 w-3" /> Request Advisory</Button>
               </div>
             </div>
           )}

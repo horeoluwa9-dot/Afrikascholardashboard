@@ -198,7 +198,7 @@ const MyCasesPage = () => {
               </div>
 
               <Link to="/dashboard/messages" className="block">
-                <Button variant="outline" size="sm" className="w-full gap-1">
+                <Button variant="afrikaOutline" size="sm" className="w-full gap-1">
                   <MessageCircle className="h-3 w-3" /> Message Advisor
                 </Button>
               </Link>

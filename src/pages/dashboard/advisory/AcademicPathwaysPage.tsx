@@ -145,11 +145,11 @@ const AcademicPathwaysPage = () => {
                 </div>
               </div>
               <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1 gap-1" onClick={() => { handleRequestGuidance(viewPathway); setViewPathway(null); }}>
+                <Button variant="afrika" size="sm" className="flex-1 gap-1" onClick={() => { handleRequestGuidance(viewPathway); setViewPathway(null); }}>
                   <Compass className="h-3 w-3" /> Request Guidance
                 </Button>
                 <Link to="/dashboard/messages" className="flex-1">
-                  <Button variant="outline" size="sm" className="w-full gap-1">
+                  <Button variant="afrikaOutline" size="sm" className="w-full gap-1">
                     <MessageCircle className="h-3 w-3" /> Message Advisor
                   </Button>
                 </Link>

@@ -184,7 +184,7 @@ const DocumentUploadsPage = () => {
                 <p className="text-[10px] text-muted-foreground mt-1">PDF, JPG, PNG up to 20MB</p>
               </div>
             </div>
-            <Button className="w-full" onClick={handleUpload}>Upload Document</Button>
+            <Button variant="afrika" className="w-full" onClick={handleUpload}>Upload Document</Button>
           </div>
         </DialogContent>
       </Dialog>

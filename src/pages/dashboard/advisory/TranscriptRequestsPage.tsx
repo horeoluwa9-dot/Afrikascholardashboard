@@ -178,7 +178,7 @@ const TranscriptRequestsPage = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Button className="w-full" onClick={handleSubmit}>Submit Request</Button>
+            <Button variant="afrika" className="w-full" onClick={handleSubmit}>Submit Request</Button>
           </div>
         </DialogContent>
       </Dialog>

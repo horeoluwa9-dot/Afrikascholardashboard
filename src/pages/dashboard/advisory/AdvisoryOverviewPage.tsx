@@ -99,17 +99,17 @@ const AdvisoryOverviewPage = () => {
             <h2 className="text-lg font-bold text-foreground mb-4">Manage</h2>
             <div className="bg-card rounded-xl border border-border p-5 space-y-3">
               <Link to="/dashboard/advisory/cases">
-                <Button className="w-full gap-1.5 justify-start" variant="outline">
+                <Button className="w-full gap-1.5 justify-start" variant="afrika">
                   <ClipboardList className="h-4 w-4" /> View Advisory Cases
                 </Button>
               </Link>
               <Link to="/dashboard/advisory/documents">
-                <Button className="w-full gap-1.5 justify-start" variant="outline">
+                <Button className="w-full gap-1.5 justify-start" variant="afrika">
                   <FileUp className="h-4 w-4" /> Upload Documents
                 </Button>
               </Link>
               <Link to="/dashboard/messages">
-                <Button className="w-full gap-1.5 justify-start" variant="outline">
+                <Button className="w-full gap-1.5 justify-start" variant="afrika">
                   <MessageCircle className="h-4 w-4" /> Message Advisor
                 </Button>
               </Link>
