@@ -109,6 +109,7 @@ const sidebarSections: SidebarSection[] = [
     collapsible: false,
     items: [
       { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+      { title: "Messages", url: "/dashboard/messages", icon: MessagesIcon },
       { title: "Library", url: "/dashboard/library", icon: BookOpen },
       { title: "Network", url: "/dashboard/network", icon: Globe },
     ],
@@ -126,7 +127,6 @@ const sidebarSections: SidebarSection[] = [
     label: "",
     collapsible: false,
     items: [
-      { title: "Messages", url: "/dashboard/messages", icon: MessagesIcon },
       { title: "Profile", url: "/dashboard/profile", icon: User },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
       { title: "Settings", url: "/dashboard/settings", icon: Settings },
