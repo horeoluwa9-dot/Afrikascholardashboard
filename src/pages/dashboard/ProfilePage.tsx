@@ -95,7 +95,7 @@ const ProfilePage = () => {
                 {initials}
               </div>
               <div className="flex-1 min-w-0 pt-2">
-                <h1 className="text-2xl font-bold text-foreground font-serif">{displayName}</h1>
+                <h1 className="text-2xl font-bold text-primary-foreground font-serif">{displayName}</h1>
                 <div className="flex items-center gap-2 flex-wrap mt-1">
                   {profile?.academic_title && (
                     <Badge className="bg-accent/10 text-accent border-accent/30 text-xs">{profile.academic_title}</Badge>
