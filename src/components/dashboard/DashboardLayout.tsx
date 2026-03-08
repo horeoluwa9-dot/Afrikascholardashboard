@@ -120,6 +120,19 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
+    label: "Academic Advisory",
+    collapsible: true,
+    items: [
+      { title: "Advisory Overview", url: "/dashboard/advisory", icon: Compass },
+      { title: "Transcript Requests", url: "/dashboard/advisory/transcripts", icon: FileText },
+      { title: "Degree Advisory", url: "/dashboard/advisory/degree", icon: GraduationCap },
+      { title: "Study in Africa", url: "/dashboard/advisory/study-africa", icon: Globe },
+      { title: "Academic Pathways", url: "/dashboard/advisory/pathways", icon: MapPin },
+      { title: "My Cases", url: "/dashboard/advisory/cases", icon: ClipboardList },
+      { title: "Documents", url: "/dashboard/advisory/documents", icon: FileUp },
+    ],
+  },
+  {
     label: "Research Intelligence",
     collapsible: true,
     requiredModule: "publeesh_ai",
@@ -137,19 +150,6 @@ const sidebarSections: SidebarSection[] = [
         ],
       },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
-    ],
-  },
-  {
-    label: "Academic Advisory",
-    collapsible: true,
-    items: [
-      { title: "Advisory Overview", url: "/dashboard/advisory", icon: Compass },
-      { title: "Transcript Requests", url: "/dashboard/advisory/transcripts", icon: FileText },
-      { title: "Degree Advisory", url: "/dashboard/advisory/degree", icon: GraduationCap },
-      { title: "Study in Africa", url: "/dashboard/advisory/study-africa", icon: Globe },
-      { title: "Academic Pathways", url: "/dashboard/advisory/pathways", icon: MapPin },
-      { title: "My Cases", url: "/dashboard/advisory/cases", icon: ClipboardList },
-      { title: "Documents", url: "/dashboard/advisory/documents", icon: FileUp },
     ],
   },
 
