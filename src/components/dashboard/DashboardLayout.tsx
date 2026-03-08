@@ -59,23 +59,12 @@ const NON_STUDENT: AppRole[] = ["researcher", "reviewer", "institutional_admin"]
 const ADMIN_ONLY: AppRole[] = ["institutional_admin"];
 
 const sidebarSections: SidebarSection[] = [
-  // === CORE MODULES (always visible) ===
+  // === CORE ===
   {
     label: "",
     collapsible: false,
     items: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-    ],
-  },
-  {
-    label: "",
-    collapsible: false,
-    items: [
-      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
-      { title: "Library", url: "/dashboard/library", icon: BookOpen },
-      { title: "Network", url: "/dashboard/network", icon: Globe },
-      { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
-      { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
   },
 
@@ -134,6 +123,18 @@ const sidebarSections: SidebarSection[] = [
       { title: "Lecturer Search", url: "/dashboard/institutional/lecturers", icon: Search },
       { title: "Collaborations", url: "/dashboard/institutional/collaborations", icon: Handshake },
       { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
+    ],
+  },
+
+  // === CORE LINKS (above settings) ===
+  {
+    label: "",
+    collapsible: false,
+    items: [
+      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+      { title: "Library", url: "/dashboard/library", icon: BookOpen },
+      { title: "Network", url: "/dashboard/network", icon: Globe },
+      { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
   },
 
