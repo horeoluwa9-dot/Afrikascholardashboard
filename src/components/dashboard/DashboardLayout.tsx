@@ -39,6 +39,7 @@ interface SidebarItem {
   url: string;
   icon: any;
   requiredRoles?: AppRole[];
+  children?: SidebarItem[];
 }
 
 interface SidebarSection {
@@ -107,9 +108,14 @@ const sidebarSections: SidebarSection[] = [
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
       { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
       { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
-      { title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle },
-      { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
-      { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
+      {
+        title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle,
+        children: [
+          { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
+          { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
+          { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
+        ],
+      },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
     ],
   },
@@ -130,9 +136,55 @@ function canAccess(role: AppRole | null, requiredRoles?: AppRole[]): boolean {
   return requiredRoles.includes(role);
 }
 
+function NestedSidebarItem({ item, collapsed, getIsItemActive }: { item: SidebarItem; collapsed: boolean; getIsItemActive: (i: SidebarItem) => boolean }) {
+  const childActive = item.children?.some((c) => getIsItemActive(c)) || false;
+  const [open, setOpen] = useState(childActive);
+
+  return (
+    <SidebarMenuItem>
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <CollapsibleTrigger className="w-full">
+          <div className={`flex items-center text-[13px] py-1.5 px-2 rounded-md cursor-pointer transition-colors ${
+            childActive ? "text-accent font-semibold" : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          }`}>
+            <item.icon className="h-4 w-4 mr-2 shrink-0" />
+            {!collapsed && (
+              <>
+                <span className="flex-1 text-left">{item.title}</span>
+                <ChevronDown className={`h-3 w-3 transition-transform ${open ? "" : "-rotate-90"}`} />
+              </>
+            )}
+          </div>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenu className="ml-4 border-l border-sidebar-border pl-2 mt-1">
+            {item.children?.map((child) => {
+              const active = getIsItemActive(child);
+              return (
+                <SidebarMenuItem key={child.title}>
+                  <SidebarMenuButton asChild>
+                    <Link to={child.url}
+                      className={`flex items-center text-[12px] py-1 px-2 rounded-md transition-colors ${
+                        active ? "bg-sidebar-accent text-accent font-semibold" : "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                      }`}>
+                      <child.icon className="h-3.5 w-3.5 mr-2 shrink-0" />
+                      {!collapsed && <span>{child.title}</span>}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </CollapsibleContent>
+      </Collapsible>
+    </SidebarMenuItem>
+  );
+}
+
 function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: SidebarSection; collapsed: boolean; userRole: AppRole | null }) {
   const location = useLocation();
-  const isActive = section.items.some((item) => {
+  const allItems = section.items.flatMap((item) => [item, ...(item.children || [])]);
+  const isActive = allItems.some((item) => {
     if (item.url.includes("?")) return location.pathname === item.url.split("?")[0];
     return location.pathname === item.url || location.pathname.startsWith(item.url + "/");
   });
@@ -190,6 +242,10 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
                       </Tooltip>
                     </SidebarMenuItem>
                   );
+                }
+
+                if (item.children) {
+                  return <NestedSidebarItem key={item.title} item={item} collapsed={collapsed} getIsItemActive={getIsItemActive} />;
                 }
 
                 return (
