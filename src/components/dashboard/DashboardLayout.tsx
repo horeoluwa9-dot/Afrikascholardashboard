@@ -39,6 +39,7 @@ interface SidebarItem {
   url: string;
   icon: any;
   requiredRoles?: AppRole[];
+  children?: SidebarItem[];
 }
 
 interface SidebarSection {
