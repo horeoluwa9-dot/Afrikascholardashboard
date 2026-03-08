@@ -30,8 +30,16 @@ const stageOrder = workflowStages.map(s => s.key);
 
 // Demo reviewer data
 const demoReviewers = [
-  { name: "Dr. Fatima Bello", institution: "University of Lagos", expertise: "Epidemiology", status: "Review Submitted" },
-  { name: "Dr. Kofi Mensah", institution: "University of Ghana", expertise: "Data Science", status: "Pending Review" },
+  { name: "Dr. Fatima Bello", institution: "University of Lagos", expertise: "Epidemiology", status: "Review Submitted", rating: 4.8 },
+  { name: "Dr. Kofi Mensah", institution: "University of Ghana", expertise: "Data Science", status: "Pending Review", rating: 4.5 },
+];
+
+const REVIEWER_DIRECTORY = [
+  { name: "Dr. Ama Mensah", institution: "University of Ghana", expertise: "Energy Policy", rating: 4.7 },
+  { name: "Prof. Kwame Asante", institution: "University of Ghana", expertise: "Computer Science", rating: 4.9 },
+  { name: "Dr. Ngozi Okafor", institution: "University of Nigeria", expertise: "Agricultural Science", rating: 4.3 },
+  { name: "Dr. Tunde Adeyemi", institution: "University of Lagos", expertise: "Political Science", rating: 4.6 },
+  { name: "Dr. Grace Nwoye", institution: "University of Cape Town", expertise: "Environmental Science", rating: 4.4 },
 ];
 
 const demoComments = [
