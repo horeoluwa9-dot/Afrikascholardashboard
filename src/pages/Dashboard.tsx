@@ -14,7 +14,7 @@ import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
   FileText, Database, BarChart3, Send, Wrench, Compass,
-  ArrowRight, Newspaper, CalendarClock, Users2, TrendingUp, Eye, Building2,
+  ArrowRight, Newspaper, CalendarClock, Users2, TrendingUp, Eye, Building2, Handshake,
 } from "lucide-react";
 
 const quickActions = [
