@@ -89,7 +89,7 @@ const MessagesPage = () => {
 
   const tabs = ["All", "Requests", "Unread"];
 
-  const filtered = sampleConversations.filter((c) => {
+  const filtered = conversations.filter((c) => {
     if (tab === "Requests") return c.status === "request";
     if (tab === "Unread") return c.unread > 0;
     return true;
