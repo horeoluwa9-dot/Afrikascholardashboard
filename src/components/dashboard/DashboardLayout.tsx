@@ -99,7 +99,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Research Intelligence (Publeesh)",
+    label: "Research Intelligence",
     collapsible: true,
     requiredModule: "publeesh_ai",
     requiresSubscription: true,
