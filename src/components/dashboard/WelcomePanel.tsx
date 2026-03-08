@@ -24,8 +24,8 @@ const actions = [
   },
   {
     icon: Globe,
-    title: "Assess Institutions",
-    desc: "Evaluate universities and academic programs across Africa.",
+    title: "Institutional Collaboration",
+    desc: "Build academic partnerships",
     link: "/dashboard/institutional",
   },
 ];
