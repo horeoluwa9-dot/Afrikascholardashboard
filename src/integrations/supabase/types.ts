@@ -365,6 +365,75 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          ai_alerts: boolean
+          created_at: string
+          dashboard_notifications: boolean
+          email_notifications: boolean
+          id: string
+          network_invitations: boolean
+          publishing_updates: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_alerts?: boolean
+          created_at?: string
+          dashboard_notifications?: boolean
+          email_notifications?: boolean
+          id?: string
+          network_invitations?: boolean
+          publishing_updates?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_alerts?: boolean
+          created_at?: string
+          dashboard_notifications?: boolean
+          email_notifications?: boolean
+          id?: string
+          network_invitations?: boolean
+          publishing_updates?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           academic_title: string | null

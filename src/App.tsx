@@ -39,6 +39,7 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
 import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
+import NotificationsPage from "./pages/dashboard/NotificationsPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -110,7 +111,7 @@ const App = () => (
             <Route path="/dashboard/intelligence/conferences" element={<Navigate to="/dashboard/intelligence?tab=conferences" replace />} />
             <Route path="/dashboard/intelligence/stakeholders" element={<Navigate to="/dashboard/intelligence?tab=stakeholders" replace />} />
             <Route path="/dashboard/intelligence/gaps" element={<Navigate to="/dashboard/intelligence?tab=gaps" replace />} />
-            <Route path="/dashboard/notifications" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard/notifications" element={<P><NotificationsPage /></P>} />
 
             <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
 

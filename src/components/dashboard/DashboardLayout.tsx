@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles } from "lucide-react";
+import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles, Bell } from "lucide-react";
 import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
   LayoutDashboard, FileText, FilePlus, Database, BarChart3,
@@ -74,6 +74,7 @@ const sidebarSections: SidebarSection[] = [
       { title: "Community", url: "/dashboard/community", icon: MessageCircle },
       { title: "Library", url: "/dashboard/library", icon: BookOpen },
       { title: "Network", url: "/dashboard/network", icon: Globe },
+      { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
       { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
   },
@@ -409,7 +410,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <MessagesIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-[10px] flex items-center justify-center font-bold">1</span>
               </Link>
-              <NotificationsPanel />
+              <Link to="/dashboard/notifications" className="relative p-2 rounded-md hover:bg-secondary transition-colors">
+                <Bell className="h-5 w-5 text-muted-foreground" />
+                <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-accent" />
+              </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex items-center gap-1">
                   <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold">{initial}</div>
