@@ -108,9 +108,14 @@ const sidebarSections: SidebarSection[] = [
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
       { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
       { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
-      { title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle },
-      { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
-      { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
+      {
+        title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle,
+        children: [
+          { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
+          { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
+          { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
+        ],
+      },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
     ],
   },
