@@ -127,6 +127,44 @@ const LecturerSearchPage = () => {
     }
   };
 
+  const handleRequestAdvisory = (l: LecturerProfile) => {
+    setAdvisoryForm({ topic: l.discipline, description: "", expected_duration: "", institution: "" });
+    setAdvisoryTarget(l);
+  };
+
+  const handleSubmitAdvisory = async () => {
+    if (!advisoryTarget || !user || advisoryTarget.user_id.startsWith("s")) {
+      toast.info("Sign in and use a real researcher profile to submit advisory requests.");
+      return;
+    }
+    setAdvisorySaving(true);
+    try {
+      const { error } = await supabase.from("advisory_requests").insert({
+        advisor_id: advisoryTarget.user_id,
+        requester_id: user.id,
+        topic: advisoryForm.topic,
+        description: advisoryForm.description || null,
+        expected_duration: advisoryForm.expected_duration || null,
+        institution: advisoryForm.institution || null,
+      });
+      if (error) throw error;
+      toast.success(`Advisory request sent to ${advisoryTarget.display_name}`);
+      setAdvisoryTarget(null);
+    } catch {
+      toast.error("Failed to send advisory request");
+    } finally {
+      setAdvisorySaving(false);
+    }
+  };
+
+  const handleMessage = (l: LecturerProfile) => {
+    if (l.user_id.startsWith("s")) {
+      navigate("/dashboard/messages");
+    } else {
+      navigate(`/dashboard/messages?to=${l.user_id}&name=${encodeURIComponent(l.display_name)}`);
+    }
+  };
+
   // Use DB results if we have them and they're non-empty; otherwise show sample
   const useSample = dbResults === null || dbResults.length === 0;
   const displayLecturers = useSample
