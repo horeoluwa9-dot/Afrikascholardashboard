@@ -51,6 +51,7 @@ import TalentRequestsPage from "./pages/dashboard/TalentRequestsPage";
 import LecturerSearchPage from "./pages/dashboard/LecturerSearchPage";
 import ProjectCollaborationsPage from "./pages/dashboard/ProjectCollaborationsPage";
 import MyEngagementsPage from "./pages/dashboard/MyEngagementsPage";
+import AdvisoryRequestsPage from "./pages/dashboard/AdvisoryRequestsPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
