@@ -28,6 +28,8 @@ import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 import { useAuth, AppRole } from "@/contexts/AuthContext";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
+import { ModuleType } from "@/hooks/useModuleUnlocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 
@@ -43,6 +45,8 @@ interface SidebarSection {
   collapsible: boolean;
   items: SidebarItem[];
   requiredRoles?: AppRole[];
+  /** If set, this section is only visible when the module is unlocked */
+  requiredModule?: ModuleType;
 }
 
 const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
@@ -51,14 +55,31 @@ const NON_STUDENT: AppRole[] = ["researcher", "reviewer", "institutional_admin"]
 const ADMIN_ONLY: AppRole[] = ["institutional_admin"];
 
 const sidebarSections: SidebarSection[] = [
+  // === CORE MODULES (always visible) ===
   {
     label: "",
     collapsible: false,
-    items: [{ title: "Dashboard", url: "/dashboard", icon: LayoutDashboard }],
+    items: [
+      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+    ],
   },
+  {
+    label: "",
+    collapsible: false,
+    items: [
+      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+      { title: "Messages", url: "/dashboard/messages", icon: MessagesIcon },
+      { title: "Library", url: "/dashboard/library", icon: BookOpen },
+      { title: "Network", url: "/dashboard/network", icon: Globe },
+      { title: "Profile", url: "/dashboard/profile", icon: User },
+    ],
+  },
+
+  // === ACTION-BASED MODULES (hidden until unlocked) ===
   {
     label: "My Research",
     collapsible: true,
+    requiredModule: "my_research",
     items: [
       { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
@@ -68,6 +89,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Publishing",
     collapsible: true,
+    requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
     items: [
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
@@ -77,6 +99,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Research Intelligence",
     collapsible: true,
+    requiredModule: "research_intelligence",
     items: [
       { title: "Journals", url: "/dashboard/intelligence?tab=journals", icon: Compass },
       { title: "Conferences", url: "/dashboard/intelligence?tab=conferences", icon: CalendarClock },
@@ -88,6 +111,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Publeesh AI",
     collapsible: true,
+    requiredModule: "publeesh_ai",
     items: [
       { title: "AI Paper Generator", url: "/dashboard/generate-paper", icon: Sparkles },
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
@@ -97,6 +121,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Instrument Studio",
     collapsible: true,
+    requiredModule: "instrument_studio",
     requiredRoles: RESEARCH_ROLES,
     items: [
       { title: "Create Instrument", url: "/dashboard/instrument-studio", icon: PlusCircle },
@@ -104,15 +129,8 @@ const sidebarSections: SidebarSection[] = [
       { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
     ],
   },
-  {
-    label: "",
-    collapsible: false,
-    items: [
-      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
-      { title: "Library", url: "/dashboard/library", icon: BookOpen },
-      { title: "Network", url: "/dashboard/network", icon: Globe },
-    ],
-  },
+
+  // === ADMIN SECTIONS ===
   {
     label: "",
     collapsible: false,
@@ -122,11 +140,12 @@ const sidebarSections: SidebarSection[] = [
       { title: "Admin Panel", url: "/dashboard/admin", icon: Shield },
     ],
   },
+
+  // === SETTINGS ===
   {
     label: "",
     collapsible: false,
     items: [
-      { title: "Profile", url: "/dashboard/profile", icon: User },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
       { title: "Settings", url: "/dashboard/settings", icon: Settings },
     ],
@@ -135,7 +154,7 @@ const sidebarSections: SidebarSection[] = [
 
 function canAccess(role: AppRole | null, requiredRoles?: AppRole[]): boolean {
   if (!requiredRoles) return true;
-  if (!role) return true; // allow access if no role loaded yet
+  if (!role) return true;
   return requiredRoles.includes(role);
 }
 
@@ -227,6 +246,7 @@ function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const { profile, role } = useAuth();
+  const { isModuleUnlocked } = useModuleUnlocksContext();
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
@@ -252,6 +272,9 @@ function AppSidebar() {
         {sidebarSections.map((section, gi) => {
           // Hide entire section if role doesn't match
           if (section.requiredRoles && !canAccess(role, section.requiredRoles)) return null;
+
+          // Hide section if module not yet unlocked
+          if (section.requiredModule && !isModuleUnlocked(section.requiredModule)) return null;
 
           if (section.collapsible && section.label) {
             return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} />;
@@ -321,7 +344,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <header className="h-16 flex items-center justify-between border-b border-border bg-background px-4 lg:px-6 sticky top-0 z-30">
             <div className="flex items-center gap-3">
               <SidebarTrigger />
-              {/* Global Search */}
               <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input placeholder="Search..." value={globalSearch} onChange={(e) => setGlobalSearch(e.target.value)}

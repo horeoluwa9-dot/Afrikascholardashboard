@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,13 @@ const SubmitManuscript = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const { toast } = useToast();
+  const { unlockModule } = useModuleUnlocksContext();
+
+  // Unlock publishing & my_research modules when user visits this page
+  useEffect(() => {
+    unlockModule("publishing");
+    unlockModule("my_research");
+  }, [unlockModule]);
 
   const handleSubmit = () => {
     setSubmitting(true);

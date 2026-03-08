@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ModuleUnlocksProvider } from "@/contexts/ModuleUnlocksContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PubleeshLanding from "./pages/PubleeshLanding";
 import PricingPage from "./pages/PricingPage";
@@ -53,6 +54,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ModuleUnlocksProvider>
           <Routes>
             <Route path="/" element={<Navigate to="/publeesh" replace />} />
             <Route path="/publeesh" element={<PubleeshLanding />} />
@@ -116,6 +118,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </ModuleUnlocksProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

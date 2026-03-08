@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { Link, useSearchParams } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -412,6 +413,8 @@ function TypeSpecificAnalytics({ type }: { type: string }) {
 }
 
 const InstrumentStudio = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("instrument_studio"); }, [unlockModule]);
   const [searchParams] = useSearchParams();
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { Link, useSearchParams } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,8 @@ const tabItems = [
 ];
 
 const IntelligenceHub = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("research_intelligence"); }, [unlockModule]);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "journals";
   const [refreshing, setRefreshing] = useState(false);

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,8 @@ const summaryStats = [
 ];
 
 const DatasetExplorer = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("publeesh_ai"); }, [unlockModule]);
   const [description, setDescription] = useState("");
   const [sampleSize, setSampleSize] = useState("");
   const [generating, setGenerating] = useState(false);

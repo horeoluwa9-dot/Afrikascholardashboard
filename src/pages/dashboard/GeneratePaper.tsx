@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,8 @@ const topicIdeas = [
 ];
 
 const GeneratePaper = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("my_research"); unlockModule("publeesh_ai"); }, [unlockModule]);
   const [selectedStandards, setSelectedStandards] = useState<string[]>(["APA 7th Edition", "IMRAD Structure", "25+ Citations"]);
   const [topic, setTopic] = useState("");
   const [paperType, setPaperType] = useState("");
