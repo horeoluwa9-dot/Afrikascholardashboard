@@ -10,12 +10,14 @@ import {
 } from "@/components/ui/dialog";
 import {
   ChevronRight, MessageCircle, ThumbsUp, Share2, FileText,
-  Copy, ExternalLink, Bookmark, BarChart3, Search, Bell,
-  Library, Send, Repeat2, Users, ArrowRight,
+  Copy, ExternalLink, Bookmark, BookmarkCheck, BarChart3, Search,
+  Bell, Library, Send, Repeat2, Users, ArrowRight,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import CommunityPostCard from "@/components/community/CommunityPostCard";
+import CommunitySidebar from "@/components/community/CommunitySidebar";
 
-interface Post {
+export interface Post {
   id: number;
   author: string;
   role: string;
@@ -24,17 +26,24 @@ interface Post {
   title: string;
   content: string;
   likes: number;
-  comments: number;
+  comments: Comment[];
   reposts: number;
   words: string;
   isConnected: boolean;
 }
 
+export interface Comment {
+  id: number;
+  author: string;
+  content: string;
+  time: string;
+}
+
 const initialPosts: Post[] = [
-  { id: 1, author: "@dimayo", role: "Research Community Member", time: "2026-03-02", badge: "EMPIRICAL RESEARCH PAPER", title: "Restaurant business in Nigeria", content: "Background | The restaurant business is a significant contributor to Nigeria's economy with a growing demand for food services...", likes: 12, comments: 3, reposts: 2, words: "~5000 words", isConnected: true },
-  { id: 2, author: "@hassanb07", role: "Research Community Member", time: "2026-03-01", badge: "AGRICULTURAL RESEARCH", title: "The effect of agricultural credit on agricultural productivity in Nigeria (2000-2024)", content: "Background | Agricultural credit has been identified as a crucial factor in enhancing agricultural productivity in developing countries...", likes: 8, comments: 5, reposts: 1, words: "~5000 words", isConnected: false },
-  { id: 3, author: "@hassanb17", role: "Research Community Member", time: "2026-02-28", badge: "EMPIRICAL RESEARCH PAPER", title: "The effect of agricultural credit on agricultural productivity in Nigeria (2010-2024)", content: "Background | Agricultural credit is a crucial factor in enhancing agricultural productivity, particularly in developing countries like Nigeria...", likes: 5, comments: 2, reposts: 0, words: "~8000 words", isConnected: true },
-  { id: 4, author: "@fresource2021", role: "Research Community Member", time: "2026-02-27", badge: "EMPIRICAL RESEARCH PAPER", title: "Medical library Management", content: 'The Impact of Digital Resource Management on Medical Library Performance: A Mixed-Methods Study...', likes: 3, comments: 1, reposts: 0, words: "~3000 words", isConnected: false },
+  { id: 1, author: "@dimayo", role: "Research Community Member", time: "2026-03-02", badge: "EMPIRICAL RESEARCH PAPER", title: "Restaurant business in Nigeria", content: "Background | The restaurant business is a significant contributor to Nigeria's economy with a growing demand for food services...", likes: 12, comments: [{ id: 101, author: "@hassanb07", content: "Great research on the Nigerian restaurant sector. Have you considered the post-COVID impact?", time: "2026-03-03" }], reposts: 2, words: "~5000 words", isConnected: true },
+  { id: 2, author: "@hassanb07", role: "Research Community Member", time: "2026-03-01", badge: "AGRICULTURAL RESEARCH", title: "The effect of agricultural credit on agricultural productivity in Nigeria (2000-2024)", content: "Background | Agricultural credit has been identified as a crucial factor in enhancing agricultural productivity in developing countries...", likes: 8, comments: [{ id: 201, author: "@dimayo", content: "Interesting methodology. Would love to see the dataset.", time: "2026-03-02" }, { id: 202, author: "@fresource2021", content: "How does this compare to West African averages?", time: "2026-03-02" }], reposts: 1, words: "~5000 words", isConnected: false },
+  { id: 3, author: "@hassanb17", role: "Research Community Member", time: "2026-02-28", badge: "EMPIRICAL RESEARCH PAPER", title: "The effect of agricultural credit on agricultural productivity in Nigeria (2010-2024)", content: "Background | Agricultural credit is a crucial factor in enhancing agricultural productivity, particularly in developing countries like Nigeria...", likes: 5, comments: [], reposts: 0, words: "~8000 words", isConnected: true },
+  { id: 4, author: "@fresource2021", role: "Research Community Member", time: "2026-02-27", badge: "EMPIRICAL RESEARCH PAPER", title: "Medical library Management", content: 'The Impact of Digital Resource Management on Medical Library Performance: A Mixed-Methods Study...', likes: 3, comments: [{ id: 401, author: "@hassanb17", content: "The mixed-methods approach is well suited for this topic.", time: "2026-02-28" }], reposts: 0, words: "~3000 words", isConnected: false },
 ];
 
 const CommunityPage = () => {
@@ -44,6 +53,7 @@ const CommunityPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [posts, setPosts] = useState(initialPosts);
   const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
+  const [bookmarkedIds, setBookmarkedIds] = useState<Set<number>>(new Set());
   const [connectedAuthors, setConnectedAuthors] = useState<Set<string>>(new Set(["@dimayo", "@hassanb17"]));
   const [newPostText, setNewPostText] = useState(searchParams.get("post") || "");
   const { toast } = useToast();
@@ -60,6 +70,39 @@ const CommunityPage = () => {
       }
       return next;
     });
+  };
+
+  const toggleBookmark = (id: number) => {
+    setBookmarkedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+        toast({ title: "Bookmark removed" });
+      } else {
+        next.add(id);
+        toast({ title: "Post bookmarked!" });
+      }
+      return next;
+    });
+  };
+
+  const handleRepost = (id: number) => {
+    setPosts((p) => p.map((post) => post.id === id ? { ...post, reposts: post.reposts + 1 } : post));
+    toast({ title: "Reposted!", description: "This post has been shared to your activity." });
+  };
+
+  const addComment = (postId: number, content: string) => {
+    if (!content.trim()) return;
+    const newComment: Comment = {
+      id: Date.now(),
+      author: "@defi",
+      content: content.trim(),
+      time: new Date().toISOString().split("T")[0],
+    };
+    setPosts((p) => p.map((post) =>
+      post.id === postId ? { ...post, comments: [...post.comments, newComment] } : post
+    ));
+    toast({ title: "Comment added!" });
   };
 
   const toggleConnect = (author: string) => {
@@ -81,7 +124,7 @@ const CommunityPage = () => {
       badge: "RESEARCH UPDATE",
       title: newPostText.slice(0, 60),
       content: newPostText,
-      likes: 0, comments: 0, reposts: 0,
+      likes: 0, comments: [], reposts: 0,
       words: "",
       isConnected: false,
     };
@@ -178,100 +221,26 @@ const CommunityPage = () => {
 
             {/* Posts */}
             {filteredPosts.map((post) => (
-              <div key={post.id} className="bg-card rounded-xl border border-border p-5 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Link to={`/dashboard/researcher?user=${encodeURIComponent(post.author)}`} className="h-9 w-9 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-xs font-bold hover:ring-2 hover:ring-accent/50 transition-all cursor-pointer">
-                      {post.author[1].toUpperCase()}
-                    </Link>
-                    <div>
-                      <Link to={`/dashboard/researcher?user=${encodeURIComponent(post.author)}`} className="text-sm font-medium text-foreground hover:text-accent transition-colors cursor-pointer">
-                        {post.author}
-                      </Link>
-                      <p className="text-[10px] text-muted-foreground">{post.role}</p>
-                    </div>
-                    <span className="text-xs text-muted-foreground ml-2">{post.time}</span>
-                  </div>
-                  {post.author !== "@defi" && (
-                    <Button variant={connectedAuthors.has(post.author) ? "secondary" : "outline"} size="sm" className="text-xs gap-1" onClick={() => toggleConnect(post.author)}>
-                      <Users className="h-3 w-3" /> {connectedAuthors.has(post.author) ? "Connected" : "Connect"}
-                    </Button>
-                  )}
-                </div>
-                <Badge variant="outline" className="text-[10px] bg-accent/10 text-accent border-accent/30">{post.badge}</Badge>
-                <h3 className="text-base font-bold text-foreground">{post.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{post.content}</p>
-                {post.words && <p className="text-[10px] text-muted-foreground">{post.words}</p>}
-
-                <div className="flex items-center gap-3 pt-2 border-t border-border">
-                  <button onClick={() => toggleLike(post.id)} className={`flex items-center gap-1 text-xs transition-colors ${likedIds.has(post.id) ? "text-accent font-medium" : "text-muted-foreground hover:text-foreground"}`}>
-                    <ThumbsUp className="h-3.5 w-3.5" /> {post.likes}
-                  </button>
-                  <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                    <MessageCircle className="h-3.5 w-3.5" /> {post.comments}
-                  </button>
-                  <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                    <Repeat2 className="h-3.5 w-3.5" /> {post.reposts}
-                  </button>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                        <Share2 className="h-3.5 w-3.5" /> Share
-                      </button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-sm">
-                      <DialogHeader><DialogTitle>Share this research</DialogTitle></DialogHeader>
-                      <div className="space-y-3 mt-2">
-                        <Textarea readOnly value={`I just published a research article on Afrika Scholar. Read here: https://afrikascholar.com/community/${post.id}`} className="text-sm" />
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" className="gap-1 flex-1" onClick={() => { navigator.clipboard.writeText(`https://afrikascholar.com/community/${post.id}`); toast({ title: "Link copied!" }); }}><Copy className="h-3 w-3" /> Copy</Button>
-                          <Button variant="afrika" size="sm" className="gap-1 flex-1" onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`https://afrikascholar.com/community/${post.id}`)}`, "_blank")}><ExternalLink className="h-3 w-3" /> WhatsApp</Button>
-                          <Button variant="afrikaBlue" size="sm" className="gap-1 flex-1" onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://afrikascholar.com/community/${post.id}`)}`, "_blank")}><ExternalLink className="h-3 w-3" /> LinkedIn</Button>
-                        </div>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                  <Link to={`/dashboard/researcher?user=${encodeURIComponent(post.author)}`} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                    <MessageCircle className="h-3.5 w-3.5" /> Message
-                  </Link>
-                  <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors ml-auto">
-                    <Bookmark className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><FileText className="h-3 w-3" /> Request Full Paper</Button>
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><BarChart3 className="h-3 w-3" /> Request Assessment</Button>
-                </div>
-              </div>
+              <CommunityPostCard
+                key={post.id}
+                post={post}
+                isLiked={likedIds.has(post.id)}
+                isBookmarked={bookmarkedIds.has(post.id)}
+                isConnected={connectedAuthors.has(post.author)}
+                onToggleLike={() => toggleLike(post.id)}
+                onToggleBookmark={() => toggleBookmark(post.id)}
+                onRepost={() => handleRepost(post.id)}
+                onToggleConnect={() => toggleConnect(post.author)}
+                onAddComment={(content) => addComment(post.id, content)}
+              />
             ))}
           </div>
 
-          {/* Right Sidebar */}
-          <div className="space-y-4">
-            <div className="bg-card rounded-xl border border-border p-5 space-y-3">
-              <h3 className="text-sm font-bold text-foreground">Community Stats</h3>
-              <div className="grid grid-cols-2 gap-3 text-center">
-                <div><p className="text-xl font-bold text-accent">{posts.length}</p><p className="text-[10px] text-muted-foreground">Posts</p></div>
-                <div><p className="text-xl font-bold text-accent">453</p><p className="text-[10px] text-muted-foreground">Members</p></div>
-                <div><p className="text-xl font-bold text-foreground">{likedIds.size}</p><p className="text-[10px] text-muted-foreground">Your Likes</p></div>
-                <div><p className="text-xl font-bold text-foreground">{connectedAuthors.size}</p><p className="text-[10px] text-muted-foreground">Connections</p></div>
-              </div>
-            </div>
-
-            <div className="bg-card rounded-xl border border-border p-5 space-y-2">
-              <h3 className="text-sm font-bold text-foreground">Quick Links</h3>
-              <Link to="/dashboard/generate-paper" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1.5 transition-colors">
-                <FileText className="h-3.5 w-3.5 text-accent" /> Generate Paper
-              </Link>
-              <Link to="/dashboard/my-papers" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1.5 transition-colors">
-                <Library className="h-3.5 w-3.5 text-accent" /> My Library
-              </Link>
-              <Link to="/dashboard/settings" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground py-1.5 transition-colors">
-                <Bell className="h-3.5 w-3.5 text-accent" /> Notifications
-              </Link>
-            </div>
-          </div>
+          <CommunitySidebar
+            postCount={posts.length}
+            likeCount={likedIds.size}
+            connectionCount={connectedAuthors.size}
+          />
         </div>
       </div>
     </DashboardLayout>
