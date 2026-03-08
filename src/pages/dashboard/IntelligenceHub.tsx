@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { Link, useSearchParams } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
