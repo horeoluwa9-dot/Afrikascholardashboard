@@ -259,7 +259,7 @@ function AppSidebar() {
           return (
             <SidebarGroup key={gi}>
               {section.label && (
-                <SidebarGroupLabel className="text-sidebar-foreground/50 text-[13px] tracking-wide font-semibold">
+                <SidebarGroupLabel className="text-sidebar-foreground/70 text-[13px] tracking-wide font-semibold">
                    {section.label}
                 </SidebarGroupLabel>
               )}
