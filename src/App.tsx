@@ -17,6 +17,9 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import Onboarding from "./pages/auth/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import GeneratePaper from "./pages/dashboard/GeneratePaper";
+import PublishingOverview from "./pages/dashboard/PublishingOverview";
+import EditorialWorkflow from "./pages/dashboard/EditorialWorkflow";
+import JournalManagement from "./pages/dashboard/JournalManagement";
 import MyPapers from "./pages/dashboard/MyPapers";
 import ProTip from "./pages/dashboard/ProTip";
 import DatasetExplorer from "./pages/dashboard/DatasetExplorer";
@@ -89,8 +92,12 @@ const App = () => (
             <Route path="/dashboard/data/explorer" element={<P><DatasetExplorer /></P>} />
             <Route path="/dashboard/data/analyzer" element={<P><DatasetAnalyzer /></P>} />
             <Route path="/dashboard/intelligence" element={<P><IntelligenceHub /></P>} />
+            <Route path="/dashboard/publishing" element={<P><PublishingOverview /></P>} />
             <Route path="/dashboard/publishing/submit" element={<P><SubmitManuscript /></P>} />
+            <Route path="/dashboard/publishing/submissions" element={<P><TrackSubmissions /></P>} />
             <Route path="/dashboard/publishing/track" element={<P><TrackSubmissions /></P>} />
+            <Route path="/dashboard/publishing/workflow" element={<P><EditorialWorkflow /></P>} />
+            <Route path="/dashboard/publishing/journals" element={<P><JournalManagement /></P>} />
             <Route path="/dashboard/instrument-studio" element={<P><InstrumentStudio /></P>} />
             <Route path="/dashboard/instrument-studio/my" element={<P><MyInstruments /></P>} />
             <Route path="/dashboard/instrument-studio/slides" element={<P><AISlideBuilder /></P>} />
