@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus, BookOpen, Users, Eye, Trash2, ChevronRight, FileText,
-  Globe, Hash, Building, UserPlus, Send, Calendar, BarChart3
+  Globe, Hash, Building, UserPlus, Send, Calendar, BarChart3, Clock, CheckCircle
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePublishing, type Journal, type EditorialBoardMember } from "@/hooks/usePublishing";
