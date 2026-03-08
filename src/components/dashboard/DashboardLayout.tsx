@@ -108,6 +108,8 @@ const sidebarSections: SidebarSection[] = [
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
       { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
       { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
+      { title: "Instrument Studio", url: "/dashboard/instrument-studio", icon: PlusCircle },
+      { title: "AI Slide Builder", url: "/dashboard/ai-slide-builder", icon: Presentation },
       { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
     ],
   },
