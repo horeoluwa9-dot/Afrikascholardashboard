@@ -105,6 +105,11 @@ const App = () => (
 
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
+            <Route path="/dashboard/institutional" element={<P><InstitutionalOverview /></P>} />
+            <Route path="/dashboard/institutional/talent-requests" element={<P><TalentRequestsPage /></P>} />
+            <Route path="/dashboard/institutional/lecturers" element={<P><LecturerSearchPage /></P>} />
+            <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
+            <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
             <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={["institutional_admin"]}><AdminDashboard /></ProtectedRoute>} />
 
             {/* Legacy redirects */}
