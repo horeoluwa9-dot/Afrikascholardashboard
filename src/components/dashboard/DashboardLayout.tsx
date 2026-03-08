@@ -96,8 +96,11 @@ const sidebarSections: SidebarSection[] = [
     requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
     items: [
+      { title: "Overview", url: "/dashboard/publishing", icon: FileText },
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
-      { title: "Track Submissions", url: "/dashboard/publishing/track", icon: ClipboardList },
+      { title: "My Submissions", url: "/dashboard/publishing/submissions", icon: ClipboardList },
+      { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
+      { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
     ],
   },
   {
