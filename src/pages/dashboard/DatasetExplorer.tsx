@@ -38,6 +38,8 @@ const summaryStats = [
 ];
 
 const DatasetExplorer = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("publeesh_ai"); }, [unlockModule]);
   const [description, setDescription] = useState("");
   const [sampleSize, setSampleSize] = useState("");
   const [generating, setGenerating] = useState(false);

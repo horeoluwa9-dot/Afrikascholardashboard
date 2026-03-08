@@ -413,6 +413,8 @@ function TypeSpecificAnalytics({ type }: { type: string }) {
 }
 
 const InstrumentStudio = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("instrument_studio"); }, [unlockModule]);
   const [searchParams] = useSearchParams();
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");

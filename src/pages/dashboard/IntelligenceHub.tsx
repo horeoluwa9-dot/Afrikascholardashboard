@@ -66,6 +66,8 @@ const tabItems = [
 ];
 
 const IntelligenceHub = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("research_intelligence"); }, [unlockModule]);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "journals";
   const [refreshing, setRefreshing] = useState(false);
