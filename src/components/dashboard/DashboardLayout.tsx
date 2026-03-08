@@ -91,6 +91,7 @@ const sidebarSections: SidebarSection[] = [
       { title: "My Submissions", url: "/dashboard/publishing/submissions", icon: ClipboardList },
       { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
       { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
+      { title: "Peer Reviews", url: "/dashboard/publishing/reviews", icon: FileText },
     ],
   },
   {
