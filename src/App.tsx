@@ -117,8 +117,6 @@ const App = () => (
             <Route path="/dashboard/profile" element={<P><ProfilePage /></P>} />
             <Route path="/dashboard/researcher" element={<P><ResearcherProfilePage /></P>} />
 
-            <Route path="/dashboard/institutions" element={<P><InstitutionAssessmentPage /></P>} />
-            <Route path="/dashboard/institutions/:id" element={<P><InstitutionDetailsPage /></P>} />
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
             <Route path="/dashboard/institutional" element={<P><InstitutionalOverview /></P>} />
