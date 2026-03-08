@@ -68,6 +68,7 @@ const EditorialWorkflow = () => {
   const [showDecision, setShowDecision] = useState(false);
   const [revisionNote, setRevisionNote] = useState("");
   const [reviewerForm, setReviewerForm] = useState({ name: "", institution: "", expertise: "" });
+  const [reviewerSearch, setReviewerSearch] = useState("");
 
   const selected = submissions.find(s => s.id === selectedId);
 
