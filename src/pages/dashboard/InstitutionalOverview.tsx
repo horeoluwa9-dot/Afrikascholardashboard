@@ -3,52 +3,68 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, FileText, Handshake, CheckCircle, ArrowRight, Building2, Search, Plus } from "lucide-react";
+import {
+  Users, FileText, Handshake, CheckCircle, ArrowRight, Building2, Search, Plus,
+  TrendingUp, MessageCircle, Calendar, Briefcase,
+} from "lucide-react";
 import { useInstitutional } from "@/hooks/useInstitutional";
+
+const sampleActivity = [
+  { title: "Renewable Energy Policy Advisory", type: "Talent Request", date: "2026-03-06", icon: FileText, link: "/dashboard/institutional/talent-requests" },
+  { title: "Dr. Kofi Mensah — Energy Policy", type: "Lecturer Contacted", date: "2026-03-05", icon: Users, link: "/dashboard/institutional/lecturers" },
+  { title: "Climate Adaptation Policy Study", type: "Collaboration Started", date: "2026-03-03", icon: Handshake, link: "/dashboard/institutional/collaborations" },
+  { title: "Dr. Amina Osei — Public Health", type: "Lecturer Contacted", date: "2026-03-02", icon: Users, link: "/dashboard/institutional/lecturers" },
+  { title: "Agricultural Innovation Research", type: "Talent Request", date: "2026-03-01", icon: FileText, link: "/dashboard/institutional/talent-requests" },
+];
 
 const InstitutionalOverview = () => {
   const { talentRequests, collaborations, engagements, loading } = useInstitutional();
 
-  const activeRequests = talentRequests.filter(r => r.status === "open").length;
-  const activeCollabs = collaborations.filter(c => c.status === "active").length;
-  const completedEngagements = engagements.filter(e => e.status === "completed").length;
-  const totalContacted = engagements.length;
+  const hasData = talentRequests.length > 0 || collaborations.length > 0 || engagements.length > 0;
+
+  const activeRequests = hasData ? talentRequests.filter(r => r.status === "open").length : 2;
+  const totalContacted = hasData ? engagements.length : 7;
+  const activeCollabs = hasData ? collaborations.filter(c => c.status === "active").length : 1;
+  const completedEngagements = hasData ? engagements.filter(e => e.status === "completed").length : 4;
+
+  const liveActivity = hasData
+    ? [
+        ...talentRequests.slice(0, 2).map(r => ({ title: r.title, type: "Talent Request", date: r.created_at, icon: FileText, link: "/dashboard/institutional/talent-requests" })),
+        ...collaborations.slice(0, 2).map(c => ({ title: c.title, type: "Collaboration", date: c.created_at, icon: Handshake, link: "/dashboard/institutional/collaborations" })),
+        ...engagements.slice(0, 2).map(e => ({ title: e.title, type: "Engagement", date: e.created_at, icon: Briefcase, link: "/dashboard/institutional/engagements" })),
+      ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5)
+    : sampleActivity;
 
   const stats = [
-    { label: "Active Talent Requests", value: activeRequests, icon: FileText, color: "text-accent" },
-    { label: "Lecturers Contacted", value: totalContacted, icon: Users, color: "text-afrika-green" },
-    { label: "Active Collaborations", value: activeCollabs, icon: Handshake, color: "text-primary" },
-    { label: "Completed Engagements", value: completedEngagements, icon: CheckCircle, color: "text-afrika-orange" },
+    { label: "Active Talent Requests", value: activeRequests, icon: FileText, color: "text-accent", bg: "bg-accent/10" },
+    { label: "Lecturers Contacted", value: totalContacted, icon: Users, color: "text-afrika-green", bg: "bg-afrika-green/10" },
+    { label: "Active Collaborations", value: activeCollabs, icon: Handshake, color: "text-primary", bg: "bg-primary/10" },
+    { label: "Completed Engagements", value: completedEngagements, icon: CheckCircle, color: "text-afrika-orange", bg: "bg-afrika-orange-light" },
   ];
-
-  const recentActivity = [
-    ...talentRequests.slice(0, 2).map(r => ({ title: r.title, type: "Talent Request", date: r.created_at })),
-    ...collaborations.slice(0, 2).map(c => ({ title: c.title, type: "Collaboration", date: c.created_at })),
-    ...engagements.slice(0, 2).map(e => ({ title: e.title, type: "Engagement", date: e.created_at })),
-  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
-
-  const isEmpty = talentRequests.length === 0 && collaborations.length === 0 && engagements.length === 0;
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-foreground font-serif">Institution Dashboard</h1>
-          <p className="text-sm text-muted-foreground mt-1">Overview of your academic engagements and institutional activities.</p>
+          <h1 className="text-2xl font-bold text-foreground">Institution Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage academic collaborations, talent requests, and institutional engagements.
+          </p>
         </div>
 
-        {/* Stats */}
+        {/* Summary Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map(s => (
-            <Card key={s.label} className="border-border">
+            <Card key={s.label} className="border-border hover:shadow-sm transition-shadow">
               <CardContent className="pt-5 pb-4 px-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-muted-foreground">{s.label}</p>
                     <p className="text-2xl font-bold text-foreground mt-1">{loading ? "–" : s.value}</p>
                   </div>
-                  <div className={`h-10 w-10 rounded-lg bg-secondary flex items-center justify-center ${s.color}`}>
-                    <s.icon className="h-5 w-5" />
+                  <div className={`h-10 w-10 rounded-lg ${s.bg} flex items-center justify-center`}>
+                    <s.icon className={`h-5 w-5 ${s.color}`} />
                   </div>
                 </div>
               </CardContent>
@@ -56,66 +72,81 @@ const InstitutionalOverview = () => {
           ))}
         </div>
 
-        {isEmpty ? (
-          /* Empty state */
+        {/* Recent Activity */}
+        <div>
+          <h2 className="text-lg font-bold text-foreground mb-4">Recent Activity</h2>
           <Card className="border-border">
-            <CardContent className="py-16 text-center">
-              <Building2 className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground">You have not created any academic engagements yet.</h3>
-              <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-                Start by searching for lecturers, requesting academic talent, or initiating a research collaboration.
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                <Link to="/dashboard/institutional/lecturers">
-                  <Button variant="afrika" className="gap-2"><Search className="h-4 w-4" />Search Lecturers</Button>
-                </Link>
-                <Link to="/dashboard/institutional/talent-requests">
-                  <Button variant="afrikaOutline" className="gap-2"><Plus className="h-4 w-4" />Request Academic Talent</Button>
-                </Link>
-                <Link to="/dashboard/institutional/collaborations">
-                  <Button variant="outline" className="gap-2"><Handshake className="h-4 w-4" />Start Research Collaboration</Button>
-                </Link>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border">
+                {liveActivity.map((a, i) => (
+                  <Link
+                    key={i}
+                    to={a.link}
+                    className="flex items-center gap-4 px-5 py-4 hover:bg-secondary/50 transition-colors"
+                  >
+                    <div className="h-9 w-9 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                      <a.icon className="h-4 w-4 text-accent" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-foreground truncate">{a.title}</p>
+                      <Badge variant="secondary" className="text-[10px] mt-0.5">{a.type}</Badge>
+                    </div>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </span>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                  </Link>
+                ))}
               </div>
             </CardContent>
           </Card>
-        ) : (
-          <>
-            {/* Recent Activity */}
-            <Card className="border-border">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-semibold">Recent Institutional Activity</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {recentActivity.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No recent activity.</p>
-                ) : (
-                  recentActivity.map((a, i) => (
-                    <div key={i} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{a.title}</p>
-                        <Badge variant="secondary" className="text-[10px] mt-1">{a.type}</Badge>
-                      </div>
-                      <span className="text-xs text-muted-foreground">{new Date(a.date).toLocaleDateString()}</span>
-                    </div>
-                  ))
-                )}
-              </CardContent>
-            </Card>
+        </div>
 
-            {/* Quick Actions */}
-            <div className="flex flex-wrap gap-3">
-              <Link to="/dashboard/institutional/talent-requests">
-                <Button variant="afrika" className="gap-2"><Plus className="h-4 w-4" />Request Academic Talent</Button>
-              </Link>
-              <Link to="/dashboard/institutional/lecturers">
-                <Button variant="afrikaOutline" className="gap-2"><Search className="h-4 w-4" />Search Lecturers</Button>
-              </Link>
-              <Link to="/dashboard/institutional/collaborations">
-                <Button variant="outline" className="gap-2"><Handshake className="h-4 w-4" />Start Collaboration</Button>
-              </Link>
-            </div>
-          </>
-        )}
+        {/* Quick Actions */}
+        <div>
+          <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Link to="/dashboard/institutional/talent-requests">
+              <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
+                <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                    <Plus className="h-5 w-5 text-accent" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">View Talent Requests</p>
+                    <p className="text-xs text-muted-foreground">Post or manage expertise requests</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link to="/dashboard/institutional/lecturers">
+              <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
+                <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <Search className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Search Lecturers</p>
+                    <p className="text-xs text-muted-foreground">Find researchers and academics</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link to="/dashboard/institutional/collaborations">
+              <Card className="border-border hover:shadow-md transition-shadow cursor-pointer h-full">
+                <CardContent className="pt-5 pb-4 px-5 flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-lg bg-afrika-green/10 flex items-center justify-center shrink-0">
+                    <Handshake className="h-5 w-5 text-afrika-green" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">Start Collaboration</p>
+                    <p className="text-xs text-muted-foreground">Launch a research partnership</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
