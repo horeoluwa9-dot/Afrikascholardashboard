@@ -1,4 +1,5 @@
 import { useState } from "react";
+import afrikaLogo from "@/assets/afrika-scholar-logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,8 +47,8 @@ const Signup = () => {
     <div className="min-h-screen flex items-center justify-center bg-secondary px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
-          <Link to="/" className="text-2xl font-bold">
-            <span className="text-afrika-orange">Afrika</span><span className="text-primary">scholar</span>
+          <Link to="/">
+            <img src={afrikaLogo} alt="Afrika Scholar" className="h-10 mx-auto" />
           </Link>
           <h1 className="text-xl font-bold text-primary mt-4">Create Account</h1>
           <p className="text-sm text-muted-foreground mt-1">Join Afrika Scholar today</p>

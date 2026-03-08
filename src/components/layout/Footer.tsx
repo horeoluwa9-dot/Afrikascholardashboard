@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import afrikaLogo from "@/assets/afrika-scholar-logo.png";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -36,9 +37,8 @@ const Footer = () => {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
-              <Link to="/" className="text-xl font-bold">
-                <span className="text-afrika-orange">Afrika</span>
-                <span className="text-primary-foreground">scholar</span>
+              <Link to="/">
+                <img src={afrikaLogo} alt="Afrika Scholar" className="h-8" />
               </Link>
               <p className="text-xs text-primary-foreground/60 mt-3 leading-relaxed">
                 Pan-African Academic Publishing, Research & University Enablement Infrastructure — bridging knowledge gaps across the continent.
