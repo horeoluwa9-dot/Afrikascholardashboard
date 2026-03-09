@@ -125,16 +125,13 @@ const sidebarSections: SidebarSection[] = [
     allowedUserTypes: ["academic", "professional"],
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
-      {
-        title: "Administration", url: "/dashboard/institutional/admin/faculty", icon: Shield,
-        children: [
-          { title: "Faculty Users", url: "/dashboard/institutional/admin/faculty", icon: Users2 },
-          { title: "Seat Management", url: "/dashboard/institutional/admin/seats", icon: CreditCard },
-          { title: "Research Output", url: "/dashboard/institutional/admin/research-output", icon: TrendingUp },
-          { title: "Usage Analytics", url: "/dashboard/institutional/admin/analytics", icon: BarChart3 },
-          { title: "Reports", url: "/dashboard/institutional/admin/reports", icon: ClipboardList },
-        ],
-      },
+      { title: "Partnership Requests", url: "/dashboard/institutional/partnership-requests", icon: Handshake },
+      { title: "Lecturer Requests", url: "/dashboard/institutional/lecturer-requests", icon: GraduationCap },
+      { title: "Research Collaboration", url: "/dashboard/institutional/research-collaboration", icon: Users2 },
+      { title: "Curriculum & Validation", url: "/dashboard/institutional/curriculum", icon: BookOpen },
+      { title: "Advisory Support", url: "/dashboard/institutional/advisory-support", icon: Compass },
+      { title: "My Requests", url: "/dashboard/institutional/my-requests", icon: ClipboardList },
+      { title: "Contracts", url: "/dashboard/institutional/contracts", icon: FileSignature },
     ],
   },
   {
