@@ -3,6 +3,7 @@ import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole = "researcher" | "student" | "reviewer" | "institutional_admin";
+export type UserType = "researcher" | "academic" | "professional";
 
 interface Profile {
   id: string;
@@ -12,6 +13,7 @@ interface Profile {
   discipline: string | null;
   avatar_url: string | null;
   bio: string | null;
+  user_type: UserType | null;
 }
 
 interface AuthContextType {
