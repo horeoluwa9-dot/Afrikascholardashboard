@@ -78,6 +78,7 @@ const sidebarSections: SidebarSection[] = [
     label: "My Research",
     collapsible: true,
     requiredModule: "my_research",
+    allowedUserTypes: ["researcher", "academic"],
     items: [
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
       { title: "Research Projects", url: "/dashboard/research-projects", icon: FolderOpen },
