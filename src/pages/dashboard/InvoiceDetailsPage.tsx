@@ -82,11 +82,11 @@ const InvoiceDetailsPage = () => {
                 <p className="text-primary-foreground/60 text-xs uppercase tracking-widest mb-1">Invoice</p>
                 <p className="font-mono font-bold text-lg">#{payment.id.toUpperCase()}</p>
                 {isPaid ? (
-                  <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30 mt-2">
+                  <Badge className="bg-accent/20 text-accent-foreground border-accent/30 mt-2">
                     <CheckCircle2 className="h-3 w-3 mr-1" /> Paid
                   </Badge>
                 ) : (
-                  <Badge className="bg-amber-500/20 text-amber-300 border-amber-500/30 mt-2">
+                  <Badge className="bg-muted text-muted-foreground border-border mt-2">
                     <Clock className="h-3 w-3 mr-1" /> Pending
                   </Badge>
                 )}

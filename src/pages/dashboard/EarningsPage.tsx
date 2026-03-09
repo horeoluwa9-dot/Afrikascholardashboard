@@ -96,13 +96,13 @@ export const PAYMENTS = [
 const StatusBadge = ({ status }: { status: string }) => {
   if (status === "Paid") {
     return (
-      <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 font-medium hover:bg-emerald-100">
+      <Badge className="bg-accent/15 text-accent border-accent/30 font-medium hover:bg-accent/15">
         <CheckCircle2 className="h-3 w-3 mr-1" /> Paid
       </Badge>
     );
   }
   return (
-    <Badge className="bg-amber-100 text-amber-700 border-amber-200 font-medium hover:bg-amber-100">
+    <Badge className="bg-muted text-muted-foreground border-border font-medium hover:bg-muted">
       <Clock className="h-3 w-3 mr-1" /> Pending
     </Badge>
   );
