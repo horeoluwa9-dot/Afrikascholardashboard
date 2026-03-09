@@ -391,6 +391,55 @@ const ProfilePage = () => {
                 </div>
               )}
             </section>
+
+            {/* REVIEWER CONTRIBUTIONS */}
+            <section className="bg-card rounded-xl border border-border p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-accent" /> Reviewer Contributions
+                </h2>
+                <Link to="/dashboard/publishing/reviews">
+                  <Button variant="ghost" size="sm" className="text-xs gap-1">
+                    <Eye className="h-3 w-3" /> View All
+                  </Button>
+                </Link>
+              </div>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="text-center p-3 rounded-lg bg-secondary/50 border border-border">
+                  <p className="text-xl font-bold text-foreground">12</p>
+                  <p className="text-[10px] text-muted-foreground">Total Reviews</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-secondary/50 border border-border">
+                  <p className="text-xl font-bold text-foreground">4.7</p>
+                  <p className="text-[10px] text-muted-foreground">Reviewer Rating</p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-secondary/50 border border-border">
+                  <p className="text-xl font-bold text-foreground">9d</p>
+                  <p className="text-[10px] text-muted-foreground">Avg. Time</p>
+                </div>
+              </div>
+              <div className="space-y-2 mb-4">
+                <p className="text-xs font-semibold text-muted-foreground">Fields Reviewed</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Public Health", "Energy Policy", "Environmental Science", "Economics"].map(f => (
+                    <Badge key={f} variant="secondary" className="text-xs">{f}</Badge>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <p className="text-xs font-semibold text-muted-foreground">Journal Contributions</p>
+                {[
+                  "African J. Public Health",
+                  "Journal of Energy Economics",
+                  "East African Economic Review",
+                ].map((j, i) => (
+                  <div key={j} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="font-bold text-foreground w-4">{i + 1}.</span>
+                    <span>{j}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
 
           {/* ====== RIGHT SIDEBAR ====== */}
