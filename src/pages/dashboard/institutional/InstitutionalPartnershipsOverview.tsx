@@ -45,7 +45,7 @@ const InstitutionalPartnershipsOverview = () => (
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
         <Link to="/dashboard" className="hover:text-foreground">Dashboard</Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground font-medium">Institutional</span>
+        <span className="text-foreground font-medium">Institutions</span>
       </div>
 
       <div>

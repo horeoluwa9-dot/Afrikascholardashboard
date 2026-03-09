@@ -94,7 +94,7 @@ const PartnershipRequestsPage = () => {
             </div>
             <div><Label>Description</Label><Textarea className="mt-1" rows={4} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Describe your partnership goals..." /></div>
             <div><Label>Expected Timeline</Label><Input className="mt-1" value={form.timeline} onChange={e => setForm(p => ({ ...p, timeline: e.target.value }))} placeholder="e.g. 6 months" /></div>
-            <Button className="w-full" onClick={handleSubmit}>Submit Partnership Request</Button>
+            <Button variant="afrika" className="w-full" onClick={handleSubmit}>Submit Partnership Request</Button>
           </CardContent>
         </Card>
       </div>
