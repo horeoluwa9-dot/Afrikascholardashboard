@@ -722,7 +722,7 @@ export default function PeerReviewsPage() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAcceptDialog(false)}>Cancel</Button>
-            <Button onClick={handleStartReview} className="gap-1.5">
+            <Button onClick={handleStartReview} className="gap-1.5 bg-accent hover:bg-accent/90 text-accent-foreground">
               <CheckCircle className="h-4 w-4" /> Accept & Start Review
             </Button>
           </DialogFooter>
