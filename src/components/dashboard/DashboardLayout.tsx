@@ -31,7 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
-import { useAuth, AppRole } from "@/contexts/AuthContext";
+import { useAuth, AppRole, UserType } from "@/contexts/AuthContext";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { ModuleType } from "@/hooks/useModuleUnlocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
