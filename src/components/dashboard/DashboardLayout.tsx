@@ -91,6 +91,7 @@ const sidebarSections: SidebarSection[] = [
     collapsible: true,
     requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
+    allowedUserTypes: ["researcher", "academic"],
     items: [
       { title: "Publishing Overview", url: "/dashboard/publishing", icon: FileText },
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
