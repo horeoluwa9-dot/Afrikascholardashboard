@@ -194,12 +194,16 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === BILLING (standalone) ===
+  // === BILLING & CREDITS MODULE ===
   {
-    label: "",
-    collapsible: false,
+    label: "Billing & Credits",
+    collapsible: true,
     items: [
-      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
+      { title: "Subscription", url: "/dashboard/billing", icon: CreditCard },
+      { title: "Credits", url: "/dashboard/billing/credits", icon: Wallet },
+      { title: "Usage", url: "/dashboard/billing/usage", icon: Activity },
+      { title: "Payment Methods", url: "/dashboard/billing/payment-methods", icon: CreditCard },
+      { title: "Invoices", url: "/dashboard/billing/invoices", icon: Receipt },
     ],
   },
 
