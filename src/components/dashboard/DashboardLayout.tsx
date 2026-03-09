@@ -391,6 +391,8 @@ function AppSidebar() {
       </div>
       <SidebarContent className="pt-2 overflow-y-auto">
         {sidebarSections.map((section, gi) => {
+          // Hide section if user type doesn't match
+          if (section.allowedUserTypes && !section.allowedUserTypes.includes(currentUserType)) return null;
           // Hide entire section if role doesn't match
           if (section.requiredRoles && !canAccess(role, section.requiredRoles)) return null;
 
