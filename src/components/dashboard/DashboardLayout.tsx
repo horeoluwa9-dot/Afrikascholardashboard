@@ -152,7 +152,6 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Research Intelligence",
     collapsible: true,
-    requiredModule: "publeesh_ai",
     requiresSubscription: true,
     items: [
       { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
