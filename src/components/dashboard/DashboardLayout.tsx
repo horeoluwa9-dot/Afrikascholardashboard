@@ -165,12 +165,24 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
+  // === COMMUNITY MODULE ===
+  {
+    label: "Community",
+    collapsible: true,
+    items: [
+      { title: "Feed", url: "/dashboard/community", icon: MessageCircle },
+      { title: "Discussions", url: "/dashboard/community/discussions", icon: MessageCircle },
+      { title: "Researchers", url: "/dashboard/community/researchers", icon: Users2 },
+      { title: "Collaboration Requests", url: "/dashboard/community/collaborations", icon: Handshake },
+      { title: "My Activity", url: "/dashboard/community/activity", icon: User },
+    ],
+  },
+
   // === CORE LINKS (above settings) ===
   {
     label: "",
     collapsible: false,
     items: [
-      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
       { title: "Library", url: "/dashboard/library", icon: BookOpen },
       { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
