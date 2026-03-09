@@ -247,7 +247,7 @@ export default function ReviewWorkspacePage() {
                 <Shield className="h-3 w-3" /> Double-Blind
               </Badge>
             )}
-            <Badge variant="outline" className="gap-1 text-xs text-amber-600 border-amber-400/40 bg-amber-400/10">
+            <Badge variant="outline" className="gap-1 text-xs text-foreground border-border bg-secondary">
               <Calendar className="h-3 w-3" /> Due {manuscript.deadline}
             </Badge>
           </div>
