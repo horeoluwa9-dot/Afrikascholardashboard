@@ -6,13 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import {
   BookOpen, Download, Search, FileText, List, FolderOpen,
   Plus, Trash2, Pencil, ExternalLink, ChevronRight,
-  BookMarked, ArrowLeft, Bookmark, Eye, X,
+  BookMarked, ArrowLeft, Bookmark, Eye, X, CreditCard,
+  CheckCircle2, RefreshCw, Globe, TrendingUp, Newspaper,
 } from "lucide-react";
 import { useLibrary, type ReadingListItem, type PurchasedPaper, type SavedArticle } from "@/hooks/useLibrary";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +28,25 @@ const tabs = [
   { key: "saved", label: "Saved Articles", icon: Bookmark },
   { key: "downloads", label: "Download History", icon: Download },
   { key: "lists", label: "Reading Lists", icon: List },
+  { key: "subscriptions", label: "Journal Subscriptions", icon: Newspaper },
+];
+
+const fmtNaira = (n: number) =>
+  new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(n);
+
+// ─── Demo journal catalogue ───────────────────────────────────────────────────
+const BROWSE_JOURNALS = [
+  { id: "j1", name: "African Journal of Public Health", field: "Public Health", impact: "IF 2.4", price: 8000, publisher: "African Health Sciences", description: "Peer-reviewed research on public health across Africa." },
+  { id: "j2", name: "Journal of African Business Studies", field: "Business & Economics", impact: "IF 1.9", price: 12000, publisher: "Pan-African Business Press", description: "Advancing business knowledge for African markets." },
+  { id: "j3", name: "African Environmental Research", field: "Environmental Science", impact: "IF 3.1", price: 10000, publisher: "Afrika Scholar Publishing", description: "Climate, ecology and environmental policy research." },
+  { id: "j4", name: "African Journal of Technology & Innovation", field: "Technology", impact: "IF 2.7", price: 15000, publisher: "West African Tech Consortium", description: "Research in emerging technologies and innovation." },
+  { id: "j5", name: "Journal of African Agricultural Sciences", field: "Agriculture", impact: "IF 2.2", price: 7000, publisher: "CGIAR Africa", description: "Food security and sustainable agriculture across the continent." },
+  { id: "j6", name: "African Journal of Legal Studies", field: "Law", impact: "IF 1.6", price: 9000, publisher: "African Law Society", description: "Comparative law, governance and human rights in Africa." },
+];
+
+// ─── Demo active subscriptions (seeded when user has subscribed) ──────────────
+const DEMO_SUBS = [
+  { id: "sub-1", journal_name: "African Journal of Public Policy", publisher: "African Development Policy Center", plan_type: "annual", price_amount: 10000, expires_at: "2026-07-15T00:00:00Z", status: "active", journal_id: "j1" },
 ];
 
 // ---- Shared paper type for actions ----
@@ -53,7 +74,15 @@ const LibraryPage = () => {
     getListItems, addToReadingList, removeFromReadingList, refetch,
   } = useLibrary();
 
-  // Reading list detail state
+  // Journal subscriptions state
+  const [activeSubs, setActiveSubs] = useState(DEMO_SUBS);
+  const [browseMode, setBrowseMode] = useState(false);
+  const [subscribeTarget, setSubscribeTarget] = useState<typeof BROWSE_JOURNALS[0] | null>(null);
+  const [subscribeStep, setSubscribeStep] = useState<"form" | "success">("form");
+  const [subscribing, setSubscribing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("paystack");
+
+
   const [listItems, setListItems] = useState<ReadingListItem[]>([]);
   const [loadingList, setLoadingList] = useState(false);
   const [selectedList, setSelectedList] = useState<typeof readingLists[0] | null>(null);
@@ -539,11 +568,234 @@ const LibraryPage = () => {
                 )}
               </div>
             )}
+
+            {/* JOURNAL SUBSCRIPTIONS TAB */}
+            {activeTab === "subscriptions" && (
+              <div className="space-y-5">
+                {/* Header */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-base font-bold text-foreground">
+                      {browseMode ? "Browse Journals" : "Journal Subscriptions"}
+                    </h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {browseMode
+                        ? "Discover journals available for subscription."
+                        : "Subscribe to journals for full access to new research publications."}
+                    </p>
+                  </div>
+                  {browseMode ? (
+                    <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setBrowseMode(false)}>
+                      <ArrowLeft className="h-3.5 w-3.5" /> My Subscriptions
+                    </Button>
+                  ) : (
+                    <Button variant="afrika" size="sm" className="gap-1.5" onClick={() => setBrowseMode(true)}>
+                      <Globe className="h-3.5 w-3.5" /> Browse Journals
+                    </Button>
+                  )}
+                </div>
+
+                {/* ── MY SUBSCRIPTIONS ── */}
+                {!browseMode && (
+                  activeSubs.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {activeSubs.map(sub => (
+                        <div key={sub.id} className="bg-card rounded-xl border border-border p-5 flex flex-col gap-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="text-sm font-bold text-foreground">{sub.journal_name}</p>
+                              <p className="text-xs text-muted-foreground mt-0.5">{sub.publisher}</p>
+                            </div>
+                            <Badge className="bg-accent/15 text-accent border-accent/30 shrink-0 text-[10px]">
+                              <CheckCircle2 className="h-2.5 w-2.5 mr-1" /> Active
+                            </Badge>
+                          </div>
+                          <Separator />
+                          <div className="grid grid-cols-3 gap-2 text-xs">
+                            <div>
+                              <p className="text-muted-foreground">Plan</p>
+                              <p className="font-semibold text-foreground capitalize">{sub.plan_type}</p>
+                            </div>
+                            <div>
+                              <p className="text-muted-foreground">Price</p>
+                              <p className="font-semibold text-foreground">{fmtNaira(sub.price_amount)}/yr</p>
+                            </div>
+                            <div>
+                              <p className="text-muted-foreground">Renewal</p>
+                              <p className="font-semibold text-foreground">
+                                {sub.expires_at ? format(new Date(sub.expires_at), "MMM yyyy") : "—"}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex gap-2 mt-1">
+                            <Button variant="outline" size="sm" className="text-xs flex-1 gap-1" onClick={() => setBrowseMode(true)}>
+                              <ExternalLink className="h-3 w-3" /> View Journal
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => {
+                              setActiveSubs(prev => prev.filter(s => s.id !== sub.id));
+                              toast({ title: "Subscription cancelled", description: sub.journal_name });
+                            }}>
+                              <X className="h-3 w-3" /> Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-card rounded-xl border border-border p-16 text-center">
+                      <Newspaper className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
+                      <h3 className="text-base font-bold text-foreground mb-2">You have no journal subscriptions yet.</h3>
+                      <p className="text-sm text-muted-foreground max-w-sm mx-auto mb-5">
+                        Subscribe to African academic journals to get full access to the latest research publications.
+                      </p>
+                      <Button variant="afrika" className="gap-2" onClick={() => setBrowseMode(true)}>
+                        <Globe className="h-4 w-4" /> Browse Journals
+                      </Button>
+                    </div>
+                  )
+                )}
+
+                {/* ── BROWSE JOURNALS ── */}
+                {browseMode && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {BROWSE_JOURNALS.map(journal => (
+                      <div key={journal.id} className="bg-card rounded-xl border border-border p-5 flex flex-col gap-3">
+                        <div>
+                          <p className="text-sm font-bold text-foreground">{journal.name}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{journal.publisher}</p>
+                          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{journal.description}</p>
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="secondary" className="text-[10px]">{journal.field}</Badge>
+                          <Badge variant="outline" className="text-[10px] gap-1">
+                            <TrendingUp className="h-2.5 w-2.5" /> {journal.impact}
+                          </Badge>
+                        </div>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-xs text-muted-foreground">Annual Price</p>
+                            <p className="text-base font-bold text-accent">{fmtNaira(journal.price)}<span className="text-xs font-normal text-muted-foreground"> / year</span></p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" className="text-xs gap-1">
+                              <Eye className="h-3 w-3" /> View Journal
+                            </Button>
+                            {activeSubs.some(s => s.journal_id === journal.id) ? (
+                              <Badge className="bg-accent/15 text-accent border-accent/30 text-[10px] px-3">
+                                <CheckCircle2 className="h-2.5 w-2.5 mr-1" /> Subscribed
+                              </Badge>
+                            ) : (
+                              <Button variant="afrika" size="sm" className="text-xs gap-1" onClick={() => {
+                                setSubscribeTarget(journal);
+                                setSubscribeStep("form");
+                                setPaymentMethod("paystack");
+                              }}>
+                                <CreditCard className="h-3 w-3" /> Subscribe
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>
 
-      {/* Create Reading List Dialog */}
+      {/* Subscribe Dialog */}
+      <Dialog open={!!subscribeTarget} onOpenChange={(o) => { if (!o) setSubscribeTarget(null); }}>
+        <DialogContent className="max-w-md">
+          {subscribeStep === "form" && subscribeTarget && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="font-serif">Subscribe to Journal</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="bg-secondary/50 rounded-lg p-4 border border-border">
+                  <p className="text-sm font-bold text-foreground">{subscribeTarget.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{subscribeTarget.publisher}</p>
+                  <Separator className="my-3" />
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Annual Plan</span>
+                    <span className="font-bold text-accent">{fmtNaira(subscribeTarget.price)}<span className="text-xs font-normal text-muted-foreground"> / year</span></span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payment Method</Label>
+                  {[
+                    { id: "paystack", label: "Paystack", desc: "Pay via Paystack (card, bank, USSD)" },
+                    { id: "card", label: "Credit / Debit Card", desc: "Visa, Mastercard, Verve" },
+                    { id: "bank", label: "Bank Transfer", desc: "Direct bank transfer (NGN)" },
+                  ].map(m => (
+                    <button key={m.id} onClick={() => setPaymentMethod(m.id)}
+                      className={`w-full flex items-center justify-between p-3 rounded-lg border transition-colors text-left ${
+                        paymentMethod === m.id
+                          ? "border-accent bg-accent/5"
+                          : "border-border hover:bg-secondary/50"
+                      }`}>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{m.label}</p>
+                        <p className="text-xs text-muted-foreground">{m.desc}</p>
+                      </div>
+                      {paymentMethod === m.id && (
+                        <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" size="sm" onClick={() => setSubscribeTarget(null)}>Cancel</Button>
+                <Button variant="afrika" size="sm" disabled={subscribing} onClick={async () => {
+                  setSubscribing(true);
+                  // Simulate payment processing
+                  await new Promise(r => setTimeout(r, 1500));
+                  setActiveSubs(prev => [...prev, {
+                    id: `sub-${Date.now()}`,
+                    journal_name: subscribeTarget.name,
+                    publisher: subscribeTarget.publisher,
+                    plan_type: "annual",
+                    price_amount: subscribeTarget.price,
+                    expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: "active",
+                    journal_id: subscribeTarget.id,
+                  }]);
+                  setSubscribing(false);
+                  setSubscribeStep("success");
+                }}>
+                  {subscribing ? "Processing…" : `Confirm Subscription`}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+          {subscribeStep === "success" && (
+            <div className="py-8 text-center space-y-4">
+              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-accent/15 mx-auto">
+                <CheckCircle2 className="h-8 w-8 text-accent" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-foreground">Subscription Activated</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  You now have full access to <span className="font-semibold text-foreground">{subscribeTarget?.name}</span>.
+                </p>
+              </div>
+              <Button variant="afrika" className="w-full gap-2" onClick={() => {
+                setSubscribeTarget(null);
+                setBrowseMode(false);
+              }}>
+                <BookOpen className="h-4 w-4" /> View My Subscriptions
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+
       <Dialog open={createListDialog} onOpenChange={setCreateListDialog}>
         <DialogContent className="max-w-sm">
           <DialogHeader><DialogTitle>Create Reading List</DialogTitle></DialogHeader>
