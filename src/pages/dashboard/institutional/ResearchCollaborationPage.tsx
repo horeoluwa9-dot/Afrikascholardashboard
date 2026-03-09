@@ -80,7 +80,7 @@ const ResearchCollaborationPage = () => {
                   <div><Label>Expected Duration</Label><Input className="mt-1" value={form.duration} onChange={e => setForm(p => ({ ...p, duration: e.target.value }))} placeholder="e.g. 12 months" /></div>
                 </div>
                 <div><Label>Project Description</Label><Textarea className="mt-1" rows={4} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Describe the research project..." /></div>
-                <Button className="w-full" onClick={handleSubmit}>Submit Collaboration Request</Button>
+                <Button variant="afrika" className="w-full" onClick={handleSubmit}>Submit Collaboration Request</Button>
               </CardContent>
             </Card>
           </div>

@@ -71,7 +71,7 @@ const CurriculumValidationPage = () => {
             </div>
             <div><Label>Description</Label><Textarea className="mt-1" rows={4} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Describe what you need..." /></div>
             <div><Label>Expected Timeline</Label><Input className="mt-1" value={form.timeline} onChange={e => setForm(p => ({ ...p, timeline: e.target.value }))} placeholder="e.g. 3 months" /></div>
-            <Button className="w-full" onClick={handleSubmit}>Submit Academic Request</Button>
+            <Button variant="afrika" className="w-full" onClick={handleSubmit}>Submit Academic Request</Button>
           </CardContent>
         </Card>
       </div>

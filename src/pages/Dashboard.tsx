@@ -68,8 +68,8 @@ const Dashboard = () => {
                   <div key={c.label} className="bg-card rounded-xl p-5 border border-border">
                     <p className="text-xs text-muted-foreground">{c.label}</p>
                     <div className="flex items-baseline gap-1 mt-1">
-                      <span className={`text-2xl font-bold ${isZero ? "text-destructive" : "text-foreground"}`}>{remaining}</span>
-                      <span className="text-sm text-muted-foreground">/ {c.total}</span>
+                      <span className={`text-2xl font-bold ${isZero ? "text-destructive" : "text-foreground"}`}>{remaining.toLocaleString()}</span>
+                      <span className="text-sm text-muted-foreground">/ {c.total.toLocaleString()}</span>
                     </div>
                     <div className="h-2 bg-secondary rounded-full mt-3">
                       <div className={`h-full rounded-full ${isZero ? "bg-destructive" : c.color}`} style={{ width: `${(c.used / c.total) * 100}%` }} />

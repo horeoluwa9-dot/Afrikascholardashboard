@@ -45,7 +45,7 @@ export function SubscriptionStatusWidget() {
         )}
         <div className="flex justify-between">
           <span className="text-muted-foreground">Remaining Credits</span>
-          <span className="font-medium text-foreground">{totalCredits}</span>
+          <span className="font-medium text-foreground">{totalCredits.toLocaleString()}</span>
         </div>
       </div>
       <Link to="/publeesh/subscription">

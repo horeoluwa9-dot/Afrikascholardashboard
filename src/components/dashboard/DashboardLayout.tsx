@@ -82,8 +82,15 @@ const sidebarSections: SidebarSection[] = [
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
       { title: "Research Projects", url: "/dashboard/research-projects", icon: FolderOpen },
       { title: "Reading Lists", url: "/dashboard/reading-lists", icon: BookOpen },
-      { title: "Library", url: "/dashboard/library", icon: Library },
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
+    ],
+  },
+  // === LIBRARY (standalone module) ===
+  {
+    label: "Library",
+    collapsible: false,
+    items: [
+      { title: "Library", url: "/dashboard/library", icon: Library },
     ],
   },
   {
@@ -120,7 +127,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Institutional",
+    label: "Institutions",
     collapsible: true,
     allowedUserTypes: ["academic", "professional"],
     items: [
@@ -180,7 +187,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // Library is now under My Research
+  // Library is now a standalone module positioned after My Research
 
   // === BILLING & CREDITS MODULE ===
   {
