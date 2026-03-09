@@ -270,7 +270,7 @@ export default function PeerReviewsPage() {
                     When a journal editor assigns you a paper to review, it will appear here.
                   </p>
                   <Link to="/dashboard/publishing/journals">
-                    <Button variant="outline" className="mt-4 gap-2">
+                    <Button className="mt-4 gap-2 bg-accent hover:bg-accent/90 text-accent-foreground">
                       <BookOpen className="h-4 w-4" /> Browse Journals
                     </Button>
                   </Link>
