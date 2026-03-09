@@ -270,7 +270,7 @@ export default function PeerReviewsPage() {
                     When a journal editor assigns you a paper to review, it will appear here.
                   </p>
                   <Link to="/dashboard/publishing/journals">
-                    <Button variant="outline" className="mt-4 gap-2">
+                    <Button className="mt-4 gap-2 bg-accent hover:bg-accent/90 text-accent-foreground">
                       <BookOpen className="h-4 w-4" /> Browse Journals
                     </Button>
                   </Link>
@@ -320,8 +320,8 @@ export default function PeerReviewsPage() {
                             </td>
                             <td className="px-5 py-4 text-right">
                               <div className="flex justify-end gap-2">
-                                <Button size="sm" className="text-xs h-7 gap-1" onClick={() => handleAccept(req)}>
-                                  <CheckCircle className="h-3 w-3" /> Accept Review
+                                                <Button size="sm" className="text-xs h-7 gap-1 bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => handleAccept(req)}>
+                                                  <CheckCircle className="h-3 w-3" /> Accept Review
                                 </Button>
                                 <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => handleDecline(req)}>
                                   Decline
@@ -384,7 +384,7 @@ export default function PeerReviewsPage() {
                       </div>
                       <div className="flex gap-2 pt-1">
                         <Link to={`/dashboard/publishing/reviews/workspace/${review.id}`} className="flex-1">
-                          <Button size="sm" className="text-xs h-8 gap-1.5 w-full">
+                          <Button size="sm" className="text-xs h-8 gap-1.5 w-full bg-accent hover:bg-accent/90 text-accent-foreground">
                             <FileText className="h-3 w-3" /> Continue Review
                           </Button>
                         </Link>
@@ -441,7 +441,7 @@ export default function PeerReviewsPage() {
                         </div>
                         <div className="flex gap-2 mt-3">
                           <Link to={`/dashboard/publishing/reviews/workspace/${d.id}`}>
-                            <Button variant="outline" size="sm" className="text-xs h-7 gap-1">
+                            <Button size="sm" className="text-xs h-7 gap-1 bg-accent hover:bg-accent/90 text-accent-foreground">
                               <FileText className="h-3 w-3" /> Continue Review
                             </Button>
                           </Link>
@@ -722,7 +722,7 @@ export default function PeerReviewsPage() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAcceptDialog(false)}>Cancel</Button>
-            <Button onClick={handleStartReview} className="gap-1.5">
+            <Button onClick={handleStartReview} className="gap-1.5 bg-accent hover:bg-accent/90 text-accent-foreground">
               <CheckCircle className="h-4 w-4" /> Accept & Start Review
             </Button>
           </DialogFooter>
@@ -791,7 +791,7 @@ export default function PeerReviewsPage() {
                 <Eye className="h-3.5 w-3.5" /> View Full Review
               </Button>
             </Link>
-            <Button onClick={() => setShowSummaryDialog(false)}>Close</Button>
+            <Button onClick={() => setShowSummaryDialog(false)} className="bg-accent hover:bg-accent/90 text-accent-foreground">Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
