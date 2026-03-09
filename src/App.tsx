@@ -24,6 +24,8 @@ import PublishingOverview from "./pages/dashboard/PublishingOverview";
 import EditorialWorkflow from "./pages/dashboard/EditorialWorkflow";
 import JournalManagement from "./pages/dashboard/JournalManagement";
 import PeerReviewsPage from "./pages/dashboard/PeerReviewsPage";
+import ReviewerAssignmentPage from "./pages/dashboard/ReviewerAssignmentPage";
+import EditorialAnalyticsPage from "./pages/dashboard/EditorialAnalyticsPage";
 import ReviewWorkspacePage from "./pages/dashboard/ReviewWorkspacePage";
 import MyPapers from "./pages/dashboard/MyPapers";
 import ProTip from "./pages/dashboard/ProTip";
