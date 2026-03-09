@@ -74,7 +74,15 @@ const LibraryPage = () => {
     getListItems, addToReadingList, removeFromReadingList, refetch,
   } = useLibrary();
 
-  // Reading list detail state
+  // Journal subscriptions state
+  const [activeSubs, setActiveSubs] = useState(DEMO_SUBS);
+  const [browseMode, setBrowseMode] = useState(false);
+  const [subscribeTarget, setSubscribeTarget] = useState<typeof BROWSE_JOURNALS[0] | null>(null);
+  const [subscribeStep, setSubscribeStep] = useState<"form" | "success">("form");
+  const [subscribing, setSubscribing] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("paystack");
+
+
   const [listItems, setListItems] = useState<ReadingListItem[]>([]);
   const [loadingList, setLoadingList] = useState(false);
   const [selectedList, setSelectedList] = useState<typeof readingLists[0] | null>(null);
