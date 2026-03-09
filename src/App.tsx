@@ -58,7 +58,7 @@ import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
 import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
-import SecurityPage from "./pages/dashboard/SecurityPage";
+
 import InstitutionalOverview from "./pages/dashboard/InstitutionalOverview";
 import FacultyUsersPage from "./pages/dashboard/institutional/FacultyUsersPage";
 import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPage";
