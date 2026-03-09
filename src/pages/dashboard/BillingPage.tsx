@@ -23,44 +23,44 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const credits = [
-  { label: "Paper Credits", icon: FileText, used: 5, total: 25, color: "bg-accent", expiresIn: 22 },
-  { label: "Dataset Credits", icon: Database, used: 0, total: 25, color: "bg-primary", expiresIn: 30 },
-  { label: "Analysis Credits", icon: BarChart3, used: 10, total: 35, color: "bg-afrika-green", expiresIn: 15 },
+  { label: "Paper Credits", icon: FileText, used: 500, total: 5000, color: "bg-accent", expiresIn: 22 },
+  { label: "Dataset Credits", icon: Database, used: 0, total: 10000, color: "bg-primary", expiresIn: 30 },
+  { label: "Analysis Credits", icon: BarChart3, used: 1000, total: 5000, color: "bg-afrika-green", expiresIn: 15 },
 ];
 
 const creditPacks = [
-  { label: "+5 Paper Credits", price: "₦7,500", icon: FileText },
-  { label: "+10 Dataset Credits", price: "₦5,000", icon: Database },
-  { label: "+5 Analysis Credits", price: "₦6,000", icon: BarChart3 },
+  { label: "+1,000 Paper Credits", price: "₦150,000", icon: FileText },
+  { label: "+2,500 Dataset Credits", price: "₦225,000", icon: Database },
+  { label: "+1,000 Analysis Credits", price: "₦120,000", icon: BarChart3 },
 ];
 
 const transactions = [
-  { date: "2026-03-04", action: "Paper Generation", creditsUsed: 1, balanceAfter: 20, category: "Instrument" },
-  { date: "2026-03-03", action: "Instrument Generation", creditsUsed: 2, balanceAfter: 21, category: "Instrument" },
-  { date: "2026-03-01", action: "Subscription Renewal", creditsUsed: 0, balanceAfter: 23, category: "Subscription" },
-  { date: "2026-02-28", action: "Dataset Analysis", creditsUsed: 1, balanceAfter: 23, category: "Instrument" },
-  { date: "2026-02-25", action: "Paper Generation", creditsUsed: 1, balanceAfter: 24, category: "Instrument" },
-  { date: "2026-02-20", action: "Referral Reward", creditsUsed: -5, balanceAfter: 25, category: "Referral Reward" },
-  { date: "2026-02-15", action: "Credit Pack Purchase", creditsUsed: -5, balanceAfter: 20, category: "Subscription" },
+  { date: "2026-03-04", action: "Paper Generation", creditsUsed: 100, balanceAfter: 4400, category: "Instrument" },
+  { date: "2026-03-03", action: "Instrument Generation", creditsUsed: 200, balanceAfter: 4500, category: "Instrument" },
+  { date: "2026-03-01", action: "Subscription Renewal", creditsUsed: 0, balanceAfter: 4700, category: "Subscription" },
+  { date: "2026-02-28", action: "Dataset Analysis", creditsUsed: 150, balanceAfter: 4700, category: "Instrument" },
+  { date: "2026-02-25", action: "Paper Generation", creditsUsed: 50, balanceAfter: 4850, category: "Instrument" },
+  { date: "2026-02-20", action: "Referral Reward", creditsUsed: -500, balanceAfter: 4900, category: "Referral Reward" },
+  { date: "2026-02-15", action: "Credit Pack Purchase", creditsUsed: -1000, balanceAfter: 4400, category: "Subscription" },
 ];
 
 const referrals = [
-  { name: "Aisha M.", status: "Subscribed", reward: "10 credits", active: true },
-  { name: "Emmanuel K.", status: "Signed Up", reward: "5 credits", active: true },
+  { name: "Aisha M.", status: "Subscribed", reward: "1,000 credits", active: true },
+  { name: "Emmanuel K.", status: "Signed Up", reward: "500 credits", active: true },
   { name: "Fatima O.", status: "Invited", reward: "Pending", active: false },
 ];
 
 const milestones = [
-  { count: 3, reward: "10 bonus credits", reached: true },
+  { count: 3, reward: "1,000 bonus credits", reached: true },
   { count: 5, reward: "1 month free", reached: false },
   { count: 10, reward: "Lifetime 10% discount", reached: false },
 ];
 
 const usageBreakdown = [
-  { label: "AI Paper Generation", credits: 8, percent: 50, color: "bg-accent" },
-  { label: "Dataset Analysis", credits: 5, percent: 30, color: "bg-primary" },
-  { label: "Instrument Studio", credits: 2, percent: 13, color: "bg-afrika-green" },
-  { label: "Community Assessments", credits: 1, percent: 7, color: "bg-muted-foreground" },
+  { label: "AI Paper Generation", credits: 800, percent: 50, color: "bg-accent" },
+  { label: "Dataset Analysis", credits: 500, percent: 30, color: "bg-primary" },
+  { label: "Instrument Studio", credits: 200, percent: 13, color: "bg-afrika-green" },
+  { label: "Community Assessments", credits: 100, percent: 7, color: "bg-muted-foreground" },
 ];
 
 const billingAlerts = [
@@ -76,17 +76,17 @@ const invoices = [
 ];
 
 const billingTimeline = [
-  { date: "Mar 4", event: "Paper Generation — 1 credit used", type: "usage" },
-  { date: "Mar 3", event: "Instrument Generation — 2 credits used", type: "usage" },
+  { date: "Mar 4", event: "Paper Generation — 100 credits used", type: "usage" },
+  { date: "Mar 3", event: "Instrument Generation — 200 credits used", type: "usage" },
   { date: "Mar 1", event: "Subscription Renewal — ₦25,000", type: "payment" },
-  { date: "Feb 28", event: "Dataset Analysis — 1 credit used", type: "usage" },
-  { date: "Feb 25", event: "Purchased +5 Paper Credits", type: "purchase" },
-  { date: "Feb 20", event: "Referral Reward — +5 credits", type: "reward" },
+  { date: "Feb 28", event: "Dataset Analysis — 150 credits used", type: "usage" },
+  { date: "Feb 25", event: "Purchased +1,000 Paper Credits", type: "purchase" },
+  { date: "Feb 20", event: "Referral Reward — +500 credits", type: "reward" },
 ];
 
 const plans = [
-  { name: "Free", price: "₦0", aiCredits: "5", datasetCredits: "2", instrumentAccess: "Limited", journalPublishing: "No", current: false },
-  { name: "Individual Pro", price: "₦25,000/mo", aiCredits: "25", datasetCredits: "25", instrumentAccess: "Full", journalPublishing: "Yes", current: true },
+  { name: "Free", price: "₦0", aiCredits: "5,000", datasetCredits: "5,000", instrumentAccess: "Limited", journalPublishing: "No", current: false },
+  { name: "Individual Pro", price: "₦25,000/mo", aiCredits: "25,000", datasetCredits: "25,000", instrumentAccess: "Full", journalPublishing: "Yes", current: true },
   { name: "Institutional", price: "Custom", aiCredits: "Unlimited", datasetCredits: "Unlimited", instrumentAccess: "Full + Admin", journalPublishing: "Yes + Reports", current: false },
 ];
 
@@ -207,7 +207,7 @@ const BillingPage = () => {
         <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-foreground">Auto-renew Credits</p>
-            <p className="text-xs text-muted-foreground">Auto purchase +10 credits when balance drops below 2</p>
+            <p className="text-xs text-muted-foreground">Auto purchase +1,000 credits when balance drops below 500</p>
           </div>
           <Switch checked={autoRenewCredits} onCheckedChange={setAutoRenewCredits} />
         </div>
@@ -238,13 +238,13 @@ const BillingPage = () => {
                   <p className="text-xs text-muted-foreground font-medium">{c.label}</p>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-foreground">{c.total - c.used}</span>
-                  <span className="text-sm text-muted-foreground">/ {c.total}</span>
+                  <span className="text-2xl font-bold text-foreground">{(c.total - c.used).toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">/ {c.total.toLocaleString()}</span>
                 </div>
                 <div className="h-2 bg-secondary rounded-full">
                   <div className={`h-full rounded-full ${c.color}`} style={{ width: `${(c.used / c.total) * 100}%` }} />
                 </div>
-                <p className="text-[10px] text-muted-foreground">{c.used} used this month</p>
+                <p className="text-[10px] text-muted-foreground">{c.used.toLocaleString()} used this month</p>
                 {/* ADDITION 4: Expiration notice */}
                 <div className="flex items-center gap-1.5 pt-1 border-t border-border">
                   <Timer className="h-3 w-3 text-muted-foreground" />
@@ -456,8 +456,8 @@ const BillingPage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div className="bg-secondary rounded-lg p-3"><p className="text-xl font-bold text-foreground">{referrals.length}</p><p className="text-[10px] text-muted-foreground">Total Referrals</p></div>
               <div className="bg-secondary rounded-lg p-3"><p className="text-xl font-bold text-foreground">{referrals.filter((r) => r.active).length}</p><p className="text-[10px] text-muted-foreground">Active</p></div>
-              <div className="bg-secondary rounded-lg p-3"><p className="text-xl font-bold text-accent">15</p><p className="text-[10px] text-muted-foreground">Credits Earned</p></div>
-              <div className="bg-secondary rounded-lg p-3"><p className="text-xl font-bold text-muted-foreground">5</p><p className="text-[10px] text-muted-foreground">Pending</p></div>
+              <div className="bg-secondary rounded-lg p-3"><p className="text-xl font-bold text-accent">1,500</p><p className="text-[10px] text-muted-foreground">Credits Earned</p></div>
+              <div className="bg-secondary rounded-lg p-3"><p className="text-xl font-bold text-muted-foreground">500</p><p className="text-[10px] text-muted-foreground">Pending</p></div>
             </div>
 
             <div className="space-y-2">
