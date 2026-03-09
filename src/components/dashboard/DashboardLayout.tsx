@@ -164,7 +164,6 @@ const sidebarSections: SidebarSection[] = [
           { title: "AI Slide Builder", url: "/dashboard/instrument-studio/slides", icon: Presentation },
         ],
       },
-      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
     ],
   },
 
@@ -192,6 +191,15 @@ const sidebarSections: SidebarSection[] = [
       { title: "Reading History", url: "/dashboard/library?tab=downloads", icon: BookOpen },
       { title: "Reading Lists", url: "/dashboard/library?tab=lists", icon: Library },
       { title: "Downloads", url: "/dashboard/library?tab=downloads", icon: Download },
+    ],
+  },
+
+  // === BILLING (standalone) ===
+  {
+    label: "",
+    collapsible: false,
+    items: [
+      { title: "Billing & Credits", url: "/dashboard/billing", icon: CreditCard },
     ],
   },
 
