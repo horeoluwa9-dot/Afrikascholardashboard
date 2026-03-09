@@ -23,44 +23,44 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const credits = [
-  { label: "Paper Credits", icon: FileText, used: 5, total: 25, color: "bg-accent", expiresIn: 22 },
-  { label: "Dataset Credits", icon: Database, used: 0, total: 25, color: "bg-primary", expiresIn: 30 },
-  { label: "Analysis Credits", icon: BarChart3, used: 10, total: 35, color: "bg-afrika-green", expiresIn: 15 },
+  { label: "Paper Credits", icon: FileText, used: 500, total: 5000, color: "bg-accent", expiresIn: 22 },
+  { label: "Dataset Credits", icon: Database, used: 0, total: 10000, color: "bg-primary", expiresIn: 30 },
+  { label: "Analysis Credits", icon: BarChart3, used: 1000, total: 5000, color: "bg-afrika-green", expiresIn: 15 },
 ];
 
 const creditPacks = [
-  { label: "+5 Paper Credits", price: "₦7,500", icon: FileText },
-  { label: "+10 Dataset Credits", price: "₦5,000", icon: Database },
-  { label: "+5 Analysis Credits", price: "₦6,000", icon: BarChart3 },
+  { label: "+1,000 Paper Credits", price: "₦150,000", icon: FileText },
+  { label: "+2,500 Dataset Credits", price: "₦225,000", icon: Database },
+  { label: "+1,000 Analysis Credits", price: "₦120,000", icon: BarChart3 },
 ];
 
 const transactions = [
-  { date: "2026-03-04", action: "Paper Generation", creditsUsed: 1, balanceAfter: 20, category: "Instrument" },
-  { date: "2026-03-03", action: "Instrument Generation", creditsUsed: 2, balanceAfter: 21, category: "Instrument" },
-  { date: "2026-03-01", action: "Subscription Renewal", creditsUsed: 0, balanceAfter: 23, category: "Subscription" },
-  { date: "2026-02-28", action: "Dataset Analysis", creditsUsed: 1, balanceAfter: 23, category: "Instrument" },
-  { date: "2026-02-25", action: "Paper Generation", creditsUsed: 1, balanceAfter: 24, category: "Instrument" },
-  { date: "2026-02-20", action: "Referral Reward", creditsUsed: -5, balanceAfter: 25, category: "Referral Reward" },
-  { date: "2026-02-15", action: "Credit Pack Purchase", creditsUsed: -5, balanceAfter: 20, category: "Subscription" },
+  { date: "2026-03-04", action: "Paper Generation", creditsUsed: 100, balanceAfter: 4400, category: "Instrument" },
+  { date: "2026-03-03", action: "Instrument Generation", creditsUsed: 200, balanceAfter: 4500, category: "Instrument" },
+  { date: "2026-03-01", action: "Subscription Renewal", creditsUsed: 0, balanceAfter: 4700, category: "Subscription" },
+  { date: "2026-02-28", action: "Dataset Analysis", creditsUsed: 150, balanceAfter: 4700, category: "Instrument" },
+  { date: "2026-02-25", action: "Paper Generation", creditsUsed: 50, balanceAfter: 4850, category: "Instrument" },
+  { date: "2026-02-20", action: "Referral Reward", creditsUsed: -500, balanceAfter: 4900, category: "Referral Reward" },
+  { date: "2026-02-15", action: "Credit Pack Purchase", creditsUsed: -1000, balanceAfter: 4400, category: "Subscription" },
 ];
 
 const referrals = [
-  { name: "Aisha M.", status: "Subscribed", reward: "10 credits", active: true },
-  { name: "Emmanuel K.", status: "Signed Up", reward: "5 credits", active: true },
+  { name: "Aisha M.", status: "Subscribed", reward: "1,000 credits", active: true },
+  { name: "Emmanuel K.", status: "Signed Up", reward: "500 credits", active: true },
   { name: "Fatima O.", status: "Invited", reward: "Pending", active: false },
 ];
 
 const milestones = [
-  { count: 3, reward: "10 bonus credits", reached: true },
+  { count: 3, reward: "1,000 bonus credits", reached: true },
   { count: 5, reward: "1 month free", reached: false },
   { count: 10, reward: "Lifetime 10% discount", reached: false },
 ];
 
 const usageBreakdown = [
-  { label: "AI Paper Generation", credits: 8, percent: 50, color: "bg-accent" },
-  { label: "Dataset Analysis", credits: 5, percent: 30, color: "bg-primary" },
-  { label: "Instrument Studio", credits: 2, percent: 13, color: "bg-afrika-green" },
-  { label: "Community Assessments", credits: 1, percent: 7, color: "bg-muted-foreground" },
+  { label: "AI Paper Generation", credits: 800, percent: 50, color: "bg-accent" },
+  { label: "Dataset Analysis", credits: 500, percent: 30, color: "bg-primary" },
+  { label: "Instrument Studio", credits: 200, percent: 13, color: "bg-afrika-green" },
+  { label: "Community Assessments", credits: 100, percent: 7, color: "bg-muted-foreground" },
 ];
 
 const billingAlerts = [
@@ -76,17 +76,17 @@ const invoices = [
 ];
 
 const billingTimeline = [
-  { date: "Mar 4", event: "Paper Generation — 1 credit used", type: "usage" },
-  { date: "Mar 3", event: "Instrument Generation — 2 credits used", type: "usage" },
+  { date: "Mar 4", event: "Paper Generation — 100 credits used", type: "usage" },
+  { date: "Mar 3", event: "Instrument Generation — 200 credits used", type: "usage" },
   { date: "Mar 1", event: "Subscription Renewal — ₦25,000", type: "payment" },
-  { date: "Feb 28", event: "Dataset Analysis — 1 credit used", type: "usage" },
-  { date: "Feb 25", event: "Purchased +5 Paper Credits", type: "purchase" },
-  { date: "Feb 20", event: "Referral Reward — +5 credits", type: "reward" },
+  { date: "Feb 28", event: "Dataset Analysis — 150 credits used", type: "usage" },
+  { date: "Feb 25", event: "Purchased +1,000 Paper Credits", type: "purchase" },
+  { date: "Feb 20", event: "Referral Reward — +500 credits", type: "reward" },
 ];
 
 const plans = [
-  { name: "Free", price: "₦0", aiCredits: "5", datasetCredits: "2", instrumentAccess: "Limited", journalPublishing: "No", current: false },
-  { name: "Individual Pro", price: "₦25,000/mo", aiCredits: "25", datasetCredits: "25", instrumentAccess: "Full", journalPublishing: "Yes", current: true },
+  { name: "Free", price: "₦0", aiCredits: "5,000", datasetCredits: "5,000", instrumentAccess: "Limited", journalPublishing: "No", current: false },
+  { name: "Individual Pro", price: "₦25,000/mo", aiCredits: "25,000", datasetCredits: "25,000", instrumentAccess: "Full", journalPublishing: "Yes", current: true },
   { name: "Institutional", price: "Custom", aiCredits: "Unlimited", datasetCredits: "Unlimited", instrumentAccess: "Full + Admin", journalPublishing: "Yes + Reports", current: false },
 ];
 
