@@ -73,11 +73,10 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === ACTION-BASED MODULES (hidden until unlocked) ===
+  // === MY RESEARCH ===
   {
     label: "My Research",
     collapsible: true,
-    requiredModule: "my_research",
     allowedUserTypes: ["researcher", "academic"],
     items: [
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
