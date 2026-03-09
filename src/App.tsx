@@ -151,6 +151,10 @@ const App = () => (
             <Route path="/dashboard/community/collaborations" element={<P><CommunityCollaborationsPage /></P>} />
             <Route path="/dashboard/community/activity" element={<P><CommunityMyActivityPage /></P>} />
             <Route path="/dashboard/billing" element={<P><BillingPage /></P>} />
+            <Route path="/dashboard/billing/credits" element={<P><BillingCreditsPage /></P>} />
+            <Route path="/dashboard/billing/usage" element={<P><BillingUsagePage /></P>} />
+            <Route path="/dashboard/billing/payment-methods" element={<P><PaymentMethodsPage /></P>} />
+            <Route path="/dashboard/billing/invoices" element={<P><BillingInvoicesPage /></P>} />
             <Route path="/dashboard/settings" element={<P><SettingsPage /></P>} />
             <Route path="/dashboard/messages" element={<P><MessagesPage /></P>} />
             <Route path="/dashboard/library" element={<P><LibraryPage /></P>} />
