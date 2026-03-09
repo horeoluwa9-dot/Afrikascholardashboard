@@ -53,17 +53,17 @@ import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
 import InstitutionalOverview from "./pages/dashboard/InstitutionalOverview";
-import TalentRequestsPage from "./pages/dashboard/TalentRequestsPage";
-import LecturerSearchPage from "./pages/dashboard/LecturerSearchPage";
-import ProjectCollaborationsPage from "./pages/dashboard/ProjectCollaborationsPage";
-import MyEngagementsPage from "./pages/dashboard/MyEngagementsPage";
 import FacultyUsersPage from "./pages/dashboard/institutional/FacultyUsersPage";
 import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPage";
 import ResearchOutputPage from "./pages/dashboard/institutional/ResearchOutputPage";
 import UsageAnalyticsPage from "./pages/dashboard/institutional/UsageAnalyticsPage";
 import InstitutionalReportsPage from "./pages/dashboard/institutional/InstitutionalReportsPage";
-import ApplicationsPage from "./pages/dashboard/institutional/ApplicationsPage";
-import ContractsPage from "./pages/dashboard/institutional/ContractsPage";
+import NetworkOverviewPage from "./pages/dashboard/network/NetworkOverviewPage";
+import OpportunitiesPage from "./pages/dashboard/network/OpportunitiesPage";
+import NetworkApplicationsPage from "./pages/dashboard/network/NetworkApplicationsPage";
+import DirectoryPage from "./pages/dashboard/network/DirectoryPage";
+import NetworkEngagementsPage from "./pages/dashboard/network/NetworkEngagementsPage";
+import NetworkContractsPage from "./pages/dashboard/network/NetworkContractsPage";
 import AdvisoryRequestsPage from "./pages/dashboard/AdvisoryRequestsPage";
 import AdvisoryOverviewPage from "./pages/dashboard/advisory/AdvisoryOverviewPage";
 import TranscriptRequestsPage from "./pages/dashboard/advisory/TranscriptRequestsPage";
@@ -137,7 +137,14 @@ const App = () => (
             <Route path="/dashboard/settings" element={<P><SettingsPage /></P>} />
             <Route path="/dashboard/messages" element={<P><MessagesPage /></P>} />
             <Route path="/dashboard/library" element={<P><LibraryPage /></P>} />
-            <Route path="/dashboard/network" element={<P><NetworkPage /></P>} />
+            <Route path="/dashboard/network" element={<P><NetworkOverviewPage /></P>} />
+            <Route path="/dashboard/network/opportunities" element={<P><OpportunitiesPage /></P>} />
+            <Route path="/dashboard/network/applications" element={<P><NetworkApplicationsPage /></P>} />
+            <Route path="/dashboard/network/directory" element={<P><DirectoryPage /></P>} />
+            <Route path="/dashboard/network/engagements" element={<P><NetworkEngagementsPage /></P>} />
+            <Route path="/dashboard/network/contracts" element={<P><NetworkContractsPage /></P>} />
+            {/* Legacy network tab redirect */}
+            <Route path="/dashboard/network-legacy" element={<P><NetworkPage /></P>} />
             <Route path="/dashboard/earnings" element={<P><EarningsPage /></P>} />
             <Route path="/dashboard/earnings/invoice/:id" element={<P><InvoiceDetailsPage /></P>} />
             <Route path="/dashboard/profile" element={<P><ProfilePage /></P>} />
@@ -146,12 +153,13 @@ const App = () => (
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
             <Route path="/dashboard/institutional" element={<P><InstitutionalOverview /></P>} />
-            <Route path="/dashboard/institutional/talent-requests" element={<P><TalentRequestsPage /></P>} />
-            <Route path="/dashboard/institutional/lecturers" element={<P><LecturerSearchPage /></P>} />
-            <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
-            <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
-            <Route path="/dashboard/institutional/applications" element={<P><ApplicationsPage /></P>} />
-            <Route path="/dashboard/institutional/contracts" element={<P><ContractsPage /></P>} />
+            {/* Legacy redirects for old institutional marketplace paths */}
+            <Route path="/dashboard/institutional/talent-requests" element={<Navigate to="/dashboard/network/opportunities" replace />} />
+            <Route path="/dashboard/institutional/lecturers" element={<Navigate to="/dashboard/network/directory" replace />} />
+            <Route path="/dashboard/institutional/collaborations" element={<Navigate to="/dashboard/network/engagements" replace />} />
+            <Route path="/dashboard/institutional/engagements" element={<Navigate to="/dashboard/network/engagements" replace />} />
+            <Route path="/dashboard/institutional/applications" element={<Navigate to="/dashboard/network/applications" replace />} />
+            <Route path="/dashboard/institutional/contracts" element={<Navigate to="/dashboard/network/contracts" replace />} />
             <Route path="/dashboard/institutional/admin/faculty" element={<P><FacultyUsersPage /></P>} />
             <Route path="/dashboard/institutional/admin/seats" element={<P><SeatManagementPage /></P>} />
             <Route path="/dashboard/institutional/admin/research-output" element={<P><ResearchOutputPage /></P>} />
