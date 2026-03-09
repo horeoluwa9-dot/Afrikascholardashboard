@@ -150,6 +150,8 @@ const App = () => (
             <Route path="/dashboard/institutional/lecturers" element={<P><LecturerSearchPage /></P>} />
             <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
             <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
+            <Route path="/dashboard/institutional/applications" element={<P><ApplicationsPage /></P>} />
+            <Route path="/dashboard/institutional/contracts" element={<P><ContractsPage /></P>} />
             <Route path="/dashboard/institutional/admin/faculty" element={<P><FacultyUsersPage /></P>} />
             <Route path="/dashboard/institutional/admin/seats" element={<P><SeatManagementPage /></P>} />
             <Route path="/dashboard/institutional/admin/research-output" element={<P><ResearchOutputPage /></P>} />
