@@ -6,13 +6,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import {
   BookOpen, Download, Search, FileText, List, FolderOpen,
   Plus, Trash2, Pencil, ExternalLink, ChevronRight,
-  BookMarked, ArrowLeft, Bookmark, Eye, X,
+  BookMarked, ArrowLeft, Bookmark, Eye, X, CreditCard,
+  CheckCircle2, RefreshCw, Globe, TrendingUp, Newspaper,
 } from "lucide-react";
 import { useLibrary, type ReadingListItem, type PurchasedPaper, type SavedArticle } from "@/hooks/useLibrary";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +28,25 @@ const tabs = [
   { key: "saved", label: "Saved Articles", icon: Bookmark },
   { key: "downloads", label: "Download History", icon: Download },
   { key: "lists", label: "Reading Lists", icon: List },
+  { key: "subscriptions", label: "Journal Subscriptions", icon: Newspaper },
+];
+
+const fmtNaira = (n: number) =>
+  new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(n);
+
+// ─── Demo journal catalogue ───────────────────────────────────────────────────
+const BROWSE_JOURNALS = [
+  { id: "j1", name: "African Journal of Public Health", field: "Public Health", impact: "IF 2.4", price: 8000, publisher: "African Health Sciences", description: "Peer-reviewed research on public health across Africa." },
+  { id: "j2", name: "Journal of African Business Studies", field: "Business & Economics", impact: "IF 1.9", price: 12000, publisher: "Pan-African Business Press", description: "Advancing business knowledge for African markets." },
+  { id: "j3", name: "African Environmental Research", field: "Environmental Science", impact: "IF 3.1", price: 10000, publisher: "Afrika Scholar Publishing", description: "Climate, ecology and environmental policy research." },
+  { id: "j4", name: "African Journal of Technology & Innovation", field: "Technology", impact: "IF 2.7", price: 15000, publisher: "West African Tech Consortium", description: "Research in emerging technologies and innovation." },
+  { id: "j5", name: "Journal of African Agricultural Sciences", field: "Agriculture", impact: "IF 2.2", price: 7000, publisher: "CGIAR Africa", description: "Food security and sustainable agriculture across the continent." },
+  { id: "j6", name: "African Journal of Legal Studies", field: "Law", impact: "IF 1.6", price: 9000, publisher: "African Law Society", description: "Comparative law, governance and human rights in Africa." },
+];
+
+// ─── Demo active subscriptions (seeded when user has subscribed) ──────────────
+const DEMO_SUBS = [
+  { id: "sub-1", journal_name: "African Journal of Public Policy", publisher: "African Development Policy Center", plan_type: "annual", price_amount: 10000, expires_at: "2026-07-15T00:00:00Z", status: "active", journal_id: "j1" },
 ];
 
 // ---- Shared paper type for actions ----
