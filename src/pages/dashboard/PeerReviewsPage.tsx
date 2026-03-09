@@ -154,15 +154,15 @@ const RECOGNITION = {
   ],
   badges: [
     { label: "Top Reviewer", icon: Star, colorClass: "text-accent", bgClass: "bg-accent/10" },
-    { label: "Fast Reviewer", icon: Zap, colorClass: "text-green-600", bgClass: "bg-green-500/10" },
-    { label: "Expert Reviewer", icon: Award, colorClass: "text-primary", bgClass: "bg-primary/10" },
+    { label: "Fast Reviewer", icon: Zap, colorClass: "text-primary", bgClass: "bg-primary/10" },
+    { label: "Expert Reviewer", icon: Award, colorClass: "text-foreground", bgClass: "bg-secondary" },
   ],
 };
 
 const DECISION_COLOR: Record<string, string> = {
-  Accept: "bg-green-500/10 text-green-600 border-green-500/20",
+  Accept: "bg-primary/10 text-primary border-primary/20",
   "Minor Revisions": "bg-accent/10 text-accent border-accent/20",
-  "Major Revisions": "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
+  "Major Revisions": "bg-secondary text-secondary-foreground border-border",
   Reject: "bg-destructive/10 text-destructive border-destructive/20",
 };
 

@@ -185,8 +185,8 @@ export default function ReviewWorkspacePage() {
     return (
       <DashboardLayout>
         <div className="max-w-2xl mx-auto text-center py-20 space-y-6">
-          <div className="h-20 w-20 rounded-full bg-green-500/10 flex items-center justify-center mx-auto">
-            <CheckCircle className="h-10 w-10 text-green-600" />
+          <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+            <CheckCircle className="h-10 w-10 text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground font-serif">Review Successfully Submitted</h1>
