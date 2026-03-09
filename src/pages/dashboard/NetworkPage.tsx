@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -17,10 +17,53 @@ import {
   ChevronRight, Globe, MessageCircle, GraduationCap, MapPin,
   Building2, Clock, FileText, Send, ClipboardList, Eye,
   BookOpen, CheckCircle, XCircle, Lightbulb, User,
+  TrendingUp, Wallet, CheckCircle2, DollarSign, Download,
 } from "lucide-react";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid,
+  Tooltip as ReTooltip, ResponsiveContainer,
+} from "recharts";
 import { useNetwork } from "@/hooks/useNetwork";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
+import { PAYMENTS } from "./EarningsPage";
+
+const fmtNaira = (n: number) =>
+  new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(n);
+
+const EARNINGS_CHART = [
+  { month: "Jan", amount: 50000 },
+  { month: "Feb", amount: 70000 },
+  { month: "Mar", amount: 120000 },
+  { month: "Apr", amount: 110000 },
+];
+
+const EarningsTooltip = ({ active, payload, label }: any) => {
+  if (active && payload?.length) {
+    return (
+      <div className="bg-card border border-border rounded-lg p-3 shadow-md text-sm">
+        <p className="font-semibold text-foreground mb-1">{label}</p>
+        <p className="text-accent font-bold">{fmtNaira(payload[0].value)}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const PaymentStatusBadge = ({ status }: { status: string }) =>
+  status === "Paid" ? (
+    <Badge className="bg-accent/15 text-accent border-accent/30 font-medium hover:bg-accent/15">
+      <CheckCircle2 className="h-3 w-3 mr-1" /> Paid
+    </Badge>
+  ) : (
+    <Badge className="bg-muted text-muted-foreground border-border font-medium hover:bg-muted">
+      <Clock className="h-3 w-3 mr-1" /> Pending
+    </Badge>
+  );
 
 const tabs = [
   { key: "overview", label: "Overview", icon: Globe },
@@ -29,6 +72,7 @@ const tabs = [
   { key: "jobs", label: "Job Opportunities", icon: Briefcase },
   { key: "applications", label: "My Applications", icon: ClipboardList },
   { key: "engagements", label: "Engagements", icon: Handshake },
+  { key: "earnings", label: "Earnings", icon: Wallet },
 ];
 
 // ── Demo fallback data ──
