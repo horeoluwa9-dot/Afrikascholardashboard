@@ -29,6 +29,8 @@ import EditorialAnalyticsPage from "./pages/dashboard/EditorialAnalyticsPage";
 import ReviewWorkspacePage from "./pages/dashboard/ReviewWorkspacePage";
 import MyPapers from "./pages/dashboard/MyPapers";
 import ProTip from "./pages/dashboard/ProTip";
+import ResearchProjectsPage from "./pages/dashboard/ResearchProjectsPage";
+import ReadingListsPage from "./pages/dashboard/ReadingListsPage";
 import DatasetExplorer from "./pages/dashboard/DatasetExplorer";
 import DatasetAnalyzer from "./pages/dashboard/DatasetAnalyzer";
 import CommunityPage from "./pages/dashboard/CommunityPage";
