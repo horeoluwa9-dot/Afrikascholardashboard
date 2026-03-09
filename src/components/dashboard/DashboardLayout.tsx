@@ -367,9 +367,10 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
 function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const { profile, role } = useAuth();
+  const { profile, role, userType } = useAuth();
   const { isModuleUnlocked } = useModuleUnlocksContext();
   const { isActive: hasSubscription } = useSubscriptionContext();
+  const currentUserType = userType || "researcher";
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
