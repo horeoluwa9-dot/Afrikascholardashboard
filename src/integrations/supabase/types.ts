@@ -704,6 +704,7 @@ export type Database = {
           profile_visibility: string | null
           updated_at: string
           user_id: string
+          user_type: string | null
         }
         Insert: {
           academic_title?: string | null
@@ -722,6 +723,7 @@ export type Database = {
           profile_visibility?: string | null
           updated_at?: string
           user_id: string
+          user_type?: string | null
         }
         Update: {
           academic_title?: string | null
@@ -740,6 +742,7 @@ export type Database = {
           profile_visibility?: string | null
           updated_at?: string
           user_id?: string
+          user_type?: string | null
         }
         Relationships: []
       }
