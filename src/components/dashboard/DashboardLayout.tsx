@@ -77,6 +77,8 @@ const sidebarSections: SidebarSection[] = [
     requiredModule: "my_research",
     items: [
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
+      { title: "Research Projects", url: "/dashboard/research-projects", icon: FolderOpen },
+      { title: "Reading Lists", url: "/dashboard/reading-lists", icon: BookOpen },
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
   },
