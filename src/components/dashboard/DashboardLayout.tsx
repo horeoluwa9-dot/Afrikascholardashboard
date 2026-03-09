@@ -203,7 +203,6 @@ const sidebarSections: SidebarSection[] = [
       { title: "Profile", url: "/dashboard/profile", icon: User },
       { title: "Settings", url: "/dashboard/settings", icon: Settings },
       { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
-      { title: "Security", url: "/dashboard/security", icon: Shield },
     ],
   },
 ];
