@@ -63,7 +63,14 @@ import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
 
-import InstitutionalOverview from "./pages/dashboard/InstitutionalOverview";
+import InstitutionalPartnershipsOverview from "./pages/dashboard/institutional/InstitutionalPartnershipsOverview";
+import PartnershipRequestsPage from "./pages/dashboard/institutional/PartnershipRequestsPage";
+import LecturerRequestsPage from "./pages/dashboard/institutional/LecturerRequestsPage";
+import ResearchCollaborationPage from "./pages/dashboard/institutional/ResearchCollaborationPage";
+import CurriculumValidationPage from "./pages/dashboard/institutional/CurriculumValidationPage";
+import AdvisorySupportPage from "./pages/dashboard/institutional/AdvisorySupportPage";
+import MyInstitutionalRequestsPage from "./pages/dashboard/institutional/MyInstitutionalRequestsPage";
+import InstitutionalContractsPage from "./pages/dashboard/institutional/InstitutionalContractsPage";
 import FacultyUsersPage from "./pages/dashboard/institutional/FacultyUsersPage";
 import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPage";
 import ResearchOutputPage from "./pages/dashboard/institutional/ResearchOutputPage";
@@ -173,14 +180,21 @@ const App = () => (
 
             {/* Institution / Admin routes */}
             <Route path="/dashboard/institution-requests" element={<P><InstitutionRequestsPage /></P>} />
-            <Route path="/dashboard/institutional" element={<P><InstitutionalOverview /></P>} />
-            {/* Legacy redirects for old institutional marketplace paths */}
-            <Route path="/dashboard/institutional/talent-requests" element={<Navigate to="/dashboard/network/opportunities" replace />} />
-            <Route path="/dashboard/institutional/lecturers" element={<Navigate to="/dashboard/network/directory" replace />} />
-            <Route path="/dashboard/institutional/collaborations" element={<Navigate to="/dashboard/network/engagements" replace />} />
-            <Route path="/dashboard/institutional/engagements" element={<Navigate to="/dashboard/network/engagements" replace />} />
-            <Route path="/dashboard/institutional/applications" element={<Navigate to="/dashboard/network/applications" replace />} />
-            <Route path="/dashboard/institutional/contracts" element={<Navigate to="/dashboard/network/contracts" replace />} />
+            <Route path="/dashboard/institutional" element={<P><InstitutionalPartnershipsOverview /></P>} />
+            <Route path="/dashboard/institutional/partnership-requests" element={<P><PartnershipRequestsPage /></P>} />
+            <Route path="/dashboard/institutional/lecturer-requests" element={<P><LecturerRequestsPage /></P>} />
+            <Route path="/dashboard/institutional/research-collaboration" element={<P><ResearchCollaborationPage /></P>} />
+            <Route path="/dashboard/institutional/curriculum" element={<P><CurriculumValidationPage /></P>} />
+            <Route path="/dashboard/institutional/advisory-support" element={<P><AdvisorySupportPage /></P>} />
+            <Route path="/dashboard/institutional/my-requests" element={<P><MyInstitutionalRequestsPage /></P>} />
+            <Route path="/dashboard/institutional/contracts" element={<P><InstitutionalContractsPage /></P>} />
+            {/* Legacy institutional admin routes */}
+            <Route path="/dashboard/institutional/talent-requests" element={<Navigate to="/dashboard/institutional/lecturer-requests" replace />} />
+            <Route path="/dashboard/institutional/lecturers" element={<Navigate to="/dashboard/institutional/lecturer-requests" replace />} />
+            <Route path="/dashboard/institutional/collaborations" element={<Navigate to="/dashboard/institutional/research-collaboration" replace />} />
+            <Route path="/dashboard/institutional/engagements" element={<Navigate to="/dashboard/institutional/my-requests" replace />} />
+            <Route path="/dashboard/institutional/applications" element={<Navigate to="/dashboard/institutional/my-requests" replace />} />
+            <Route path="/dashboard/institutional/contracts-legacy" element={<Navigate to="/dashboard/institutional/contracts" replace />} />
             <Route path="/dashboard/institutional/admin/faculty" element={<P><FacultyUsersPage /></P>} />
             <Route path="/dashboard/institutional/admin/seats" element={<P><SeatManagementPage /></P>} />
             <Route path="/dashboard/institutional/admin/research-output" element={<P><ResearchOutputPage /></P>} />

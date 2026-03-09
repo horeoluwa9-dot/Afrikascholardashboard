@@ -189,12 +189,20 @@ export default function ReviewWorkspacePage() {
             <CheckCircle className="h-10 w-10 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground font-serif">Review Successfully Submitted</h1>
+            <h1 className="text-2xl font-bold text-foreground font-serif">Review Submitted Successfully</h1>
             <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-              Your evaluation of <strong>"{manuscript.title}"</strong> has been submitted to the editorial team at <strong>{manuscript.journal}</strong>.
+              Your review has been sent to the journal editor.
             </p>
           </div>
           <div className="bg-card border border-border rounded-xl p-6 text-left space-y-3 max-w-sm mx-auto">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Manuscript</span>
+              <span className="text-foreground text-xs font-medium line-clamp-1 max-w-[180px]">{manuscript.title}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Sent to</span>
+              <span className="text-foreground text-xs font-medium">{manuscript.editor}</span>
+            </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Recommendation</span>
               <Badge variant="outline">{recommendation.replace(/_/g, " ")}</Badge>
@@ -207,10 +215,20 @@ export default function ReviewWorkspacePage() {
               <span className="text-muted-foreground">Journal</span>
               <span className="text-foreground text-xs">{manuscript.journal}</span>
             </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Next Step</span>
+              <span className="text-foreground text-xs">Awaiting Editorial Decision</span>
+            </div>
+          </div>
+          <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 max-w-sm mx-auto text-left">
+            <p className="text-xs text-accent font-medium">Editor Notification Sent</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {manuscript.editor} has been notified and the manuscript status has been updated to "Awaiting Editorial Decision."
+            </p>
           </div>
           <div className="flex gap-3 justify-center">
             <Button variant="outline" onClick={() => navigate("/dashboard/publishing/reviews")}>
-              Back to Peer Reviews
+              Return to Peer Reviews
             </Button>
             <Button onClick={() => navigate("/dashboard/publishing/reviews?tab=history")}>
               View Review History

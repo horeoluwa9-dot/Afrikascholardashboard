@@ -9,15 +9,21 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 const credits = [
-  { label: "Paper Credits", icon: FileText, used: 5, total: 25, color: "bg-accent", expiresIn: 22 },
-  { label: "Dataset Credits", icon: Database, used: 0, total: 25, color: "bg-primary", expiresIn: 30 },
-  { label: "Analysis Credits", icon: BarChart3, used: 10, total: 35, color: "bg-afrika-green", expiresIn: 15 },
+  { label: "Paper Credits", icon: FileText, used: 500, total: 2500, color: "bg-accent", expiresIn: 22 },
+  { label: "Dataset Credits", icon: Database, used: 0, total: 2500, color: "bg-primary", expiresIn: 30 },
+  { label: "Analysis Credits", icon: BarChart3, used: 1000, total: 5000, color: "bg-afrika-green", expiresIn: 15 },
 ];
 
 const creditPacks = [
-  { label: "+5 Paper Credits", price: "₦7,500", icon: FileText },
-  { label: "+10 Dataset Credits", price: "₦5,000", icon: Database },
-  { label: "+5 Analysis Credits", price: "₦6,000", icon: BarChart3 },
+  { label: "+1,000 Paper Credits", price: "₦150,000", icon: FileText },
+  { label: "+2,500 Paper Credits", price: "₦325,000", icon: FileText },
+  { label: "+5,000 Paper Credits", price: "₦575,000", icon: FileText },
+  { label: "+1,000 Dataset Credits", price: "₦100,000", icon: Database },
+  { label: "+2,500 Dataset Credits", price: "₦225,000", icon: Database },
+  { label: "+5,000 Dataset Credits", price: "₦400,000", icon: Database },
+  { label: "+1,000 Analysis Credits", price: "₦120,000", icon: BarChart3 },
+  { label: "+2,500 Analysis Credits", price: "₦275,000", icon: BarChart3 },
+  { label: "+5,000 Analysis Credits", price: "₦500,000", icon: BarChart3 },
 ];
 
 const BillingCreditsPage = () => {

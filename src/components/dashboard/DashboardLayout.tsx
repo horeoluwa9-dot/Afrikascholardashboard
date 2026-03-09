@@ -82,6 +82,7 @@ const sidebarSections: SidebarSection[] = [
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
       { title: "Research Projects", url: "/dashboard/research-projects", icon: FolderOpen },
       { title: "Reading Lists", url: "/dashboard/reading-lists", icon: BookOpen },
+      { title: "Library", url: "/dashboard/library", icon: Library },
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
   },
@@ -124,16 +125,13 @@ const sidebarSections: SidebarSection[] = [
     allowedUserTypes: ["academic", "professional"],
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
-      {
-        title: "Administration", url: "/dashboard/institutional/admin/faculty", icon: Shield,
-        children: [
-          { title: "Faculty Users", url: "/dashboard/institutional/admin/faculty", icon: Users2 },
-          { title: "Seat Management", url: "/dashboard/institutional/admin/seats", icon: CreditCard },
-          { title: "Research Output", url: "/dashboard/institutional/admin/research-output", icon: TrendingUp },
-          { title: "Usage Analytics", url: "/dashboard/institutional/admin/analytics", icon: BarChart3 },
-          { title: "Reports", url: "/dashboard/institutional/admin/reports", icon: ClipboardList },
-        ],
-      },
+      { title: "Partnership Requests", url: "/dashboard/institutional/partnership-requests", icon: Handshake },
+      { title: "Lecturer Requests", url: "/dashboard/institutional/lecturer-requests", icon: GraduationCap },
+      { title: "Research Collaboration", url: "/dashboard/institutional/research-collaboration", icon: Users2 },
+      { title: "Curriculum & Validation", url: "/dashboard/institutional/curriculum", icon: BookOpen },
+      { title: "Advisory Support", url: "/dashboard/institutional/advisory-support", icon: Compass },
+      { title: "My Requests", url: "/dashboard/institutional/my-requests", icon: ClipboardList },
+      { title: "Contracts", url: "/dashboard/institutional/contracts", icon: FileSignature },
     ],
   },
   {
@@ -182,19 +180,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === LIBRARY MODULE ===
-  {
-    label: "Library",
-    collapsible: true,
-    items: [
-      { title: "Saved Papers", url: "/dashboard/library?tab=saved", icon: Bookmark },
-      { title: "Purchased Papers", url: "/dashboard/library?tab=purchased", icon: FileText },
-      { title: "Journal Subscriptions", url: "/dashboard/library?tab=subscriptions", icon: CreditCard },
-      { title: "Reading History", url: "/dashboard/library?tab=downloads", icon: BookOpen },
-      { title: "Reading Lists", url: "/dashboard/library?tab=lists", icon: Library },
-      { title: "Downloads", url: "/dashboard/library?tab=downloads", icon: Download },
-    ],
-  },
+  // Library is now under My Research
 
   // === BILLING & CREDITS MODULE ===
   {
