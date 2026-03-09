@@ -123,6 +123,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Institutional",
     collapsible: true,
+    allowedUserTypes: ["academic", "professional"],
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
       {
