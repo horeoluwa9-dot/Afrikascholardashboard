@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
-  Users, FileText, Handshake, CheckCircle, ArrowRight, Building2, Search, Plus,
-  TrendingUp, Briefcase, BarChart3, CreditCard, ClipboardList, Shield,
+  Users, FileText, CheckCircle, ArrowRight, Building2,
+  TrendingUp, CreditCard, ClipboardList, Shield, BarChart3,
 } from "lucide-react";
 import { useInstitutional } from "@/hooks/useInstitutional";
 
