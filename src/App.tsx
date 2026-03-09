@@ -62,6 +62,8 @@ import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPa
 import ResearchOutputPage from "./pages/dashboard/institutional/ResearchOutputPage";
 import UsageAnalyticsPage from "./pages/dashboard/institutional/UsageAnalyticsPage";
 import InstitutionalReportsPage from "./pages/dashboard/institutional/InstitutionalReportsPage";
+import ApplicationsPage from "./pages/dashboard/institutional/ApplicationsPage";
+import ContractsPage from "./pages/dashboard/institutional/ContractsPage";
 import AdvisoryRequestsPage from "./pages/dashboard/AdvisoryRequestsPage";
 import AdvisoryOverviewPage from "./pages/dashboard/advisory/AdvisoryOverviewPage";
 import TranscriptRequestsPage from "./pages/dashboard/advisory/TranscriptRequestsPage";
