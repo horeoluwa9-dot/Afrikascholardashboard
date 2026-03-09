@@ -68,8 +68,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Defer to avoid deadlock with Supabase realtime
           setTimeout(() => fetchProfileAndRole(session.user.id), 0);
         } else {
-          setProfile(null);
+        setProfile(null);
           setRole(null);
+          setUserType(null);
         }
         setLoading(false);
       }
