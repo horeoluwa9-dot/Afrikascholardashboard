@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import afrikaLogo from "@/assets/afrika-scholar-logo.png";
-import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles, Bell } from "lucide-react";
+import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles, Bell, Inbox, FileSignature } from "lucide-react";
 import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
   LayoutDashboard, FileText, FilePlus, Database, BarChart3,
@@ -113,9 +113,11 @@ const sidebarSections: SidebarSection[] = [
         title: "Engagement", url: "/dashboard/institutional/talent-requests", icon: Handshake,
         children: [
           { title: "Talent Requests", url: "/dashboard/institutional/talent-requests", icon: Briefcase },
+          { title: "Applications", url: "/dashboard/institutional/applications", icon: Inbox },
           { title: "Lecturer Search", url: "/dashboard/institutional/lecturers", icon: Search },
           { title: "Collaborations", url: "/dashboard/institutional/collaborations", icon: Handshake },
           { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
+          { title: "Contracts", url: "/dashboard/institutional/contracts", icon: FileSignature },
         ],
       },
       {

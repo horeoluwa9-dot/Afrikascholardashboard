@@ -62,6 +62,8 @@ import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPa
 import ResearchOutputPage from "./pages/dashboard/institutional/ResearchOutputPage";
 import UsageAnalyticsPage from "./pages/dashboard/institutional/UsageAnalyticsPage";
 import InstitutionalReportsPage from "./pages/dashboard/institutional/InstitutionalReportsPage";
+import ApplicationsPage from "./pages/dashboard/institutional/ApplicationsPage";
+import ContractsPage from "./pages/dashboard/institutional/ContractsPage";
 import AdvisoryRequestsPage from "./pages/dashboard/AdvisoryRequestsPage";
 import AdvisoryOverviewPage from "./pages/dashboard/advisory/AdvisoryOverviewPage";
 import TranscriptRequestsPage from "./pages/dashboard/advisory/TranscriptRequestsPage";
@@ -148,6 +150,8 @@ const App = () => (
             <Route path="/dashboard/institutional/lecturers" element={<P><LecturerSearchPage /></P>} />
             <Route path="/dashboard/institutional/collaborations" element={<P><ProjectCollaborationsPage /></P>} />
             <Route path="/dashboard/institutional/engagements" element={<P><MyEngagementsPage /></P>} />
+            <Route path="/dashboard/institutional/applications" element={<P><ApplicationsPage /></P>} />
+            <Route path="/dashboard/institutional/contracts" element={<P><ContractsPage /></P>} />
             <Route path="/dashboard/institutional/admin/faculty" element={<P><FacultyUsersPage /></P>} />
             <Route path="/dashboard/institutional/admin/seats" element={<P><SeatManagementPage /></P>} />
             <Route path="/dashboard/institutional/admin/research-output" element={<P><ResearchOutputPage /></P>} />
