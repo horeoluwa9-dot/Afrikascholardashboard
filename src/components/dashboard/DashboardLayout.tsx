@@ -172,7 +172,6 @@ const sidebarSections: SidebarSection[] = [
     items: [
       { title: "Community", url: "/dashboard/community", icon: MessageCircle },
       { title: "Library", url: "/dashboard/library", icon: BookOpen },
-      { title: "Network", url: "/dashboard/network", icon: Globe },
       { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
   },
