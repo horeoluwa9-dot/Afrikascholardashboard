@@ -180,19 +180,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === LIBRARY MODULE ===
-  {
-    label: "Library",
-    collapsible: true,
-    items: [
-      { title: "Saved Papers", url: "/dashboard/library?tab=saved", icon: Bookmark },
-      { title: "Purchased Papers", url: "/dashboard/library?tab=purchased", icon: FileText },
-      { title: "Journal Subscriptions", url: "/dashboard/library?tab=subscriptions", icon: CreditCard },
-      { title: "Reading History", url: "/dashboard/library?tab=downloads", icon: BookOpen },
-      { title: "Reading Lists", url: "/dashboard/library?tab=lists", icon: Library },
-      { title: "Downloads", url: "/dashboard/library?tab=downloads", icon: Download },
-    ],
-  },
+  // Library is now under My Research
 
   // === BILLING & CREDITS MODULE ===
   {
