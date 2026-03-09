@@ -10,6 +10,7 @@ import {
   Lightbulb, Presentation, PlusCircle, FolderOpen,
   BookOpen, Globe, Handshake, Building2, User, Shield,
   Briefcase, Library, GraduationCap, FileUp, MapPin, UserPlus,
+  Bookmark, Download,
 } from "lucide-react";
 import { usePublishing } from "@/hooks/usePublishing";
 import {
