@@ -127,7 +127,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    label: "Institutional",
+    label: "Institutions",
     collapsible: true,
     allowedUserTypes: ["academic", "professional"],
     items: [
