@@ -31,7 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/NavLink";
 import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
-import { useAuth, AppRole } from "@/contexts/AuthContext";
+import { useAuth, AppRole, UserType } from "@/contexts/AuthContext";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { ModuleType } from "@/hooks/useModuleUnlocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -54,6 +54,8 @@ interface SidebarSection {
   requiredModule?: ModuleType;
   /** If true, section shows as locked link to subscription when not subscribed */
   requiresSubscription?: boolean;
+  /** If set, only show for these user types */
+  allowedUserTypes?: UserType[];
 }
 
 const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
@@ -76,6 +78,7 @@ const sidebarSections: SidebarSection[] = [
     label: "My Research",
     collapsible: true,
     requiredModule: "my_research",
+    allowedUserTypes: ["researcher", "academic"],
     items: [
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
       { title: "Research Projects", url: "/dashboard/research-projects", icon: FolderOpen },
@@ -88,6 +91,7 @@ const sidebarSections: SidebarSection[] = [
     collapsible: true,
     requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
+    allowedUserTypes: ["researcher", "academic"],
     items: [
       { title: "Publishing Overview", url: "/dashboard/publishing", icon: FileText },
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
@@ -119,6 +123,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Institutional",
     collapsible: true,
+    allowedUserTypes: ["academic", "professional"],
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
       {
@@ -362,9 +367,10 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
 function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const { profile, role } = useAuth();
+  const { profile, role, userType } = useAuth();
   const { isModuleUnlocked } = useModuleUnlocksContext();
   const { isActive: hasSubscription } = useSubscriptionContext();
+  const currentUserType = userType || "researcher";
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
@@ -385,6 +391,8 @@ function AppSidebar() {
       </div>
       <SidebarContent className="pt-2 overflow-y-auto">
         {sidebarSections.map((section, gi) => {
+          // Hide section if user type doesn't match
+          if (section.allowedUserTypes && !section.allowedUserTypes.includes(currentUserType)) return null;
           // Hide entire section if role doesn't match
           if (section.requiredRoles && !canAccess(role, section.requiredRoles)) return null;
 

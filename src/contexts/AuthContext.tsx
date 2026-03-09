@@ -3,6 +3,7 @@ import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole = "researcher" | "student" | "reviewer" | "institutional_admin";
+export type UserType = "researcher" | "academic" | "professional";
 
 interface Profile {
   id: string;
@@ -12,6 +13,7 @@ interface Profile {
   discipline: string | null;
   avatar_url: string | null;
   bio: string | null;
+  user_type: UserType | null;
 }
 
 interface AuthContextType {
@@ -19,6 +21,7 @@ interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   role: AppRole | null;
+  userType: UserType | null;
   loading: boolean;
   signOut: () => Promise<void>;
 }
@@ -28,6 +31,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
   role: null,
+  userType: null,
   loading: true,
   signOut: async () => {},
 });
@@ -39,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
+  const [userType, setUserType] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchProfileAndRole = async (userId: string) => {
@@ -46,7 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabase.from("profiles").select("*").eq("user_id", userId).single(),
       supabase.from("user_roles").select("role").eq("user_id", userId).single(),
     ]);
-    if (profileRes.data) setProfile(profileRes.data as Profile);
+    if (profileRes.data) {
+      const p = profileRes.data as Profile;
+      setProfile(p);
+      setUserType((p.user_type as UserType) || "researcher");
+    }
     if (roleRes.data) setRole(roleRes.data.role as AppRole);
   };
 
@@ -59,8 +68,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // Defer to avoid deadlock with Supabase realtime
           setTimeout(() => fetchProfileAndRole(session.user.id), 0);
         } else {
-          setProfile(null);
+        setProfile(null);
           setRole(null);
+          setUserType(null);
         }
         setLoading(false);
       }
@@ -84,10 +94,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setProfile(null);
     setRole(null);
+    setUserType(null);
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, role, loading, signOut }}>
+    <AuthContext.Provider value={{ session, user, profile, role, userType, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );
