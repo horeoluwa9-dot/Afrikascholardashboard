@@ -88,7 +88,6 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Publishing",
     collapsible: true,
-    requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
     allowedUserTypes: ["researcher", "academic"],
     items: [
