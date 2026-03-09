@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import {
   Tabs,
   TabsContent,
@@ -28,8 +29,19 @@ import {
   Save,
   Plus,
   X,
+  Key,
+  Smartphone,
+  Monitor,
+  LogOut,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
+
+const mockSessions = [
+  { id: "1", device: "Chrome on macOS", location: "Cape Town, ZA", lastActive: "Now", current: true },
+  { id: "2", device: "Safari on iPhone", location: "Johannesburg, ZA", lastActive: "2 hours ago", current: false },
+  { id: "3", device: "Firefox on Windows", location: "Nairobi, KE", lastActive: "3 days ago", current: false },
+];
 
 const SettingsPage = () => {
   const { toast } = useToast();
@@ -45,6 +57,11 @@ const SettingsPage = () => {
   const [notifCommunity, setNotifCommunity] = useState(true);
   const [notifCredits, setNotifCredits] = useState(true);
 
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const addKeyword = () => {
     if (newKeyword.trim() && keywords.length < 10) {
       setKeywords([...keywords, newKeyword.trim()]);
@@ -56,6 +73,25 @@ const SettingsPage = () => {
 
   const handleSave = () => {
     toast({ title: "Settings saved", description: "Your profile has been updated. Intelligence Hub will refresh." });
+  };
+
+  const handleChangePassword = () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      sonnerToast.error("Please fill in all password fields");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      sonnerToast.error("New passwords do not match");
+      return;
+    }
+    sonnerToast.success("Password updated successfully");
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
+
+  const handleRevokeSession = (id: string) => {
+    sonnerToast.success("Session revoked");
   };
 
   return (
@@ -191,22 +227,79 @@ const SettingsPage = () => {
 
           {/* Security */}
           <TabsContent value="security" className="space-y-5 mt-4">
+            {/* Change Password */}
             <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Key className="h-5 w-5 text-primary" />
+                <h3 className="text-base font-semibold text-foreground">Change Password</h3>
+              </div>
+              <p className="text-xs text-muted-foreground">Update your account password</p>
               <div className="space-y-2">
-                <Label>Current Password</Label>
-                <Input type="password" />
+                <Label htmlFor="current-password">Current Password</Label>
+                <Input id="current-password" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>New Password</Label>
-                <Input type="password" />
+                <Label htmlFor="new-password">New Password</Label>
+                <Input id="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
               </div>
               <div className="space-y-2">
-                <Label>Confirm New Password</Label>
-                <Input type="password" />
+                <Label htmlFor="confirm-password">Confirm New Password</Label>
+                <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
               </div>
-              <Button variant="afrika" size="sm" className="gap-1">
+              <Button variant="afrika" size="sm" className="gap-1" onClick={handleChangePassword}>
                 <Shield className="h-3 w-3" /> Update Password
               </Button>
+            </div>
+
+            {/* Two-Factor Authentication */}
+            <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Smartphone className="h-5 w-5 text-primary" />
+                <h3 className="text-base font-semibold text-foreground">Two-Factor Authentication</h3>
+              </div>
+              <p className="text-xs text-muted-foreground">Add an extra layer of security to your account</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    {twoFactorEnabled ? "Two-factor authentication is enabled" : "Two-factor authentication is disabled"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {twoFactorEnabled
+                      ? "Your account is protected with an authenticator app"
+                      : "Enable 2FA to add extra security to your account"}
+                  </p>
+                </div>
+                <Switch checked={twoFactorEnabled} onCheckedChange={setTwoFactorEnabled} />
+              </div>
+            </div>
+
+            {/* Login Sessions */}
+            <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+              <div className="flex items-center gap-2 mb-1">
+                <Monitor className="h-5 w-5 text-primary" />
+                <h3 className="text-base font-semibold text-foreground">Login Sessions</h3>
+              </div>
+              <p className="text-xs text-muted-foreground">Manage your active sessions across devices</p>
+              {mockSessions.map((session, idx) => (
+                <div key={session.id}>
+                  {idx > 0 && <Separator className="mb-3" />}
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-foreground">{session.device}</p>
+                        {session.current && <Badge variant="secondary" className="text-[10px]">Current</Badge>}
+                      </div>
+                      <p className="text-xs text-muted-foreground">{session.location} · {session.lastActive}</p>
+                    </div>
+                    {!session.current && (
+                      <Button variant="ghost" size="sm" onClick={() => handleRevokeSession(session.id)} className="text-destructive hover:text-destructive">
+                        <LogOut className="h-4 w-4 mr-1" />
+                        Revoke
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </TabsContent>
         </Tabs>
