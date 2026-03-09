@@ -384,7 +384,7 @@ export default function PeerReviewsPage() {
                       </div>
                       <div className="flex gap-2 pt-1">
                         <Link to={`/dashboard/publishing/reviews/workspace/${review.id}`} className="flex-1">
-                          <Button size="sm" className="text-xs h-8 gap-1.5 w-full">
+                          <Button size="sm" className="text-xs h-8 gap-1.5 w-full bg-accent hover:bg-accent/90 text-accent-foreground">
                             <FileText className="h-3 w-3" /> Continue Review
                           </Button>
                         </Link>
