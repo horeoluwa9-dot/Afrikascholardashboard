@@ -85,12 +85,17 @@ const sidebarSections: SidebarSection[] = [
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
   },
-  // === LIBRARY (standalone module) ===
+  // === LIBRARY (collapsible module) ===
   {
     label: "Library",
-    collapsible: false,
+    collapsible: true,
     items: [
-      { title: "Library", url: "/dashboard/library", icon: Library },
+      { title: "Overview", url: "/dashboard/library", icon: BookOpen },
+      { title: "Purchased Papers", url: "/dashboard/library?tab=purchased", icon: FileText },
+      { title: "Saved Articles", url: "/dashboard/library?tab=saved", icon: Bookmark },
+      { title: "Download History", url: "/dashboard/library?tab=downloads", icon: Download },
+      { title: "Reading Lists", url: "/dashboard/library?tab=lists", icon: FolderOpen },
+      { title: "Journal Subscriptions", url: "/dashboard/library?tab=subscriptions", icon: Globe },
     ],
   },
   {
