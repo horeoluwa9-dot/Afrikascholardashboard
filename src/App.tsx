@@ -63,7 +63,14 @@ import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
 
-import InstitutionalOverview from "./pages/dashboard/InstitutionalOverview";
+import InstitutionalPartnershipsOverview from "./pages/dashboard/institutional/InstitutionalPartnershipsOverview";
+import PartnershipRequestsPage from "./pages/dashboard/institutional/PartnershipRequestsPage";
+import LecturerRequestsPage from "./pages/dashboard/institutional/LecturerRequestsPage";
+import ResearchCollaborationPage from "./pages/dashboard/institutional/ResearchCollaborationPage";
+import CurriculumValidationPage from "./pages/dashboard/institutional/CurriculumValidationPage";
+import AdvisorySupportPage from "./pages/dashboard/institutional/AdvisorySupportPage";
+import MyInstitutionalRequestsPage from "./pages/dashboard/institutional/MyInstitutionalRequestsPage";
+import InstitutionalContractsPage from "./pages/dashboard/institutional/InstitutionalContractsPage";
 import FacultyUsersPage from "./pages/dashboard/institutional/FacultyUsersPage";
 import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPage";
 import ResearchOutputPage from "./pages/dashboard/institutional/ResearchOutputPage";
