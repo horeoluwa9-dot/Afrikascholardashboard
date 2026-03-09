@@ -41,6 +41,8 @@ import BillingPage from "./pages/dashboard/BillingPage";
 import MessagesPage from "./pages/dashboard/MessagesPage";
 import LibraryPage from "./pages/dashboard/LibraryPage";
 import NetworkPage from "./pages/dashboard/NetworkPage";
+import EarningsPage from "./pages/dashboard/EarningsPage";
+import InvoiceDetailsPage from "./pages/dashboard/InvoiceDetailsPage";
 import InstitutionRequestsPage from "./pages/dashboard/InstitutionRequestsPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
@@ -130,6 +132,8 @@ const App = () => (
             <Route path="/dashboard/messages" element={<P><MessagesPage /></P>} />
             <Route path="/dashboard/library" element={<P><LibraryPage /></P>} />
             <Route path="/dashboard/network" element={<P><NetworkPage /></P>} />
+            <Route path="/dashboard/earnings" element={<P><EarningsPage /></P>} />
+            <Route path="/dashboard/earnings/invoice/:id" element={<P><InvoiceDetailsPage /></P>} />
             <Route path="/dashboard/profile" element={<P><ProfilePage /></P>} />
             <Route path="/dashboard/researcher" element={<P><ResearcherProfilePage /></P>} />
 
