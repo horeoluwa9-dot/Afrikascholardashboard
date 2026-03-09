@@ -86,6 +86,7 @@ const Onboarding = () => {
       await supabase.from("profiles").update({
         institution: institution || null,
         discipline: [fieldOfStudy, ...disciplines].filter(Boolean).join(", ") || null,
+        user_type: identity || "researcher",
       }).eq("user_id", user.id);
     }
     setStep(2);

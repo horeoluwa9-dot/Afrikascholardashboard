@@ -54,6 +54,8 @@ interface SidebarSection {
   requiredModule?: ModuleType;
   /** If true, section shows as locked link to subscription when not subscribed */
   requiresSubscription?: boolean;
+  /** If set, only show for these user types */
+  allowedUserTypes?: UserType[];
 }
 
 const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
