@@ -58,7 +58,7 @@ import ResearcherProfilePage from "./pages/dashboard/ResearcherProfilePage";
 import SubscriptionPage from "./pages/dashboard/SubscriptionPage";
 import PaymentSuccessPage from "./pages/dashboard/PaymentSuccessPage";
 import NotificationsPage from "./pages/dashboard/NotificationsPage";
-import SecurityPage from "./pages/dashboard/SecurityPage";
+
 import InstitutionalOverview from "./pages/dashboard/InstitutionalOverview";
 import FacultyUsersPage from "./pages/dashboard/institutional/FacultyUsersPage";
 import SeatManagementPage from "./pages/dashboard/institutional/SeatManagementPage";
@@ -199,7 +199,7 @@ const App = () => (
             <Route path="/dashboard/intelligence/stakeholders" element={<Navigate to="/dashboard/intelligence?tab=stakeholders" replace />} />
             <Route path="/dashboard/intelligence/gaps" element={<Navigate to="/dashboard/intelligence?tab=gaps" replace />} />
             <Route path="/dashboard/notifications" element={<P><NotificationsPage /></P>} />
-            <Route path="/dashboard/security" element={<P><SecurityPage /></P>} />
+            
 
             <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
 
