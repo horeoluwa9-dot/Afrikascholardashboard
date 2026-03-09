@@ -120,6 +120,8 @@ const App = () => (
             <Route path="/dashboard/ai-papers/new" element={<P><PaperSetupWizard /></P>} />
             <Route path="/dashboard/ai-papers/workspace/:id" element={<P><PaperWorkspace /></P>} />
             <Route path="/dashboard/pro-tip" element={<P><ProTip /></P>} />
+            <Route path="/dashboard/research-projects" element={<P><ResearchProjectsPage /></P>} />
+            <Route path="/dashboard/reading-lists" element={<P><ReadingListsPage /></P>} />
             <Route path="/dashboard/data/explorer" element={<P><DatasetExplorer /></P>} />
             <Route path="/dashboard/data/analyzer" element={<P><DatasetAnalyzer /></P>} />
             <Route path="/dashboard/intelligence" element={<P><IntelligenceHub /></P>} />
