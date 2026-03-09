@@ -481,7 +481,7 @@ export default function ReviewWorkspacePage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="accept">
-                        <span className="flex items-center gap-2 text-green-600">
+                        <span className="flex items-center gap-2 text-primary">
                           <CheckCircle className="h-3.5 w-3.5" /> Accept
                         </span>
                       </SelectItem>
@@ -491,7 +491,7 @@ export default function ReviewWorkspacePage() {
                         </span>
                       </SelectItem>
                       <SelectItem value="major_revisions">
-                        <span className="flex items-center gap-2 text-yellow-600">
+                        <span className="flex items-center gap-2 text-foreground">
                           <AlertCircle className="h-3.5 w-3.5" /> Major Revisions
                         </span>
                       </SelectItem>

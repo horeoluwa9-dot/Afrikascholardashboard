@@ -314,7 +314,7 @@ export default function PeerReviewsPage() {
                               {new Date(req.deadline).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                             </td>
                             <td className="px-5 py-4">
-                              <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-400/40 bg-amber-400/10 whitespace-nowrap">
+                              <Badge variant="outline" className="text-[10px] text-foreground border-border bg-secondary whitespace-nowrap">
                                 Awaiting Response
                               </Badge>
                             </td>
