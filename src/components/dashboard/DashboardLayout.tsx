@@ -76,7 +76,6 @@ const sidebarSections: SidebarSection[] = [
     collapsible: true,
     requiredModule: "my_research",
     items: [
-      { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
