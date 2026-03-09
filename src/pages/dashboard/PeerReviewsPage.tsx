@@ -320,8 +320,8 @@ export default function PeerReviewsPage() {
                             </td>
                             <td className="px-5 py-4 text-right">
                               <div className="flex justify-end gap-2">
-                                <Button size="sm" className="text-xs h-7 gap-1" onClick={() => handleAccept(req)}>
-                                  <CheckCircle className="h-3 w-3" /> Accept Review
+                                                <Button size="sm" className="text-xs h-7 gap-1 bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => handleAccept(req)}>
+                                                  <CheckCircle className="h-3 w-3" /> Accept Review
                                 </Button>
                                 <Button variant="outline" size="sm" className="text-xs h-7" onClick={() => handleDecline(req)}>
                                   Decline
