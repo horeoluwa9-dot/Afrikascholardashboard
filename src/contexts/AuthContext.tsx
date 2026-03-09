@@ -21,6 +21,7 @@ interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   role: AppRole | null;
+  userType: UserType | null;
   loading: boolean;
   signOut: () => Promise<void>;
 }
