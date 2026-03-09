@@ -207,7 +207,7 @@ const BillingPage = () => {
         <div className="bg-card rounded-xl border border-border p-5 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-foreground">Auto-renew Credits</p>
-            <p className="text-xs text-muted-foreground">Auto purchase +10 credits when balance drops below 2</p>
+            <p className="text-xs text-muted-foreground">Auto purchase +1,000 credits when balance drops below 500</p>
           </div>
           <Switch checked={autoRenewCredits} onCheckedChange={setAutoRenewCredits} />
         </div>
