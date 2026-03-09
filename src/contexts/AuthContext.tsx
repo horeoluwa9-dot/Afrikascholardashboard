@@ -50,7 +50,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabase.from("profiles").select("*").eq("user_id", userId).single(),
       supabase.from("user_roles").select("role").eq("user_id", userId).single(),
     ]);
-    if (profileRes.data) setProfile(profileRes.data as Profile);
+    if (profileRes.data) {
+      const p = profileRes.data as Profile;
+      setProfile(p);
+      setUserType((p.user_type as UserType) || "researcher");
+    }
     if (roleRes.data) setRole(roleRes.data.role as AppRole);
   };
 
