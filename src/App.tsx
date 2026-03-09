@@ -41,6 +41,8 @@ import BillingPage from "./pages/dashboard/BillingPage";
 import MessagesPage from "./pages/dashboard/MessagesPage";
 import LibraryPage from "./pages/dashboard/LibraryPage";
 import NetworkPage from "./pages/dashboard/NetworkPage";
+import EarningsPage from "./pages/dashboard/EarningsPage";
+import InvoiceDetailsPage from "./pages/dashboard/InvoiceDetailsPage";
 import InstitutionRequestsPage from "./pages/dashboard/InstitutionRequestsPage";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
