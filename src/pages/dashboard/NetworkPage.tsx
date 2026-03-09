@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -17,10 +17,53 @@ import {
   ChevronRight, Globe, MessageCircle, GraduationCap, MapPin,
   Building2, Clock, FileText, Send, ClipboardList, Eye,
   BookOpen, CheckCircle, XCircle, Lightbulb, User,
+  TrendingUp, Wallet, CheckCircle2, DollarSign, Download,
 } from "lucide-react";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid,
+  Tooltip as ReTooltip, ResponsiveContainer,
+} from "recharts";
 import { useNetwork } from "@/hooks/useNetwork";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
+import { PAYMENTS } from "./EarningsPage";
+
+const fmtNaira = (n: number) =>
+  new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(n);
+
+const EARNINGS_CHART = [
+  { month: "Jan", amount: 50000 },
+  { month: "Feb", amount: 70000 },
+  { month: "Mar", amount: 120000 },
+  { month: "Apr", amount: 110000 },
+];
+
+const EarningsTooltip = ({ active, payload, label }: any) => {
+  if (active && payload?.length) {
+    return (
+      <div className="bg-card border border-border rounded-lg p-3 shadow-md text-sm">
+        <p className="font-semibold text-foreground mb-1">{label}</p>
+        <p className="text-accent font-bold">{fmtNaira(payload[0].value)}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const PaymentStatusBadge = ({ status }: { status: string }) =>
+  status === "Paid" ? (
+    <Badge className="bg-accent/15 text-accent border-accent/30 font-medium hover:bg-accent/15">
+      <CheckCircle2 className="h-3 w-3 mr-1" /> Paid
+    </Badge>
+  ) : (
+    <Badge className="bg-muted text-muted-foreground border-border font-medium hover:bg-muted">
+      <Clock className="h-3 w-3 mr-1" /> Pending
+    </Badge>
+  );
 
 const tabs = [
   { key: "overview", label: "Overview", icon: Globe },
@@ -29,6 +72,7 @@ const tabs = [
   { key: "jobs", label: "Job Opportunities", icon: Briefcase },
   { key: "applications", label: "My Applications", icon: ClipboardList },
   { key: "engagements", label: "Engagements", icon: Handshake },
+  { key: "earnings", label: "Earnings", icon: Wallet },
 ];
 
 // ── Demo fallback data ──
@@ -497,6 +541,97 @@ const NetworkPage = () => {
                 <p className="text-xs text-muted-foreground mt-1">Engagements from advisory work and collaborations will appear here.</p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ====== EARNINGS ====== */}
+        {activeTab === "earnings" && (
+          <div className="space-y-6">
+            {/* Summary cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { title: "Total Earnings", value: fmtNaira(350000), desc: "From completed engagements", icon: TrendingUp, bg: "bg-accent/10", color: "text-accent" },
+                { title: "Pending Payments", value: fmtNaira(80000), desc: "Awaiting release", icon: Clock, bg: "bg-primary/10", color: "text-primary" },
+                { title: "Completed Projects", value: "7", desc: "Successfully completed", icon: CheckCircle2, bg: "bg-muted", color: "text-muted-foreground" },
+                { title: "Active Engagements", value: "2", desc: "Currently in progress", icon: Briefcase, bg: "bg-accent/10", color: "text-accent" },
+              ].map((c) => (
+                <div key={c.title} className="bg-card rounded-xl border border-border p-5">
+                  <div className={`inline-flex items-center justify-center h-9 w-9 rounded-lg ${c.bg} mb-3`}>
+                    <c.icon className={`h-4 w-4 ${c.color}`} />
+                  </div>
+                  <p className="text-xl font-bold text-foreground">{c.value}</p>
+                  <p className="text-xs font-semibold text-foreground mt-0.5">{c.title}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{c.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Chart */}
+            <div className="bg-card rounded-xl border border-border p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <TrendingUp className="h-4 w-4 text-accent" />
+                <h2 className="text-sm font-bold text-foreground">Monthly Earnings</h2>
+              </div>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={EARNINGS_CHART} margin={{ top: 4, right: 16, bottom: 0, left: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={(v) => `₦${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} width={52} />
+                  <ReTooltip content={<EarningsTooltip />} />
+                  <Line type="monotone" dataKey="amount" stroke="hsl(var(--accent))" strokeWidth={2.5}
+                    dot={{ fill: "hsl(var(--accent))", r: 5, strokeWidth: 2, stroke: "hsl(var(--background))" }}
+                    activeDot={{ r: 7 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Payment History */}
+            <div className="bg-card rounded-xl border border-border p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-accent" />
+                  <h2 className="text-sm font-bold text-foreground">Payment History</h2>
+                </div>
+                <Badge variant="outline" className="text-xs">{PAYMENTS.length} Records</Badge>
+              </div>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-border">
+                      <TableHead className="text-xs font-semibold text-muted-foreground">Project / Engagement</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground">Institution / Client</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground">Amount</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground">Status</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground">Date</TableHead>
+                      <TableHead className="text-xs font-semibold text-muted-foreground text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {PAYMENTS.map((p) => (
+                      <TableRow key={p.id} className="border-border hover:bg-secondary/50 transition-colors">
+                        <TableCell className="font-medium text-sm text-foreground">{p.project}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{p.institution}</TableCell>
+                        <TableCell className="text-sm font-semibold text-foreground">{fmtNaira(p.amount)}</TableCell>
+                        <TableCell><PaymentStatusBadge status={p.status} /></TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{p.date}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button variant="outline" size="sm" className="text-xs gap-1 h-7"
+                              onClick={() => navigate("/dashboard/institutional/engagements")}>
+                              <ExternalLink className="h-3 w-3" /> View Project
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-xs gap-1 h-7 text-accent hover:text-accent hover:bg-accent/10"
+                              onClick={() => navigate(`/dashboard/earnings/invoice/${p.id}`)}>
+                              <FileText className="h-3 w-3" /> View Invoice
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
           </div>
         )}
       </div>
