@@ -178,7 +178,7 @@ const App = () => (
 
             {/* Legacy redirects */}
             <Route path="/dashboard/publeesh" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard/publishing" element={<Navigate to="/dashboard/publishing/submit" replace />} />
+            {/* /dashboard/publishing is handled by line 122 — no redirect needed */}
             <Route path="/dashboard/datasets" element={<Navigate to="/dashboard/data/explorer" replace />} />
             <Route path="/dashboard/analyzer" element={<Navigate to="/dashboard/data/analyzer" replace />} />
             <Route path="/dashboard/intelligence/journals" element={<Navigate to="/dashboard/intelligence?tab=journals" replace />} />
