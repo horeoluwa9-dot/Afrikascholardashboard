@@ -94,7 +94,7 @@ const LecturerRequestsPage = () => {
                 </div>
                 <div><Label>Engagement Duration</Label><Input className="mt-1" value={form.duration} onChange={e => setForm(p => ({ ...p, duration: e.target.value }))} placeholder="e.g. 3 months" /></div>
                 <div><Label>Description of Teaching Needs</Label><Textarea className="mt-1" rows={4} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Describe what you need..." /></div>
-                <Button className="w-full" onClick={handleSubmit}>Submit Lecturer Request</Button>
+                <Button variant="afrika" className="w-full" onClick={handleSubmit}>Submit Lecturer Request</Button>
               </CardContent>
             </Card>
           </div>

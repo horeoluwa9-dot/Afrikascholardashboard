@@ -187,7 +187,7 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // Library is now under My Research
+  // Library is now a standalone module positioned after My Research
 
   // === BILLING & CREDITS MODULE ===
   {
