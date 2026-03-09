@@ -419,6 +419,68 @@ export type Database = {
         }
         Relationships: []
       }
+      journal_subscriptions: {
+        Row: {
+          auto_renew: boolean | null
+          created_at: string
+          currency: string
+          expires_at: string | null
+          id: string
+          journal_id: string | null
+          journal_name: string
+          payment_reference: string | null
+          plan_type: string
+          price_amount: number
+          publisher: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_renew?: boolean | null
+          created_at?: string
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          journal_id?: string | null
+          journal_name: string
+          payment_reference?: string | null
+          plan_type?: string
+          price_amount?: number
+          publisher?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_renew?: boolean | null
+          created_at?: string
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          journal_id?: string | null
+          journal_name?: string
+          payment_reference?: string | null
+          plan_type?: string
+          price_amount?: number
+          publisher?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_subscriptions_journal_id_fkey"
+            columns: ["journal_id"]
+            isOneToOne: false
+            referencedRelation: "journals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journals: {
         Row: {
           created_at: string
@@ -856,6 +918,42 @@ export type Database = {
           id?: string
           name?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reading_progress: {
+        Row: {
+          authors: string | null
+          created_at: string
+          id: string
+          journal: string | null
+          last_read_at: string
+          paper_title: string
+          progress_percent: number | null
+          source_url: string | null
+          user_id: string
+        }
+        Insert: {
+          authors?: string | null
+          created_at?: string
+          id?: string
+          journal?: string | null
+          last_read_at?: string
+          paper_title: string
+          progress_percent?: number | null
+          source_url?: string | null
+          user_id: string
+        }
+        Update: {
+          authors?: string | null
+          created_at?: string
+          id?: string
+          journal?: string | null
+          last_read_at?: string
+          paper_title?: string
+          progress_percent?: number | null
+          source_url?: string | null
           user_id?: string
         }
         Relationships: []
