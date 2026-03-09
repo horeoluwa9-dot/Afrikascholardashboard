@@ -73,11 +73,10 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === ACTION-BASED MODULES (hidden until unlocked) ===
+  // === MY RESEARCH ===
   {
     label: "My Research",
     collapsible: true,
-    requiredModule: "my_research",
     allowedUserTypes: ["researcher", "academic"],
     items: [
       { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
@@ -89,7 +88,6 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Publishing",
     collapsible: true,
-    requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
     allowedUserTypes: ["researcher", "academic"],
     items: [
@@ -154,7 +152,6 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Research Intelligence",
     collapsible: true,
-    requiredModule: "publeesh_ai",
     requiresSubscription: true,
     items: [
       { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
