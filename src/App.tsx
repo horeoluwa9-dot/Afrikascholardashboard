@@ -24,6 +24,8 @@ import PublishingOverview from "./pages/dashboard/PublishingOverview";
 import EditorialWorkflow from "./pages/dashboard/EditorialWorkflow";
 import JournalManagement from "./pages/dashboard/JournalManagement";
 import PeerReviewsPage from "./pages/dashboard/PeerReviewsPage";
+import ReviewerAssignmentPage from "./pages/dashboard/ReviewerAssignmentPage";
+import EditorialAnalyticsPage from "./pages/dashboard/EditorialAnalyticsPage";
 import ReviewWorkspacePage from "./pages/dashboard/ReviewWorkspacePage";
 import MyPapers from "./pages/dashboard/MyPapers";
 import ProTip from "./pages/dashboard/ProTip";
@@ -122,6 +124,8 @@ const App = () => (
             <Route path="/dashboard/publishing/workflow" element={<P><EditorialWorkflow /></P>} />
             <Route path="/dashboard/publishing/journals" element={<P><JournalManagement /></P>} />
             <Route path="/dashboard/publishing/reviews" element={<P><PeerReviewsPage /></P>} />
+            <Route path="/dashboard/publishing/reviewer-assignment" element={<P><ReviewerAssignmentPage /></P>} />
+            <Route path="/dashboard/publishing/editorial-analytics" element={<P><EditorialAnalyticsPage /></P>} />
             <Route path="/dashboard/publishing/reviews/workspace/:id" element={<P><ReviewWorkspacePage /></P>} />
             <Route path="/dashboard/instrument-studio" element={<P><InstrumentStudio /></P>} />
             <Route path="/dashboard/instrument-studio/my" element={<P><MyInstruments /></P>} />

@@ -9,8 +9,9 @@ import {
   MessageCircle, CreditCard, Settings, TrendingUp,
   Lightbulb, Presentation, PlusCircle, FolderOpen,
   BookOpen, Globe, Handshake, Building2, User, Shield,
-  Briefcase, Library, GraduationCap, FileUp, MapPin,
+  Briefcase, Library, GraduationCap, FileUp, MapPin, UserPlus,
 } from "lucide-react";
+import { usePublishing } from "@/hooks/usePublishing";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
@@ -86,12 +87,21 @@ const sidebarSections: SidebarSection[] = [
     requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
     items: [
-      { title: "Overview", url: "/dashboard/publishing", icon: FileText },
+      { title: "Publishing Overview", url: "/dashboard/publishing", icon: FileText },
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
       { title: "My Submissions", url: "/dashboard/publishing/submissions", icon: ClipboardList },
-      { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
-      { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
       { title: "Peer Reviews", url: "/dashboard/publishing/reviews", icon: FileText },
+    ],
+  },
+  {
+    label: "Editor Workspace",
+    collapsible: true,
+    requiredModule: "publishing",
+    items: [
+      { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
+      { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
+      { title: "Reviewer Assignment", url: "/dashboard/publishing/reviewer-assignment", icon: UserPlus },
+      { title: "Editorial Analytics", url: "/dashboard/publishing/editorial-analytics", icon: BarChart3 },
     ],
   },
   {
