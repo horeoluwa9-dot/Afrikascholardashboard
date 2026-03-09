@@ -10,6 +10,7 @@ import {
   Lightbulb, Presentation, PlusCircle, FolderOpen,
   BookOpen, Globe, Handshake, Building2, User, Shield,
   Briefcase, Library, GraduationCap, FileUp, MapPin, UserPlus,
+  Bookmark, Download,
 } from "lucide-react";
 import { usePublishing } from "@/hooks/usePublishing";
 import {
@@ -180,12 +181,24 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
+  // === LIBRARY MODULE ===
+  {
+    label: "Library",
+    collapsible: true,
+    items: [
+      { title: "Saved Papers", url: "/dashboard/library?tab=saved", icon: Bookmark },
+      { title: "Purchased Papers", url: "/dashboard/library?tab=purchased", icon: FileText },
+      { title: "Reading History", url: "/dashboard/library?tab=downloads", icon: BookOpen },
+      { title: "Reading Lists", url: "/dashboard/library?tab=lists", icon: Library },
+      { title: "Downloads", url: "/dashboard/library?tab=downloads", icon: Download },
+    ],
+  },
+
   // === CORE LINKS (above settings) ===
   {
     label: "",
     collapsible: false,
     items: [
-      { title: "Library", url: "/dashboard/library", icon: BookOpen },
       { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
   },
