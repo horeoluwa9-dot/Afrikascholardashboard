@@ -103,21 +103,22 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
+    label: "Network",
+    collapsible: true,
+    items: [
+      { title: "Overview", url: "/dashboard/network", icon: Globe },
+      { title: "Opportunities", url: "/dashboard/network/opportunities", icon: Briefcase },
+      { title: "Applications", url: "/dashboard/network/applications", icon: Inbox },
+      { title: "Directory", url: "/dashboard/network/directory", icon: Users2 },
+      { title: "Engagements", url: "/dashboard/network/engagements", icon: Handshake },
+      { title: "Contracts", url: "/dashboard/network/contracts", icon: FileSignature },
+    ],
+  },
+  {
     label: "Institutional",
     collapsible: true,
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
-      {
-        title: "Engagement", url: "/dashboard/institutional/talent-requests", icon: Handshake,
-        children: [
-          { title: "Talent Requests", url: "/dashboard/institutional/talent-requests", icon: Briefcase },
-          { title: "Applications", url: "/dashboard/institutional/applications", icon: Inbox },
-          { title: "Lecturer Search", url: "/dashboard/institutional/lecturers", icon: Search },
-          { title: "Collaborations", url: "/dashboard/institutional/collaborations", icon: Handshake },
-          { title: "My Engagements", url: "/dashboard/institutional/engagements", icon: Users2 },
-          { title: "Contracts", url: "/dashboard/institutional/contracts", icon: FileSignature },
-        ],
-      },
       {
         title: "Administration", url: "/dashboard/institutional/admin/faculty", icon: Shield,
         children: [
