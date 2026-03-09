@@ -10,26 +10,38 @@ import {
 import {
   MessageCircle, ThumbsUp, Share2, FileText, Copy,
   ExternalLink, Bookmark, BookmarkCheck, BarChart3,
-  Repeat2, Users, Send,
+  Repeat2, Users, Send, UserPlus, UserCheck,
+  Database, Beaker, Handshake, HelpCircle, MapPin,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Post, Comment } from "@/pages/dashboard/CommunityPage";
+import type { Post, Comment, PostType } from "@/pages/dashboard/CommunityPage";
+
+const postTypeConfig: Record<PostType | string, { color: string; icon: any }> = {
+  "Research Paper": { color: "bg-primary/10 text-primary border-primary/30", icon: FileText },
+  "Research Question": { color: "bg-amber-500/10 text-amber-600 border-amber-500/30", icon: HelpCircle },
+  "Dataset": { color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30", icon: Database },
+  "Research Instrument": { color: "bg-purple-500/10 text-purple-600 border-purple-500/30", icon: Beaker },
+  "Collaboration Request": { color: "bg-accent/10 text-accent border-accent/30", icon: Handshake },
+  "Research Update": { color: "bg-muted text-muted-foreground border-border", icon: FileText },
+};
 
 interface Props {
   post: Post;
   isLiked: boolean;
   isBookmarked: boolean;
   isConnected: boolean;
+  isFollowed: boolean;
   onToggleLike: () => void;
   onToggleBookmark: () => void;
   onRepost: () => void;
   onToggleConnect: () => void;
+  onToggleFollow: () => void;
   onAddComment: (content: string) => void;
 }
 
 export default function CommunityPostCard({
-  post, isLiked, isBookmarked, isConnected,
-  onToggleLike, onToggleBookmark, onRepost, onToggleConnect, onAddComment,
+  post, isLiked, isBookmarked, isConnected, isFollowed,
+  onToggleLike, onToggleBookmark, onRepost, onToggleConnect, onToggleFollow, onAddComment,
 }: Props) {
   const { toast } = useToast();
   const [showComments, setShowComments] = useState(false);
@@ -41,8 +53,19 @@ export default function CommunityPostCard({
     setCommentText("");
   };
 
+  const typeConfig = postTypeConfig[post.postType] || postTypeConfig["Research Update"];
+  const TypeIcon = typeConfig.icon;
+
   return (
     <div className="bg-card rounded-xl border border-border p-5 space-y-3">
+      {/* Post Type Tag */}
+      <div className="flex items-center gap-2">
+        <Badge variant="outline" className={`text-[10px] font-semibold gap-1 ${typeConfig.color}`}>
+          <TypeIcon className="h-3 w-3" />
+          {post.postType.toUpperCase()}
+        </Badge>
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -64,9 +87,20 @@ export default function CommunityPostCard({
           <span className="text-xs text-muted-foreground ml-2">{post.time}</span>
         </div>
         {post.author !== "@defi" && (
-          <Button variant={isConnected ? "secondary" : "outline"} size="sm" className="text-xs gap-1" onClick={onToggleConnect}>
-            <Users className="h-3 w-3" /> {isConnected ? "Connected" : "Connect"}
-          </Button>
+          <div className="flex items-center gap-1.5">
+            <Button
+              variant={isFollowed ? "secondary" : "ghost"}
+              size="sm"
+              className="text-xs gap-1 h-7 px-2"
+              onClick={onToggleFollow}
+            >
+              {isFollowed ? <UserCheck className="h-3 w-3" /> : <UserPlus className="h-3 w-3" />}
+              {isFollowed ? "Following" : "Follow"}
+            </Button>
+            <Button variant={isConnected ? "secondary" : "outline"} size="sm" className="text-xs gap-1 h-7 px-2" onClick={onToggleConnect}>
+              <Users className="h-3 w-3" /> {isConnected ? "Connected" : "Connect"}
+            </Button>
+          </div>
         )}
       </div>
 
@@ -74,6 +108,27 @@ export default function CommunityPostCard({
       <h3 className="text-base font-bold text-foreground">{post.title}</h3>
       <p className="text-sm text-muted-foreground leading-relaxed">{post.content}</p>
       {post.words && <p className="text-[10px] text-muted-foreground">{post.words}</p>}
+
+      {/* Collaboration Signals */}
+      {post.postType === "Collaboration Request" && (post.researchField || post.requiredExpertise || post.collaborationType) && (
+        <div className="flex flex-wrap gap-2 pt-1">
+          {post.researchField && (
+            <Badge variant="outline" className="text-[10px] bg-secondary text-foreground gap-1">
+              <MapPin className="h-2.5 w-2.5" /> {post.researchField}
+            </Badge>
+          )}
+          {post.requiredExpertise && (
+            <Badge variant="outline" className="text-[10px] bg-secondary text-foreground gap-1">
+              <Beaker className="h-2.5 w-2.5" /> {post.requiredExpertise}
+            </Badge>
+          )}
+          {post.collaborationType && (
+            <Badge variant="outline" className="text-[10px] bg-accent/10 text-accent border-accent/30 gap-1">
+              <Handshake className="h-2.5 w-2.5" /> {post.collaborationType}
+            </Badge>
+          )}
+        </div>
+      )}
 
       {/* Action Bar */}
       <div className="flex items-center gap-3 pt-2 border-t border-border">
@@ -112,6 +167,7 @@ export default function CommunityPostCard({
         </Dialog>
         <button onClick={onToggleBookmark} className={`flex items-center gap-1 text-xs transition-colors ml-auto ${isBookmarked ? "text-accent font-medium" : "text-muted-foreground hover:text-foreground"}`}>
           {isBookmarked ? <BookmarkCheck className="h-3.5 w-3.5" /> : <Bookmark className="h-3.5 w-3.5" />}
+          {isBookmarked ? "Saved" : "Save"}
         </button>
       </div>
 
@@ -154,14 +210,28 @@ export default function CommunityPostCard({
         </div>
       )}
 
-      {/* Quick Actions */}
-      <div className="flex gap-2">
-        <Link to="/dashboard/my-papers">
-          <Button variant="ghost" size="sm" className="text-xs gap-1"><FileText className="h-3 w-3" /> Request Full Paper</Button>
-        </Link>
-        <Link to="/dashboard/data/analyzer">
-          <Button variant="ghost" size="sm" className="text-xs gap-1"><BarChart3 className="h-3 w-3" /> Request Assessment</Button>
-        </Link>
+      {/* Research Request Actions */}
+      <div className="flex gap-2 flex-wrap">
+        {(post.postType === "Research Paper" || post.postType === "Research Instrument") && (
+          <Link to="/dashboard/my-papers">
+            <Button variant="ghost" size="sm" className="text-xs gap-1"><FileText className="h-3 w-3" /> Request Full Paper</Button>
+          </Link>
+        )}
+        {(post.postType === "Dataset" || post.postType === "Research Paper") && (
+          <Link to="/dashboard/data/explorer">
+            <Button variant="ghost" size="sm" className="text-xs gap-1"><Database className="h-3 w-3" /> Request Dataset</Button>
+          </Link>
+        )}
+        {(post.postType === "Research Paper" || post.postType === "Dataset" || post.postType === "Collaboration Request") && (
+          <Link to="/dashboard/network/engagements">
+            <Button variant="ghost" size="sm" className="text-xs gap-1"><Handshake className="h-3 w-3" /> Start Collaboration</Button>
+          </Link>
+        )}
+        {post.postType === "Research Question" && (
+          <Link to="/dashboard/data/analyzer">
+            <Button variant="ghost" size="sm" className="text-xs gap-1"><BarChart3 className="h-3 w-3" /> Request Assessment</Button>
+          </Link>
+        )}
       </div>
     </div>
   );

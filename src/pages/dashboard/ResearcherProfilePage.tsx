@@ -10,6 +10,7 @@ import {
 import {
   ChevronRight, User, Users, MessageCircle, BookOpen, Send,
   GraduationCap, MapPin, Globe, FileText, ArrowLeft,
+  UserPlus, UserCheck, Database, Handshake, BarChart3,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -69,7 +70,7 @@ const MOCK_PROFILES: Record<string, ResearcherProfile> = {
     display_name: "Dr. Ama Mensah",
     institution: "University of Ghana",
     discipline: "Energy Policy & Sustainability",
-    bio: "Researching renewable energy transitions, climate policy, and sustainable development across West Africa. Published extensively on comparative energy policy frameworks.",
+    bio: "Researching renewable energy transitions, climate policy, and sustainable development across West Africa.",
     avatar_url: null,
     isMock: true,
   },
@@ -87,9 +88,40 @@ const MOCK_PROFILES: Record<string, ResearcherProfile> = {
     display_name: "Dr. Fatima Bello",
     institution: "Ahmadu Bello University",
     discipline: "Public Health & Epidemiology",
-    bio: "Public health researcher focused on disease surveillance, epidemiological modeling, and health systems strengthening in Northern Nigeria.",
+    bio: "Public health researcher focused on disease surveillance, epidemiological modeling, and health systems strengthening.",
     avatar_url: null,
     isMock: true,
+  },
+};
+
+// Mock community activity per researcher
+const MOCK_ACTIVITY: Record<string, { posts: number; collaborations: number; datasets: number; recentPosts: { title: string; type: string; time: string }[] }> = {
+  "@dimayo": {
+    posts: 12, collaborations: 3, datasets: 1,
+    recentPosts: [
+      { title: "Restaurant business in Nigeria", type: "Research Paper", time: "2026-03-02" },
+      { title: "Looking for co-researchers on urban food systems", type: "Collaboration Request", time: "2026-02-25" },
+    ],
+  },
+  "@hassanb07": {
+    posts: 8, collaborations: 2, datasets: 2,
+    recentPosts: [
+      { title: "Agricultural credit on productivity (2000-2024)", type: "Dataset", time: "2026-03-01" },
+      { title: "Best approaches for longitudinal data analysis?", type: "Research Question", time: "2026-02-22" },
+    ],
+  },
+  "@hassanb17": {
+    posts: 5, collaborations: 1, datasets: 0,
+    recentPosts: [
+      { title: "Agricultural credit on productivity (2010-2024)", type: "Research Paper", time: "2026-02-28" },
+    ],
+  },
+  "@fresource2021": {
+    posts: 6, collaborations: 1, datasets: 1,
+    recentPosts: [
+      { title: "Medical library Management", type: "Research Paper", time: "2026-02-27" },
+      { title: "Library Performance Evaluation Survey Template", type: "Research Instrument", time: "2026-02-20" },
+    ],
   },
 };
 
@@ -106,6 +138,7 @@ const ResearcherProfilePage = () => {
   const [messageModal, setMessageModal] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [sending, setSending] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -122,7 +155,6 @@ const ResearcherProfilePage = () => {
       if (data && data.length > 0) {
         setProfile(data[0]);
       } else {
-        // Fall back to mock profile — check by @username key or by display name
         const mockKey = username.startsWith("@") ? username : `@${username}`;
         const mock = MOCK_PROFILES[mockKey] || MOCK_PROFILES[username] || null;
         setProfile(mock);
@@ -156,10 +188,17 @@ const ResearcherProfilePage = () => {
     }
   };
 
+  const handleFollow = () => {
+    setIsFollowing(!isFollowing);
+    toast({ title: isFollowing ? `Unfollowed ${username}` : `Following ${username}`, description: isFollowing ? undefined : "Their posts will appear higher in your feed." });
+  };
+
   const initials = profile?.display_name
     ?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) || "?";
 
   const researchTags = profile?.discipline?.split(",").map((t) => t.trim()).filter(Boolean) || [];
+
+  const activity = username ? MOCK_ACTIVITY[username] || { posts: 0, collaborations: 0, datasets: 0, recentPosts: [] } : { posts: 0, collaborations: 0, datasets: 0, recentPosts: [] };
 
   return (
     <DashboardLayout>
@@ -179,7 +218,6 @@ const ResearcherProfilePage = () => {
             <div className="h-5 w-40 bg-muted animate-pulse mx-auto mt-4 rounded" />
           </div>
         ) : !profile ? (
-          /* True not-found state */
           <div className="bg-card rounded-xl border border-border p-12 text-center space-y-3">
             <User className="h-12 w-12 mx-auto text-muted-foreground/30" />
             <p className="text-base font-semibold text-foreground">Profile not available</p>
@@ -217,7 +255,6 @@ const ResearcherProfilePage = () => {
                     </Badge>
                   )}
 
-                  {/* Bio / About */}
                   {profile.bio ? (
                     <div className="mt-4">
                       <h3 className="text-xs font-semibold text-foreground mb-1">About</h3>
@@ -229,12 +266,21 @@ const ResearcherProfilePage = () => {
 
                   {/* Action Buttons */}
                   {profile.user_id !== user?.id && (
-                    <div className="flex gap-2 mt-5">
+                    <div className="flex gap-2 mt-5 flex-wrap">
                       <Button variant="afrika" size="sm" className="gap-1.5" onClick={() => setMessageModal(true)}>
                         <MessageCircle className="h-3.5 w-3.5" /> Message
                       </Button>
                       <Button variant="afrikaOutline" size="sm" className="gap-1.5">
                         <Users className="h-3.5 w-3.5" /> Connect
+                      </Button>
+                      <Button
+                        variant={isFollowing ? "secondary" : "outline"}
+                        size="sm"
+                        className="gap-1.5"
+                        onClick={handleFollow}
+                      >
+                        {isFollowing ? <UserCheck className="h-3.5 w-3.5" /> : <UserPlus className="h-3.5 w-3.5" />}
+                        {isFollowing ? "Following" : "Follow"}
                       </Button>
                       <Button variant="outline" size="sm" className="gap-1.5">
                         <BookOpen className="h-3.5 w-3.5" /> View Publications
@@ -264,6 +310,52 @@ const ResearcherProfilePage = () => {
                 <p className="text-xs text-muted-foreground italic">No publications yet.</p>
               </div>
 
+              {/* Recent Community Posts */}
+              <div className="bg-card rounded-xl border border-border p-6">
+                <h3 className="text-sm font-bold text-foreground mb-3">Recent Community Posts</h3>
+                {activity.recentPosts.length > 0 ? (
+                  <div className="space-y-3">
+                    {activity.recentPosts.map((p, i) => (
+                      <div key={i} className="flex items-start gap-3 py-2 border-b border-border last:border-0">
+                        <FileText className="h-4 w-4 text-accent mt-0.5 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground truncate">{p.title}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <Badge variant="outline" className="text-[10px]">{p.type}</Badge>
+                            <span className="text-[10px] text-muted-foreground">{p.time}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">No community posts yet.</p>
+                )}
+              </div>
+
+              {/* Collaborations */}
+              <div className="bg-card rounded-xl border border-border p-6">
+                <h3 className="text-sm font-bold text-foreground mb-3">Collaborations</h3>
+                {activity.collaborations > 0 ? (
+                  <p className="text-sm text-muted-foreground">{activity.collaborations} active collaboration{activity.collaborations !== 1 ? "s" : ""}</p>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">No collaborations yet.</p>
+                )}
+              </div>
+
+              {/* Datasets Shared */}
+              <div className="bg-card rounded-xl border border-border p-6">
+                <h3 className="text-sm font-bold text-foreground mb-3">Datasets Shared</h3>
+                {activity.datasets > 0 ? (
+                  <div className="flex items-center gap-2">
+                    <Database className="h-4 w-4 text-accent" />
+                    <p className="text-sm text-muted-foreground">{activity.datasets} dataset{activity.datasets !== 1 ? "s" : ""} shared with the community</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">No datasets shared yet.</p>
+                )}
+              </div>
+
               {/* Network / Connections */}
               <div className="bg-card rounded-xl border border-border p-6">
                 <h3 className="text-sm font-bold text-foreground mb-3">Network</h3>
@@ -290,6 +382,25 @@ const ResearcherProfilePage = () => {
                 {!profile.institution && !profile.discipline && (
                   <p className="text-xs text-muted-foreground italic">No details available.</p>
                 )}
+              </div>
+
+              {/* Community Activity Metrics */}
+              <div className="bg-card rounded-xl border border-border p-5 space-y-3">
+                <h3 className="text-sm font-bold text-foreground">Community Activity</h3>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-lg font-bold text-accent">{activity.posts}</p>
+                    <p className="text-[10px] text-muted-foreground">Posts</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-foreground">{activity.collaborations}</p>
+                    <p className="text-[10px] text-muted-foreground">Collabs</p>
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-foreground">{activity.datasets}</p>
+                    <p className="text-[10px] text-muted-foreground">Datasets</p>
+                  </div>
+                </div>
               </div>
 
               <div className="bg-card rounded-xl border border-border p-5 space-y-2">
