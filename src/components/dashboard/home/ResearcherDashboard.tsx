@@ -150,7 +150,7 @@ export default function ResearcherDashboard() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Dataset Credits</span>
-                  <span className="font-medium text-foreground">{subscription.dataset_credits_total - subscription.dataset_credits_used}</span>
+                  <span className="font-medium text-foreground">{(subscription.dataset_credits_total - subscription.dataset_credits_used).toLocaleString()}</span>
                 </div>
               </div>
               <Link to="/dashboard/billing">
