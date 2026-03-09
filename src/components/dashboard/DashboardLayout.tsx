@@ -194,21 +194,15 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === CORE LINKS (above settings) ===
+  // === ACCOUNT MODULE ===
   {
-    label: "",
-    collapsible: false,
+    label: "Account",
+    collapsible: true,
     items: [
       { title: "Profile", url: "/dashboard/profile", icon: User },
-    ],
-  },
-
-  // === SETTINGS ===
-  {
-    label: "",
-    collapsible: false,
-    items: [
       { title: "Settings", url: "/dashboard/settings", icon: Settings },
+      { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
+      { title: "Security", url: "/dashboard/security", icon: Shield },
     ],
   },
 ];
