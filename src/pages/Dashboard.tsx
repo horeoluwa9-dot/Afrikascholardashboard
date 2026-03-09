@@ -11,12 +11,17 @@ import AcademicDashboard from "@/components/dashboard/home/AcademicDashboard";
 import ProfessionalDashboard from "@/components/dashboard/home/ProfessionalDashboard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 
 const Dashboard = () => {
   const { profile, role, userType } = useAuth();
   const { subscription, isActive } = useSubscriptionContext();
+  const { unlockedModules } = useModuleUnlocksContext();
   const displayName = profile?.display_name || "Researcher";
   const currentUserType = userType || "researcher";
+
+  // Detect if the user has any meaningful activity — if so, hide the onboarding panel
+  const hasActivity = (unlockedModules && unlockedModules.size > 0) || isActive;
 
   const subtitleMap: Record<string, string> = {
     researcher: "Manage your research, publishing, and intelligence tools from one workspace.",
@@ -43,18 +48,18 @@ const Dashboard = () => {
         {/* Research Identity Card */}
         <ResearchIdentityCard />
 
-        {/* Welcome Panel — first-time users */}
-        <WelcomePanel />
+        {/* Welcome Panel — only for brand-new users with zero activity */}
+        {!hasActivity && <WelcomePanel />}
 
         {/* Subscription Status Widget (active users) */}
         {isActive && <SubscriptionStatusWidget />}
 
         {/* INACTIVE: Show unlock panel */}
-        {!isActive ? (
-          <SubscriptionUnlockPanel />
-        ) : (
+        {!isActive && <SubscriptionUnlockPanel />}
+
+        {/* Credit Cards (active subscribers) */}
+        {isActive && (
           <>
-            {/* Credit Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {credits.map((c) => {
                 const remaining = c.total - c.used;
@@ -84,13 +89,13 @@ const Dashboard = () => {
               })}
             </div>
             <CreditsHowItWorksModal />
-
-            {/* User-type specific dashboard content */}
-            {currentUserType === "academic" && <AcademicDashboard />}
-            {currentUserType === "professional" && <ProfessionalDashboard />}
-            {currentUserType === "researcher" && <ResearcherDashboard />}
           </>
         )}
+
+        {/* User-type specific dashboard content — always rendered */}
+        {currentUserType === "academic" && <AcademicDashboard />}
+        {currentUserType === "professional" && <ProfessionalDashboard />}
+        {currentUserType === "researcher" && <ResearcherDashboard />}
       </div>
     </DashboardLayout>
   );
