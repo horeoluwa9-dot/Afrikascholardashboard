@@ -91,17 +91,15 @@ const sidebarSections: SidebarSection[] = [
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
       { title: "My Submissions", url: "/dashboard/publishing/submissions", icon: ClipboardList },
       { title: "Peer Reviews", url: "/dashboard/publishing/reviews", icon: FileText },
-    ],
-  },
-  {
-    label: "Editor Workspace",
-    collapsible: true,
-    requiredModule: "publishing",
-    items: [
-      { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
-      { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
-      { title: "Reviewer Assignment", url: "/dashboard/publishing/reviewer-assignment", icon: UserPlus },
-      { title: "Editorial Analytics", url: "/dashboard/publishing/editorial-analytics", icon: BarChart3 },
+      {
+        title: "Editor Workspace", url: "/dashboard/publishing/journals", icon: BookOpen,
+        children: [
+          { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
+          { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
+          { title: "Reviewer Assignment", url: "/dashboard/publishing/reviewer-assignment", icon: UserPlus },
+          { title: "Editorial Analytics", url: "/dashboard/publishing/editorial-analytics", icon: BarChart3 },
+        ],
+      },
     ],
   },
   {
