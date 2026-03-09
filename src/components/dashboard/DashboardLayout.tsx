@@ -9,8 +9,9 @@ import {
   MessageCircle, CreditCard, Settings, TrendingUp,
   Lightbulb, Presentation, PlusCircle, FolderOpen,
   BookOpen, Globe, Handshake, Building2, User, Shield,
-  Briefcase, Library, GraduationCap, FileUp, MapPin,
+  Briefcase, Library, GraduationCap, FileUp, MapPin, UserPlus,
 } from "lucide-react";
+import { usePublishing } from "@/hooks/usePublishing";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem,
