@@ -791,7 +791,7 @@ export default function PeerReviewsPage() {
                 <Eye className="h-3.5 w-3.5" /> View Full Review
               </Button>
             </Link>
-            <Button onClick={() => setShowSummaryDialog(false)}>Close</Button>
+            <Button onClick={() => setShowSummaryDialog(false)} className="bg-accent hover:bg-accent/90 text-accent-foreground">Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
