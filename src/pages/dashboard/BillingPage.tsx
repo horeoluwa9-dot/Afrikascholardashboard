@@ -238,13 +238,13 @@ const BillingPage = () => {
                   <p className="text-xs text-muted-foreground font-medium">{c.label}</p>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-2xl font-bold text-foreground">{c.total - c.used}</span>
-                  <span className="text-sm text-muted-foreground">/ {c.total}</span>
+                  <span className="text-2xl font-bold text-foreground">{(c.total - c.used).toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">/ {c.total.toLocaleString()}</span>
                 </div>
                 <div className="h-2 bg-secondary rounded-full">
                   <div className={`h-full rounded-full ${c.color}`} style={{ width: `${(c.used / c.total) * 100}%` }} />
                 </div>
-                <p className="text-[10px] text-muted-foreground">{c.used} used this month</p>
+                <p className="text-[10px] text-muted-foreground">{c.used.toLocaleString()} used this month</p>
                 {/* ADDITION 4: Expiration notice */}
                 <div className="flex items-center gap-1.5 pt-1 border-t border-border">
                   <Timer className="h-3 w-3 text-muted-foreground" />
