@@ -199,7 +199,7 @@ const App = () => (
             <Route path="/dashboard/intelligence/stakeholders" element={<Navigate to="/dashboard/intelligence?tab=stakeholders" replace />} />
             <Route path="/dashboard/intelligence/gaps" element={<Navigate to="/dashboard/intelligence?tab=gaps" replace />} />
             <Route path="/dashboard/notifications" element={<P><NotificationsPage /></P>} />
-            <Route path="/dashboard/security" element={<P><SecurityPage /></P>} />
+            
 
             <Route path="/compliance/responsible-ai" element={<CompliancePage />} />
 
