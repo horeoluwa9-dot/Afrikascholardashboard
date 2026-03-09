@@ -21,7 +21,7 @@ const Dashboard = () => {
   const currentUserType = userType || "researcher";
 
   // Detect if the user has any meaningful activity — if so, hide the onboarding panel
-  const hasActivity = (unlockedModules && unlockedModules.length > 0) || isActive;
+  const hasActivity = (unlockedModules && unlockedModules.size > 0) || isActive;
 
   const subtitleMap: Record<string, string> = {
     researcher: "Manage your research, publishing, and intelligence tools from one workspace.",
