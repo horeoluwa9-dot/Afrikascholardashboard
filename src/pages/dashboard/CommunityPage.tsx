@@ -185,9 +185,9 @@ const CommunityPage = () => {
               <Textarea placeholder="What are you working on?" className="min-h-[60px]" value={newPostText} onChange={(e) => setNewPostText(e.target.value)} />
               <div className="flex items-center justify-between">
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><FileText className="h-3 w-3" /> Paper</Button>
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><BarChart3 className="h-3 w-3" /> Dataset</Button>
-                  <Button variant="ghost" size="sm" className="text-xs gap-1"><ExternalLink className="h-3 w-3" /> Instrument</Button>
+                  <Link to="/dashboard/my-papers"><Button variant="ghost" size="sm" className="text-xs gap-1"><FileText className="h-3 w-3" /> Paper</Button></Link>
+                  <Link to="/dashboard/data/explorer"><Button variant="ghost" size="sm" className="text-xs gap-1"><BarChart3 className="h-3 w-3" /> Dataset</Button></Link>
+                  <Link to="/dashboard/instrument-studio"><Button variant="ghost" size="sm" className="text-xs gap-1"><ExternalLink className="h-3 w-3" /> Instrument</Button></Link>
                 </div>
                 <Button variant="afrika" size="sm" className="gap-1" onClick={createPost}><Send className="h-3 w-3" /> Post</Button>
               </div>

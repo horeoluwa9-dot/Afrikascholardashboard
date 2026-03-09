@@ -156,8 +156,12 @@ export default function CommunityPostCard({
 
       {/* Quick Actions */}
       <div className="flex gap-2">
-        <Button variant="ghost" size="sm" className="text-xs gap-1"><FileText className="h-3 w-3" /> Request Full Paper</Button>
-        <Button variant="ghost" size="sm" className="text-xs gap-1"><BarChart3 className="h-3 w-3" /> Request Assessment</Button>
+        <Link to="/dashboard/my-papers">
+          <Button variant="ghost" size="sm" className="text-xs gap-1"><FileText className="h-3 w-3" /> Request Full Paper</Button>
+        </Link>
+        <Link to="/dashboard/data/analyzer">
+          <Button variant="ghost" size="sm" className="text-xs gap-1"><BarChart3 className="h-3 w-3" /> Request Assessment</Button>
+        </Link>
       </div>
     </div>
   );
