@@ -29,9 +29,9 @@ const credits = [
 ];
 
 const creditPacks = [
-  { label: "+1,000 Paper Credits", price: "₦150,000", icon: FileText },
-  { label: "+2,500 Dataset Credits", price: "₦225,000", icon: Database },
-  { label: "+1,000 Analysis Credits", price: "₦120,000", icon: BarChart3 },
+  { label: "+1,000 Paper Credits", price: "₦7,500", icon: FileText },
+  { label: "+2,500 Dataset Credits", price: "₦5,000", icon: Database },
+  { label: "+1,000 Analysis Credits", price: "₦6,000", icon: BarChart3 },
 ];
 
 const transactions = [
