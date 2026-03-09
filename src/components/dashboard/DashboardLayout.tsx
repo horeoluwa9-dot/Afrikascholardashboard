@@ -149,6 +149,7 @@ const sidebarSections: SidebarSection[] = [
     requiredModule: "publeesh_ai",
     requiresSubscription: true,
     items: [
+      { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
       { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
       { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
