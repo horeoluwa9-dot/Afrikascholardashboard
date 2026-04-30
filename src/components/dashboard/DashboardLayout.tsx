@@ -341,6 +341,7 @@ function AppSidebar() {
   const { profile, role, userType } = useAuth();
   const { isModuleUnlocked } = useModuleUnlocksContext();
   const { isActive: hasSubscription } = useSubscriptionContext();
+  const { unlockedModules } = useModuleUnlocksContext();
   const currentUserType = userType || "researcher";
 
   const displayName = profile?.display_name || "User";
@@ -348,6 +349,13 @@ function AppSidebar() {
   const roleLabelMap: Record<string, string> = {
     researcher: "Researcher", student: "Student", reviewer: "Reviewer", institutional_admin: "Admin",
   };
+
+  // Brand-new user: no unlocked modules and no active subscription → show only core items
+  const isBrandNew = (!unlockedModules || unlockedModules.size === 0) && !hasSubscription;
+  const CORE_LABELS = new Set(["", "My Research", "Library", "Billing"]);
+  const visibleSections = isBrandNew
+    ? sidebarSections.filter((s) => CORE_LABELS.has(s.label))
+    : sidebarSections;
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -361,7 +369,7 @@ function AppSidebar() {
         )}
       </div>
       <SidebarContent className="pt-2 overflow-y-auto">
-        {sidebarSections.map((section, gi) => {
+        {visibleSections.map((section, gi) => {
           // Role-based module hiding temporarily disabled for testing
           // if (section.allowedUserTypes && !section.allowedUserTypes.includes(currentUserType)) return null;
           // Hide entire section if role doesn't match
