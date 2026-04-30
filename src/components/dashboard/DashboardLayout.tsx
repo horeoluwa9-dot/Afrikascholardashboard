@@ -129,7 +129,6 @@ const sidebarSections: SidebarSection[] = [
       { title: "Directory", url: "/dashboard/network/directory", icon: Users2 },
       { title: "Engagements", url: "/dashboard/network/engagements", icon: Handshake },
       { title: "Contracts", url: "/dashboard/network/contracts", icon: FileSignature },
-      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
     ],
   },
   {
@@ -179,11 +178,24 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
+  // === COMMUNITY MODULE ===
+  {
+    label: "Community",
+    collapsible: true,
+    items: [
+      { title: "Feed", url: "/dashboard/community", icon: MessageCircle },
+      { title: "Discussions", url: "/dashboard/community/discussions", icon: MessageCircle },
+      { title: "Researchers", url: "/dashboard/community/researchers", icon: Users2 },
+      { title: "Collaboration Requests", url: "/dashboard/community/collaborations", icon: Handshake },
+      { title: "My Activity", url: "/dashboard/community/activity", icon: User },
+    ],
+  },
+
   // Library is now a standalone module positioned after My Research
 
-  // === BILLING MODULE ===
+  // === BILLING & CREDITS MODULE ===
   {
-    label: "Billing",
+    label: "Billing & Credits",
     collapsible: true,
     items: [
       { title: "Subscription", url: "/dashboard/billing", icon: CreditCard },
@@ -442,7 +454,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [globalSearch, setGlobalSearch] = useState("");
   const navigate = useNavigate();
   const { profile, role, signOut } = useAuth();
-  const { isActive: hasSubscription } = useSubscriptionContext();
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
@@ -468,18 +479,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </div>
             </div>
             <div className="flex items-center gap-3 ml-auto">
-              {hasSubscription ? (
-                <Link to="/dashboard/billing" className="text-xs font-medium text-accent hover:underline hidden sm:block">
-                  AI Credits: 55
-                </Link>
-              ) : (
-                <Link
-                  to="/publeesh/subscription"
-                  className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-accent-foreground bg-accent hover:bg-accent/90 px-3 py-1.5 rounded-full transition-colors"
-                >
-                  Try AI <Sparkles className="h-3 w-3" />
-                </Link>
-              )}
+              <Link to="/dashboard/billing" className="text-xs font-medium text-accent hover:underline hidden sm:block">
+                AI Credits: 55
+              </Link>
               <Link to="/dashboard/messages" className="relative">
                 <MessagesIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-[10px] flex items-center justify-center font-bold">1</span>
