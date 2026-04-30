@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { CreditsHowItWorksModal } from "@/components/dashboard/CreditsModal";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import WelcomePanel from "@/components/dashboard/WelcomePanel";
+import ActivationDashboard from "@/components/dashboard/ActivationDashboard";
 import ResearchIdentityCard from "@/components/dashboard/ResearchIdentityCard";
 import { SubscriptionUnlockPanel } from "@/components/dashboard/SubscriptionUnlockPanel";
 import { SubscriptionStatusWidget } from "@/components/dashboard/SubscriptionStatusWidget";
@@ -22,6 +23,17 @@ const Dashboard = () => {
 
   // Detect if the user has any meaningful activity — if so, hide the onboarding panel
   const hasActivity = (unlockedModules && unlockedModules.size > 0) || isActive;
+
+  // First-use activation state: no modules unlocked AND no subscription
+  // Transition to full dashboard once 2+ modules are activated
+  const showActivation = unlockedModules.size < 2 && !isActive;
+  if (showActivation) {
+    return (
+      <DashboardLayout>
+        <ActivationDashboard />
+      </DashboardLayout>
+    );
+  }
 
   const subtitleMap: Record<string, string> = {
     researcher: "Manage your research, publishing, and intelligence tools from one workspace.",
