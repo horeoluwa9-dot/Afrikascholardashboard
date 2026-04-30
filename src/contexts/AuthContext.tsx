@@ -15,6 +15,7 @@ interface Profile {
   avatar_url: string | null;
   bio: string | null;
   user_type: UserType | null;
+  country: string | null;
   account_type: AccountType | null;
   onboarding_completed: boolean | null;
 }
