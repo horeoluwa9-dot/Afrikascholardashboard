@@ -111,7 +111,7 @@ const App = () => (
           <ModuleUnlocksProvider>
           <SubscriptionProvider>
           <Routes>
-            <Route path="/" element={<Navigate to="/publeesh" replace />} />
+            <Route path="/" element={<Navigate to="/auth/login" replace />} />
             <Route path="/publeesh" element={<PubleeshLanding />} />
             <Route path="/publeesh/pricing" element={<PricingPage />} />
             <Route path="/publeesh/features" element={<Features />} />

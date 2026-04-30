@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import afrikaLogo from "@/assets/afrika-scholar-logo.png";
+import afrikaLogo from "@/assets/afrika-scholar-logo-light.png";
 import { ChevronDown, LogOut, MessageCircle as MessagesIcon, Lock, Search, Sparkles, Bell, Inbox, FileSignature } from "lucide-react";
 import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import {
