@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth, AccountType } from "@/contexts/AuthContext";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
+import { ModuleType } from "@/hooks/useModuleUnlocks";
 import { ArrowRight, Sparkles, FileText, Users2, Compass, Briefcase, GraduationCap, BookOpen, UserPlus, ClipboardList, Search, FolderOpen } from "lucide-react";
 
 type RoleKey = "researcher" | "lecturer" | "student" | "institution";
@@ -40,32 +42,33 @@ interface ActionCard {
   badge?: string;
   primary?: boolean;
   icon: any;
+  unlockModule?: ModuleType;
 }
 
 const actionsByRole: Record<RoleKey, ActionCard[]> = {
   researcher: [
-    { title: "Publish your research", description: "Submit your work, track reviews, and publish your research.", cta: "Submit a paper", link: "/dashboard/publishing/submit", badge: "Recommended", primary: true, icon: FileText },
-    { title: "Use Publeesh AI", description: "Generate papers, run literature reviews, and analyse data with AI.", cta: "Try Publeesh", link: "/dashboard/generate-paper", badge: "Popular", icon: Sparkles },
-    { title: "Join the academic network", description: "Access teaching and research opportunities and earn from your expertise.", cta: "Join network", link: "/dashboard/network", icon: Users2 },
-    { title: "Get advisory support", description: "Get help with transcripts, degree guidance, and academic pathways.", cta: "Start a request", link: "/dashboard/advisory", icon: Compass },
+    { title: "Publish your research", description: "Submit your work, track reviews, and publish your research.", cta: "Submit a paper", link: "/dashboard/publishing/submit", badge: "Recommended", primary: true, icon: FileText, unlockModule: "publishing" },
+    { title: "Use Publeesh AI", description: "Generate papers, run literature reviews, and analyse data with AI.", cta: "Try Publeesh", link: "/dashboard/generate-paper", badge: "Popular", icon: Sparkles, unlockModule: "research_intelligence" },
+    { title: "Join the academic network", description: "Access teaching and research opportunities and earn from your expertise.", cta: "Join network", link: "/dashboard/network", icon: Users2, unlockModule: "network" },
+    { title: "Get advisory support", description: "Get help with transcripts, degree guidance, and academic pathways.", cta: "Start a request", link: "/dashboard/advisory", icon: Compass, unlockModule: "advisory" },
   ],
   lecturer: [
-    { title: "Review and contribute to research", description: "Review submissions, provide expert feedback, and contribute to academic work.", cta: "Start reviewing", link: "/dashboard/publishing/reviews", badge: "Recommended", primary: true, icon: ClipboardList },
-    { title: "Publish your research", description: "Submit your work, track peer reviews, and publish your research.", cta: "Submit a paper", link: "/dashboard/publishing/submit", icon: FileText },
-    { title: "Join the academic network", description: "Access teaching, supervision, and research opportunities across institutions.", cta: "Explore opportunities", link: "/dashboard/network/opportunities", icon: Briefcase },
-    { title: "Use AI research tools", description: "Generate content, analyse literature, and support your academic workflow with AI.", cta: "Use AI tools", link: "/dashboard/generate-paper", badge: "Popular", icon: Sparkles },
+    { title: "Review and contribute to research", description: "Review submissions, provide expert feedback, and contribute to academic work.", cta: "Start reviewing", link: "/dashboard/publishing/reviews", badge: "Recommended", primary: true, icon: ClipboardList, unlockModule: "publishing" },
+    { title: "Publish your research", description: "Submit your work, track peer reviews, and publish your research.", cta: "Submit a paper", link: "/dashboard/publishing/submit", icon: FileText, unlockModule: "publishing" },
+    { title: "Explore opportunities", description: "Access teaching, supervision, and research opportunities across institutions.", cta: "Explore opportunities", link: "/dashboard/institutional", icon: Briefcase, unlockModule: "institutional" },
+    { title: "Use AI research assistant", description: "Generate content, analyse literature, and support your academic workflow with AI.", cta: "Use AI tools", link: "/dashboard/generate-paper", badge: "Popular", icon: Sparkles, unlockModule: "research_intelligence" },
   ],
   student: [
-    { title: "Get academic guidance", description: "Get help with your academic path, transcripts, and next steps.", cta: "Start guidance", link: "/dashboard/advisory", badge: "Recommended", primary: true, icon: Compass },
-    { title: "Explore opportunities", description: "Find programs, research opportunities, and academic pathways.", cta: "Explore opportunities", link: "/dashboard/advisory/pathways", icon: GraduationCap },
-    { title: "Use AI research assistant", description: "Generate ideas, summarise articles, and get help with assignments.", cta: "Use AI", link: "/dashboard/generate-paper", badge: "Popular", icon: Sparkles },
+    { title: "Get academic guidance", description: "Get help with your academic path, transcripts, and next steps.", cta: "Start guidance", link: "/dashboard/advisory", badge: "Recommended", primary: true, icon: Compass, unlockModule: "advisory" },
+    { title: "Explore opportunities", description: "Find programs, research opportunities, and academic pathways.", cta: "Explore opportunities", link: "/dashboard/advisory/pathways", icon: GraduationCap, unlockModule: "advisory" },
+    { title: "Use AI research assistant", description: "Generate ideas, summarise articles, and get help with assignments.", cta: "Use AI", link: "/dashboard/generate-paper", badge: "Popular", icon: Sparkles, unlockModule: "research_intelligence" },
     { title: "Build your academic profile", description: "Add your interests, skills, and goals to unlock better opportunities.", cta: "Complete profile", link: "/dashboard/profile", icon: UserPlus },
   ],
   institution: [
-    { title: "Post a request", description: "Post a research, teaching, or advisory request and get matched with experts.", cta: "Post a request", link: "/dashboard/institutional/lecturer-requests", badge: "Recommended", primary: true, icon: FileText },
-    { title: "Find researchers", description: "Browse and connect with qualified academics across disciplines.", cta: "Find researchers", link: "/dashboard/network/directory", icon: Search },
-    { title: "Manage projects and collaborations", description: "Track ongoing requests, collaborations, and academic engagements.", cta: "View projects", link: "/dashboard/institutional/research-collaboration", icon: FolderOpen },
-    { title: "Review submissions", description: "Review incoming applications, proposals, and expert responses.", cta: "View submissions", link: "/dashboard/institutional/my-requests", icon: ClipboardList },
+    { title: "Post a request", description: "Post a research, teaching, or advisory request and get matched with experts.", cta: "Post a request", link: "/dashboard/institutional/lecturer-requests", badge: "Recommended", primary: true, icon: FileText, unlockModule: "institutional" },
+    { title: "Find researchers", description: "Browse and connect with qualified academics across disciplines.", cta: "Find researchers", link: "/dashboard/institutional", icon: Search, unlockModule: "institutional" },
+    { title: "Manage projects and collaborations", description: "Track ongoing requests, collaborations, and academic engagements.", cta: "View projects", link: "/dashboard/institutional/research-collaboration", icon: FolderOpen, unlockModule: "institutional" },
+    { title: "Review submissions", description: "Review incoming applications, proposals, and expert responses.", cta: "View submissions", link: "/dashboard/institutional/my-requests", icon: ClipboardList, unlockModule: "institutional" },
   ],
 };
 
@@ -85,12 +88,22 @@ const lowFrictionByRole: Record<RoleKey, { title: string; text: string }> = {
 
 export default function NewUserDashboard() {
   const { profile, accountType } = useAuth();
+  const { unlockModule } = useModuleUnlocksContext();
+  const navigate = useNavigate();
   const roleKey = resolveRoleKey(accountType);
   const badge = roleBadge[roleKey];
   const hero = heroByRole[roleKey];
   const actions = actionsByRole[roleKey];
   const lowFriction = lowFrictionByRole[roleKey];
   const firstName = (profile?.display_name || "there").split(" ")[0];
+
+  const handleActionClick = async (e: React.MouseEvent, a: ActionCard) => {
+    if (a.unlockModule) {
+      e.preventDefault();
+      await unlockModule(a.unlockModule);
+      navigate(a.link);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -135,6 +148,7 @@ export default function NewUserDashboard() {
             <Link
               key={a.title}
               to={a.link}
+              onClick={(e) => handleActionClick(e, a)}
               className={`group block rounded-2xl p-5 transition-all hover:shadow-md ${
                 a.primary
                   ? "border-2 border-primary bg-[#EDE9FE]/40"
