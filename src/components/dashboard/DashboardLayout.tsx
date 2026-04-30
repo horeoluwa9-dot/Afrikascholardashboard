@@ -450,6 +450,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [globalSearch, setGlobalSearch] = useState("");
   const navigate = useNavigate();
   const { profile, role, signOut } = useAuth();
+  const { isActive: hasSubscription } = useSubscriptionContext();
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
@@ -475,9 +476,18 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </div>
             </div>
             <div className="flex items-center gap-3 ml-auto">
-              <Link to="/dashboard/billing" className="text-xs font-medium text-accent hover:underline hidden sm:block">
-                AI Credits: 55
-              </Link>
+              {hasSubscription ? (
+                <Link to="/dashboard/billing" className="text-xs font-medium text-accent hover:underline hidden sm:block">
+                  AI Credits: 55
+                </Link>
+              ) : (
+                <Link
+                  to="/dashboard/billing"
+                  className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-primary hover:bg-[#EDE9FE] px-2.5 py-1 rounded-full transition-colors"
+                >
+                  Try AI <Sparkles className="h-3 w-3" />
+                </Link>
+              )}
               <Link to="/dashboard/messages" className="relative">
                 <MessagesIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
                 <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-[10px] flex items-center justify-center font-bold">1</span>
