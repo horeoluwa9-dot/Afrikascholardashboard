@@ -25,9 +25,9 @@ const expertiseOptions = [
 ];
 
 const accountTypeMeta: Record<AccountType, { icon: any; label: string }> = {
-  researcher: { icon: FlaskConical, label: "Researcher / Academic" },
-  lecturer: { icon: GraduationCap, label: "Lecturer / Professional" },
-  institution: { icon: Building2, label: "Institution / Organization" },
+  researcher: { icon: FlaskConical, label: "Researcher" },
+  lecturer: { icon: GraduationCap, label: "Lecturer" },
+  institution: { icon: Building2, label: "Institution" },
   advisory_client: { icon: Compass, label: "Advisory Client" },
 };
 
@@ -64,6 +64,39 @@ const moduleMap: Record<AccountType, string[]> = {
   institution: ["Institutions", "Publishing", "Library", "Community"],
   advisory_client: ["Academic Advisory", "Library", "Community"],
 };
+
+const primaryActionMap: Record<AccountType, { title: string; desc: string; cta: string; route: string }> = {
+  researcher: {
+    title: "Publish Research",
+    desc: "Publish and manage your research on Afrika Scholar",
+    cta: "Start Publishing",
+    route: "/dashboard/publishing/submit",
+  },
+  lecturer: {
+    title: "Join Academic Network",
+    desc: "Access opportunities and start earning from your expertise",
+    cta: "Join Network",
+    route: "/dashboard/network",
+  },
+  institution: {
+    title: "Post a Request",
+    desc: "Find and engage academics for teaching, research, or advisory work",
+    cta: "Post Request",
+    route: "/dashboard/institutional/lecturer-requests",
+  },
+  advisory_client: {
+    title: "Start Advisory Request",
+    desc: "Begin your transcript or degree guidance process",
+    cta: "Start Request",
+    route: "/dashboard/advisory/transcripts",
+  },
+};
+
+const secondaryOptions: { title: string; route: string }[] = [
+  { title: "Publish Research", route: "/dashboard/publishing" },
+  { title: "Use AI Research Tools", route: "/dashboard/generate-paper" },
+  { title: "Get Advisory Support", route: "/dashboard/advisory" },
+];
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -159,18 +192,32 @@ const Onboarding = () => {
     setStep(3);
   };
 
-  const handleFinish = async () => {
+  const completeOnboarding = async () => {
     if (user) {
       await supabase.from("profiles").update({ onboarding_completed: true }).eq("user_id", user.id);
       await refreshProfile();
     }
     toast.success("Welcome to Afrika Scholar!");
+  };
+
+  const handlePrimaryAction = async () => {
+    await completeOnboarding();
+    navigate(primaryActionMap[accountType].route);
+  };
+
+  const handleSecondary = async (route: string) => {
+    await completeOnboarding();
+    navigate(route);
+  };
+
+  const handleSkipToDashboard = async () => {
+    await completeOnboarding();
     navigate("/dashboard");
   };
 
   const Meta = accountTypeMeta[accountType];
   const features = featureMap[accountType];
-  const modules = moduleMap[accountType];
+  const primary = primaryActionMap[accountType];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-secondary px-4 py-12">
@@ -383,27 +430,49 @@ const Onboarding = () => {
 
           {/* STEP 4 — Activation */}
           {step === 4 && (
-            <div className="space-y-5 text-center">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-emerald-100 mx-auto">
-                <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+            <div className="space-y-5">
+              <div className="text-center space-y-3">
+                <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-emerald-100 mx-auto">
+                  <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-foreground">You're all set 🎉</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Your workspace is ready — let's start with your first step</p>
+                </div>
               </div>
+
+              <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary mb-2">
+                  <Sparkles className="h-3.5 w-3.5" /> RECOMMENDED FOR YOU
+                </div>
+                <h3 className="text-lg font-bold text-foreground">{primary.title}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{primary.desc}</p>
+                <Button className="w-full mt-4 h-11 bg-primary text-primary-foreground hover:bg-primary/90" onClick={handlePrimaryAction}>
+                  {primary.cta} <ArrowRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+
               <div>
-                <h2 className="text-xl font-bold text-foreground">Your dashboard is ready</h2>
-                <p className="text-sm text-muted-foreground mt-1">We've activated everything you need to get started.</p>
-              </div>
-              <div className="bg-secondary rounded-xl p-4 text-left">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Activated modules</p>
-                <ul className="space-y-1.5">
-                  {modules.map((m) => (
-                    <li key={m} className="flex items-center gap-2 text-sm text-foreground">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" /> {m}
-                    </li>
+                <p className="text-xs text-muted-foreground mb-2">Or explore other ways to get started</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {secondaryOptions.map((o) => (
+                    <button
+                      key={o.title}
+                      onClick={() => handleSecondary(o.route)}
+                      className="text-left p-3 rounded-lg border border-border hover:border-primary/40 hover:bg-secondary transition-all text-xs font-medium text-foreground"
+                    >
+                      {o.title}
+                    </button>
                   ))}
-                </ul>
+                </div>
               </div>
-              <Button className="w-full h-12 text-base bg-primary text-primary-foreground hover:bg-primary/90" onClick={handleFinish}>
-                Go to Dashboard <ArrowRight className="h-5 w-5 ml-1" />
-              </Button>
+
+              <div className="text-center pt-2 space-y-2">
+                <p className="text-xs text-muted-foreground">You can access everything anytime from your dashboard</p>
+                <button onClick={handleSkipToDashboard} className="text-xs text-muted-foreground hover:text-primary underline">
+                  Skip and go to dashboard
+                </button>
+              </div>
             </div>
           )}
         </div>
