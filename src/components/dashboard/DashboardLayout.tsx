@@ -101,6 +101,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Publishing",
     collapsible: true,
+    requiredModule: "publishing",
     requiredRoles: NON_STUDENT,
     allowedUserTypes: ["researcher", "academic"],
     items: [
@@ -122,6 +123,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Network",
     collapsible: true,
+    requiredModule: "network",
     items: [
       { title: "Overview", url: "/dashboard/network", icon: Globe },
       { title: "Opportunities", url: "/dashboard/network/opportunities", icon: Briefcase },
@@ -135,6 +137,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Institutions",
     collapsible: true,
+    requiredModule: "institutional",
     allowedUserTypes: ["academic", "professional"],
     items: [
       { title: "Overview", url: "/dashboard/institutional", icon: Building2 },
@@ -150,6 +153,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Academic Advisory",
     collapsible: true,
+    requiredModule: "advisory",
     items: [
       { title: "Advisory Overview", url: "/dashboard/advisory", icon: Compass },
       { title: "Transcript Requests", url: "/dashboard/advisory/transcripts", icon: FileText },
@@ -163,6 +167,7 @@ const sidebarSections: SidebarSection[] = [
   {
     label: "Research Intelligence",
     collapsible: true,
+    requiredModule: "research_intelligence",
     requiresSubscription: true,
     items: [
       { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
@@ -349,11 +354,16 @@ function AppSidebar() {
     researcher: "Researcher", student: "Student", reviewer: "Reviewer", institutional_admin: "Admin",
   };
 
-  // Brand-new user: no unlocked modules and no active subscription → show only core items
+  // Brand-new user: no unlocked modules and no active subscription → show only core items.
+  // Once a user activates a module from the dashboard, its section appears here.
   const isBrandNew = (!unlockedModules || unlockedModules.size === 0) && !hasSubscription;
   const CORE_LABELS = new Set(["", "My Research", "Library", "Billing"]);
   const visibleSections = isBrandNew
-    ? sidebarSections.filter((s) => CORE_LABELS.has(s.label))
+    ? sidebarSections.filter(
+        (s) =>
+          CORE_LABELS.has(s.label) ||
+          (s.requiredModule && isModuleUnlocked(s.requiredModule))
+      )
     : sidebarSections;
 
   return (
