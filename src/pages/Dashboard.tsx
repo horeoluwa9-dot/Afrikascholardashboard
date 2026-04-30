@@ -9,6 +9,7 @@ import { SubscriptionStatusWidget } from "@/components/dashboard/SubscriptionSta
 import ResearcherDashboard from "@/components/dashboard/home/ResearcherDashboard";
 import AcademicDashboard from "@/components/dashboard/home/AcademicDashboard";
 import ProfessionalDashboard from "@/components/dashboard/home/ProfessionalDashboard";
+import NewUserDashboard from "@/components/dashboard/NewUserDashboard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSubscriptionContext } from "@/contexts/SubscriptionContext";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
@@ -22,6 +23,17 @@ const Dashboard = () => {
 
   // Detect if the user has any meaningful activity — if so, hide the onboarding panel
   const hasActivity = (unlockedModules && unlockedModules.size > 0) || isActive;
+
+  // Brand-new user just out of onboarding — show focused first-action dashboard
+  if (!hasActivity) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-5xl mx-auto">
+          <NewUserDashboard />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   const subtitleMap: Record<string, string> = {
     researcher: "Manage your research, publishing, and intelligence tools from one workspace.",
