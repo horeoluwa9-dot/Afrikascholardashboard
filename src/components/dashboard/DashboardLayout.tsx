@@ -129,6 +129,7 @@ const sidebarSections: SidebarSection[] = [
       { title: "Directory", url: "/dashboard/network/directory", icon: Users2 },
       { title: "Engagements", url: "/dashboard/network/engagements", icon: Handshake },
       { title: "Contracts", url: "/dashboard/network/contracts", icon: FileSignature },
+      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
     ],
   },
   {
@@ -178,24 +179,11 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === COMMUNITY MODULE ===
-  {
-    label: "Community",
-    collapsible: true,
-    items: [
-      { title: "Feed", url: "/dashboard/community", icon: MessageCircle },
-      { title: "Discussions", url: "/dashboard/community/discussions", icon: MessageCircle },
-      { title: "Researchers", url: "/dashboard/community/researchers", icon: Users2 },
-      { title: "Collaboration Requests", url: "/dashboard/community/collaborations", icon: Handshake },
-      { title: "My Activity", url: "/dashboard/community/activity", icon: User },
-    ],
-  },
-
   // Library is now a standalone module positioned after My Research
 
   // === BILLING & CREDITS MODULE ===
   {
-    label: "Billing & Credits",
+    label: "Billing",
     collapsible: true,
     items: [
       { title: "Subscription", url: "/dashboard/billing", icon: CreditCard },
