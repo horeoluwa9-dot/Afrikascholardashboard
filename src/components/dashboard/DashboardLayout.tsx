@@ -354,11 +354,16 @@ function AppSidebar() {
     researcher: "Researcher", student: "Student", reviewer: "Reviewer", institutional_admin: "Admin",
   };
 
-  // Brand-new user: no unlocked modules and no active subscription → show only core items
+  // Brand-new user: no unlocked modules and no active subscription → show only core items.
+  // Once a user activates a module from the dashboard, its section appears here.
   const isBrandNew = (!unlockedModules || unlockedModules.size === 0) && !hasSubscription;
   const CORE_LABELS = new Set(["", "My Research", "Library", "Billing"]);
   const visibleSections = isBrandNew
-    ? sidebarSections.filter((s) => CORE_LABELS.has(s.label))
+    ? sidebarSections.filter(
+        (s) =>
+          CORE_LABELS.has(s.label) ||
+          (s.requiredModule && isModuleUnlocked(s.requiredModule))
+      )
     : sidebarSections;
 
   return (
