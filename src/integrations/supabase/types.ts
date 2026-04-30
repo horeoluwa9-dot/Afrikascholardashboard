@@ -688,61 +688,118 @@ export type Database = {
       }
       profiles: {
         Row: {
+          academic_qualifications: string | null
           academic_title: string | null
+          account_type: string | null
+          advisory_services_needed: string | null
           available_for_collaboration: boolean | null
           avatar_url: string | null
           bio: string | null
           collaboration_description: string | null
           country: string | null
+          country_of_qualification: string | null
           created_at: string
           department: string | null
           discipline: string | null
           display_name: string | null
+          google_scholar_url: string | null
           id: string
           institution: string | null
+          linkedin_url: string | null
+          onboarding_completed: boolean
+          orcid_id: string | null
+          organisation_size: string | null
+          organisation_type: string | null
+          organisation_website: string | null
           position: string | null
+          primary_contact_name: string | null
+          primary_services_needed: string[] | null
           profile_visibility: string | null
+          rate_per_engagement: string | null
+          target_country: string | null
           updated_at: string
           user_id: string
           user_type: string | null
+          wants_academic_network: boolean | null
+          wants_peer_review: boolean | null
+          wants_publishing: boolean | null
+          years_of_experience: string | null
         }
         Insert: {
+          academic_qualifications?: string | null
           academic_title?: string | null
+          account_type?: string | null
+          advisory_services_needed?: string | null
           available_for_collaboration?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           collaboration_description?: string | null
           country?: string | null
+          country_of_qualification?: string | null
           created_at?: string
           department?: string | null
           discipline?: string | null
           display_name?: string | null
+          google_scholar_url?: string | null
           id?: string
           institution?: string | null
+          linkedin_url?: string | null
+          onboarding_completed?: boolean
+          orcid_id?: string | null
+          organisation_size?: string | null
+          organisation_type?: string | null
+          organisation_website?: string | null
           position?: string | null
+          primary_contact_name?: string | null
+          primary_services_needed?: string[] | null
           profile_visibility?: string | null
+          rate_per_engagement?: string | null
+          target_country?: string | null
           updated_at?: string
           user_id: string
           user_type?: string | null
+          wants_academic_network?: boolean | null
+          wants_peer_review?: boolean | null
+          wants_publishing?: boolean | null
+          years_of_experience?: string | null
         }
         Update: {
+          academic_qualifications?: string | null
           academic_title?: string | null
+          account_type?: string | null
+          advisory_services_needed?: string | null
           available_for_collaboration?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           collaboration_description?: string | null
           country?: string | null
+          country_of_qualification?: string | null
           created_at?: string
           department?: string | null
           discipline?: string | null
           display_name?: string | null
+          google_scholar_url?: string | null
           id?: string
           institution?: string | null
+          linkedin_url?: string | null
+          onboarding_completed?: boolean
+          orcid_id?: string | null
+          organisation_size?: string | null
+          organisation_type?: string | null
+          organisation_website?: string | null
           position?: string | null
+          primary_contact_name?: string | null
+          primary_services_needed?: string[] | null
           profile_visibility?: string | null
+          rate_per_engagement?: string | null
+          target_country?: string | null
           updated_at?: string
           user_id?: string
           user_type?: string | null
+          wants_academic_network?: boolean | null
+          wants_peer_review?: boolean | null
+          wants_publishing?: boolean | null
+          years_of_experience?: string | null
         }
         Relationships: []
       }

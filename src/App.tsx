@@ -152,6 +152,7 @@ const App = () => (
             <Route path="/dashboard/instrument-studio" element={<P><InstrumentStudio /></P>} />
             <Route path="/dashboard/instrument-studio/my" element={<P><MyInstruments /></P>} />
             <Route path="/dashboard/instrument-studio/slides" element={<P><AISlideBuilder /></P>} />
+            <Route path="/dashboard/build-presentation" element={<P><AISlideBuilder /></P>} />
             <Route path="/dashboard/community" element={<P><CommunityPage /></P>} />
             <Route path="/dashboard/community/discussions" element={<P><CommunityDiscussionsPage /></P>} />
             <Route path="/dashboard/community/researchers" element={<P><CommunityResearchersPage /></P>} />
