@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole = "researcher" | "student" | "reviewer" | "institutional_admin";
 export type UserType = "researcher" | "academic" | "professional";
+export type AccountType = "researcher" | "lecturer" | "institution" | "advisory_client";
 
 interface Profile {
   id: string;
@@ -14,6 +15,8 @@ interface Profile {
   avatar_url: string | null;
   bio: string | null;
   user_type: UserType | null;
+  account_type: AccountType | null;
+  onboarding_completed: boolean | null;
 }
 
 interface AuthContextType {
@@ -22,8 +25,10 @@ interface AuthContextType {
   profile: Profile | null;
   role: AppRole | null;
   userType: UserType | null;
+  accountType: AccountType | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -32,8 +37,10 @@ const AuthContext = createContext<AuthContextType>({
   profile: null,
   role: null,
   userType: null,
+  accountType: null,
   loading: true,
   signOut: async () => {},
+  refreshProfile: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -44,6 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [userType, setUserType] = useState<UserType | null>(null);
+  const [accountType, setAccountType] = useState<AccountType | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchProfileAndRole = async (userId: string) => {
@@ -55,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const p = profileRes.data as Profile;
       setProfile(p);
       setUserType((p.user_type as UserType) || "researcher");
+      setAccountType((p.account_type as AccountType) || null);
     }
     if (roleRes.data) setRole(roleRes.data.role as AppRole);
   };
@@ -71,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setProfile(null);
           setRole(null);
           setUserType(null);
+          setAccountType(null);
         }
         setLoading(false);
       }
@@ -95,10 +105,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(null);
     setRole(null);
     setUserType(null);
+    setAccountType(null);
+  };
+
+  const refreshProfile = async () => {
+    if (user) await fetchProfileAndRole(user.id);
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, role, userType, loading, signOut }}>
+    <AuthContext.Provider value={{ session, user, profile, role, userType, accountType, loading, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
