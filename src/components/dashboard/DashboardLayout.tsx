@@ -205,17 +205,6 @@ const sidebarSections: SidebarSection[] = [
       { title: "Invoices", url: "/dashboard/billing/invoices", icon: Receipt },
     ],
   },
-
-  // === ACCOUNT MODULE ===
-  {
-    label: "Account",
-    collapsible: true,
-    items: [
-      { title: "Profile", url: "/dashboard/profile", icon: User },
-      { title: "Settings", url: "/dashboard/settings", icon: Settings },
-      { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
-    ],
-  },
 ];
 
 function canAccess(role: AppRole | null, requiredRoles?: AppRole[]): boolean {
