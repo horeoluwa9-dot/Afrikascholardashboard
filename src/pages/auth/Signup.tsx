@@ -13,9 +13,9 @@ import { toast } from "sonner";
 import type { AccountType } from "@/contexts/AuthContext";
 
 const accountTypes: { id: AccountType; icon: any; title: string; desc: string }[] = [
-  { id: "researcher", icon: FlaskConical, title: "Researcher / Academic", desc: "I want to publish, review, or read research" },
-  { id: "lecturer", icon: GraduationCap, title: "Lecturer / Professional", desc: "I want to join the academic network and earn" },
-  { id: "institution", icon: Building2, title: "Institution / Organization", desc: "I want to hire academics or request services" },
+  { id: "researcher", icon: FlaskConical, title: "Researcher", desc: "I want to publish, review, read, or use AI research tools" },
+  { id: "lecturer", icon: GraduationCap, title: "Lecturer", desc: "I want to join the academic network and earn" },
+  { id: "institution", icon: Building2, title: "Institution", desc: "I want to hire academics or request services" },
   { id: "advisory_client", icon: Compass, title: "Advisory Client", desc: "I need transcript or degree guidance" },
 ];
 
