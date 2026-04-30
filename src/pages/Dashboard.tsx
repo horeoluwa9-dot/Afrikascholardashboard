@@ -21,10 +21,10 @@ const Dashboard = () => {
   const displayName = profile?.display_name || "Researcher";
   const currentUserType = userType || "researcher";
 
-  // Detect if the user has any meaningful activity — if so, hide the onboarding panel
-  const hasActivity = (unlockedModules && unlockedModules.size > 0) || isActive;
+  // Keep the focused first-action dashboard until the user becomes a subscriber.
+  // Activating modules unlocks sidebar sections but does not graduate them off this view.
+  const hasActivity = isActive;
 
-  // Brand-new user just out of onboarding — show focused first-action dashboard
   if (!hasActivity) {
     return (
       <DashboardLayout>
