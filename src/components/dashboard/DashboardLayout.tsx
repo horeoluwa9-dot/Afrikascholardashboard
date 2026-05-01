@@ -56,6 +56,8 @@ interface SidebarSection {
   requiresSubscription?: boolean;
   /** If set, only show for these user types */
   allowedUserTypes?: UserType[];
+  /** Optional divider rendered above the section */
+  dividerAbove?: boolean;
 }
 
 const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
@@ -105,12 +107,14 @@ const sidebarSections: SidebarSection[] = [
     requiredRoles: NON_STUDENT,
     allowedUserTypes: ["researcher", "academic"],
     items: [
-      { title: "Publishing Overview", url: "/dashboard/publishing", icon: FileText },
+      { title: "Overview", url: "/dashboard/publishing", icon: LayoutDashboard },
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
       { title: "My Submissions", url: "/dashboard/publishing/submissions", icon: ClipboardList },
-      { title: "Peer Reviews", url: "/dashboard/publishing/reviews", icon: FileText },
+      { title: "Published Papers", url: "/dashboard/publishing/published", icon: BookOpen },
+      { title: "Peer Reviews", url: "/dashboard/publishing/reviews", icon: FileText, requiredRoles: ["reviewer", "institutional_admin"] },
       {
-        title: "Editor Workspace", url: "/dashboard/publishing/journals", icon: BookOpen,
+        title: "Editor Workspace", url: "/dashboard/publishing/journals", icon: Shield,
+        requiredRoles: ADMIN_ONLY,
         children: [
           { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
           { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
@@ -202,7 +206,7 @@ const sidebarSections: SidebarSection[] = [
 
 function canAccess(role: AppRole | null, requiredRoles?: AppRole[]): boolean {
   if (!requiredRoles) return true;
-  if (!role) return true;
+  if (!role) return false;
   return requiredRoles.includes(role);
 }
 
@@ -295,24 +299,7 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
             <SidebarMenu>
               {section.items.map((item) => {
                 const active = getIsItemActive(item);
-                const locked = !canAccess(userRole, item.requiredRoles);
-
-                if (locked) {
-                  return (
-                    <SidebarMenuItem key={item.title}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="flex items-center text-[13px] py-1.5 px-2 rounded-md text-sidebar-foreground/30 cursor-not-allowed">
-                            <item.icon className="h-4 w-4 mr-2 shrink-0" />
-                            {!collapsed && <span>{item.title}</span>}
-                            <Lock className="h-3 w-3 ml-auto" />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent side="right"><p className="text-xs">Upgrade your role to access</p></TooltipContent>
-                      </Tooltip>
-                    </SidebarMenuItem>
-                  );
-                }
+                if (!canAccess(userRole, item.requiredRoles)) return null;
 
                 if (item.children) {
                   return <NestedSidebarItem key={item.title} item={item} collapsed={collapsed} getIsItemActive={getIsItemActive} />;
@@ -343,16 +330,27 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
 function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const { profile, role, userType } = useAuth();
+  const { profile, role, userType, accountType } = useAuth();
   const { isModuleUnlocked, unlockedModules } = useModuleUnlocksContext();
   const { isActive: hasSubscription } = useSubscriptionContext();
   const currentUserType = userType || "researcher";
 
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
+  const accountTypeLabel: Record<string, string> = {
+    researcher: "Researcher",
+    lecturer: "Lecturer",
+    institution: "Institution",
+    advisory_client: "Advisory Client",
+  };
   const roleLabelMap: Record<string, string> = {
     researcher: "Researcher", student: "Student", reviewer: "Reviewer", institutional_admin: "Admin",
   };
+  const badgeLabel = accountType
+    ? accountTypeLabel[accountType] || accountType
+    : role
+      ? roleLabelMap[role] || role
+      : "Free";
 
   // Brand-new user: no unlocked modules and no active subscription → show only core items.
   // Once a user activates a module from the dashboard, its section appears here.
@@ -445,7 +443,7 @@ function AppSidebar() {
             <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">{initial}</div>
             <div className="text-xs">
               <p className="font-semibold text-sidebar-foreground">{displayName}</p>
-              <p className="text-sidebar-foreground/50">{role ? roleLabelMap[role] || role : "Free"}</p>
+              <p className="text-sidebar-foreground/50">{badgeLabel}</p>
             </div>
           </Link>
         </div>
