@@ -206,7 +206,7 @@ const sidebarSections: SidebarSection[] = [
 
 function canAccess(role: AppRole | null, requiredRoles?: AppRole[]): boolean {
   if (!requiredRoles) return true;
-  if (!role) return true;
+  if (!role) return false;
   return requiredRoles.includes(role);
 }
 
@@ -299,24 +299,7 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
             <SidebarMenu>
               {section.items.map((item) => {
                 const active = getIsItemActive(item);
-                const locked = !canAccess(userRole, item.requiredRoles);
-
-                if (locked) {
-                  return (
-                    <SidebarMenuItem key={item.title}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="flex items-center text-[13px] py-1.5 px-2 rounded-md text-sidebar-foreground/30 cursor-not-allowed">
-                            <item.icon className="h-4 w-4 mr-2 shrink-0" />
-                            {!collapsed && <span>{item.title}</span>}
-                            <Lock className="h-3 w-3 ml-auto" />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent side="right"><p className="text-xs">Upgrade your role to access</p></TooltipContent>
-                      </Tooltip>
-                    </SidebarMenuItem>
-                  );
-                }
+                if (!canAccess(userRole, item.requiredRoles)) return null;
 
                 if (item.children) {
                   return <NestedSidebarItem key={item.title} item={item} collapsed={collapsed} getIsItemActive={getIsItemActive} />;
