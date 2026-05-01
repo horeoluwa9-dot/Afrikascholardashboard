@@ -41,6 +41,8 @@ import CommunityMyActivityPage from "./pages/dashboard/community/CommunityMyActi
 import IntelligenceHub from "./pages/dashboard/IntelligenceHub";
 import TrackSubmissions from "./pages/dashboard/TrackSubmissions";
 import SubmitManuscript from "./pages/dashboard/SubmitManuscript";
+import PublishedPapers from "./pages/dashboard/PublishedPapers";
+import SubmissionDetail from "./pages/dashboard/SubmissionDetail";
 import InstrumentStudio from "./pages/dashboard/InstrumentStudio";
 import MyInstruments from "./pages/dashboard/MyInstruments";
 import AISlideBuilder from "./pages/dashboard/AISlideBuilder";
@@ -142,6 +144,8 @@ const App = () => (
             <Route path="/dashboard/publishing" element={<P><PublishingOverview /></P>} />
             <Route path="/dashboard/publishing/submit" element={<P><SubmitManuscript /></P>} />
             <Route path="/dashboard/publishing/submissions" element={<P><TrackSubmissions /></P>} />
+            <Route path="/dashboard/publishing/submissions/:id" element={<P><SubmissionDetail /></P>} />
+            <Route path="/dashboard/publishing/published" element={<P><PublishedPapers /></P>} />
             <Route path="/dashboard/publishing/track" element={<P><TrackSubmissions /></P>} />
             <Route path="/dashboard/publishing/workflow" element={<P><EditorialWorkflow /></P>} />
             <Route path="/dashboard/publishing/journals" element={<P><JournalManagement /></P>} />
