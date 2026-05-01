@@ -151,6 +151,14 @@ const TrackSubmissions = () => {
                         </div>
                       ))}
                     </div>
+                    <div className="mt-4">
+                      <Link
+                        to={`/dashboard/publishing/submissions/${sub.id}`}
+                        className="text-xs text-accent hover:underline inline-flex items-center gap-1"
+                      >
+                        View full details <ChevronRight className="h-3 w-3" />
+                      </Link>
+                    </div>
                     {(sub.status === "Minor Revision" || sub.status === "Major Revision") && (
                       <div className="mt-4 space-y-2">
                         <p className="text-xs font-semibold text-foreground">Upload Revision</p>
