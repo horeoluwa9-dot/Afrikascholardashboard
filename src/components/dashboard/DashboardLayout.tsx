@@ -56,6 +56,8 @@ interface SidebarSection {
   requiresSubscription?: boolean;
   /** If set, only show for these user types */
   allowedUserTypes?: UserType[];
+  /** Optional divider rendered above the section */
+  dividerAbove?: boolean;
 }
 
 const ALL_ROLES: AppRole[] = ["researcher", "student", "reviewer", "institutional_admin"];
@@ -105,12 +107,14 @@ const sidebarSections: SidebarSection[] = [
     requiredRoles: NON_STUDENT,
     allowedUserTypes: ["researcher", "academic"],
     items: [
-      { title: "Publishing Overview", url: "/dashboard/publishing", icon: FileText },
+      { title: "Overview", url: "/dashboard/publishing", icon: LayoutDashboard },
       { title: "Submit Manuscript", url: "/dashboard/publishing/submit", icon: Send },
       { title: "My Submissions", url: "/dashboard/publishing/submissions", icon: ClipboardList },
-      { title: "Peer Reviews", url: "/dashboard/publishing/reviews", icon: FileText },
+      { title: "Published Papers", url: "/dashboard/publishing/published", icon: BookOpen },
+      { title: "Peer Reviews", url: "/dashboard/publishing/reviews", icon: FileText, requiredRoles: ["reviewer", "institutional_admin"] },
       {
-        title: "Editor Workspace", url: "/dashboard/publishing/journals", icon: BookOpen,
+        title: "Editor Workspace", url: "/dashboard/publishing/journals", icon: Shield,
+        requiredRoles: ADMIN_ONLY,
         children: [
           { title: "Journal Management", url: "/dashboard/publishing/journals", icon: BookOpen },
           { title: "Editorial Workflow", url: "/dashboard/publishing/workflow", icon: CalendarClock },
@@ -348,11 +352,23 @@ function AppSidebar() {
   const { isActive: hasSubscription } = useSubscriptionContext();
   const currentUserType = userType || "researcher";
 
+  const { accountType } = useAuth();
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
+  const accountTypeLabel: Record<string, string> = {
+    researcher: "Researcher",
+    lecturer: "Lecturer",
+    institution: "Institution",
+    advisory_client: "Advisory Client",
+  };
   const roleLabelMap: Record<string, string> = {
     researcher: "Researcher", student: "Student", reviewer: "Reviewer", institutional_admin: "Admin",
   };
+  const badgeLabel = accountType
+    ? accountTypeLabel[accountType] || accountType
+    : role
+      ? roleLabelMap[role] || role
+      : "Free";
 
   // Brand-new user: no unlocked modules and no active subscription → show only core items.
   // Once a user activates a module from the dashboard, its section appears here.
@@ -445,7 +461,7 @@ function AppSidebar() {
             <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">{initial}</div>
             <div className="text-xs">
               <p className="font-semibold text-sidebar-foreground">{displayName}</p>
-              <p className="text-sidebar-foreground/50">{role ? roleLabelMap[role] || role : "Free"}</p>
+              <p className="text-sidebar-foreground/50">{badgeLabel}</p>
             </div>
           </Link>
         </div>
