@@ -330,12 +330,11 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
 function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const { profile, role, userType } = useAuth();
+  const { profile, role, userType, accountType } = useAuth();
   const { isModuleUnlocked, unlockedModules } = useModuleUnlocksContext();
   const { isActive: hasSubscription } = useSubscriptionContext();
   const currentUserType = userType || "researcher";
 
-  const { accountType } = useAuth();
   const displayName = profile?.display_name || "User";
   const initial = displayName.charAt(0).toUpperCase();
   const accountTypeLabel: Record<string, string> = {
