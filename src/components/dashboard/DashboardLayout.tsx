@@ -320,6 +320,7 @@ function AppSidebar() {
   const { profile, role, userType, accountType } = useAuth();
   const { isModuleUnlocked, unlockedModules } = useModuleUnlocksContext();
   const { isActive: hasSubscription } = useSubscriptionContext();
+  const { reviewer: reviewerStatus, editor: editorStatus } = usePublishingRoles();
   const currentUserType = userType || "researcher";
 
   const displayName = profile?.display_name || "User";
@@ -395,7 +396,10 @@ function AppSidebar() {
           if (section.requiredModule && !isModuleUnlocked(section.requiredModule)) return null;
 
           if (section.collapsible && section.label) {
-            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} />;
+            const extraGrantedTitles = new Set<string>();
+            if (reviewerStatus === "approved") extraGrantedTitles.add("Peer Reviews");
+            if (editorStatus === "approved") extraGrantedTitles.add("Editor Workspace");
+            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} extraGrantedTitles={extraGrantedTitles} />;
           }
           return (
             <SidebarGroup key={gi}>
