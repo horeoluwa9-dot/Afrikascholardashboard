@@ -5,19 +5,24 @@ import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger,
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Check, Trash2 } from "lucide-react";
+import { Bell, Check, Trash2, UserCheck, Shield } from "lucide-react";
+import { usePublishingRoles } from "@/hooks/usePublishingRoles";
+import { toast } from "sonner";
 
 interface Notification {
   id: number;
-  category: "Publishing" | "Intelligence" | "Community" | "Credits" | "System";
+  category: "Publishing" | "Intelligence" | "Community" | "Credits" | "System" | "Invitation";
   title: string;
   description: string;
   time: string;
   read: boolean;
   link: string;
+  invitationKind?: "reviewer" | "editor";
 }
 
 const initialNotifications: Notification[] = [
+  { id: 101, category: "Invitation", title: "Reviewer invitation", description: "African Journal of Public Health invites you to join as a peer reviewer.", time: "1 hour ago", read: false, link: "/dashboard/publishing", invitationKind: "reviewer" },
+  { id: 102, category: "Invitation", title: "Editor invitation", description: "East African Economic Review invites you to join the editorial board.", time: "3 hours ago", read: false, link: "/dashboard/publishing", invitationKind: "editor" },
   { id: 1, category: "Publishing", title: "Submission status updated", description: "Your manuscript 'AI in African Health Systems' is now Under Review.", time: "2 hours ago", read: false, link: "/dashboard/publishing/track" },
   { id: 2, category: "Intelligence", title: "New journal match found", description: "African Journal of Energy Studies matches your profile with 92% score.", time: "5 hours ago", read: false, link: "/dashboard/intelligence?tab=journals" },
   { id: 3, category: "Community", title: "New comment on your post", description: "@hassanb07 commented on your research post.", time: "1 day ago", read: false, link: "/dashboard/community" },
@@ -35,18 +40,35 @@ const categoryColors: Record<string, string> = {
   Community: "bg-afrika-green/10 text-afrika-green",
   Credits: "bg-destructive/10 text-destructive",
   System: "bg-muted text-muted-foreground",
+  Invitation: "bg-accent/10 text-accent",
 };
 
-const filterCategories = ["All", "Publishing", "Intelligence", "Community", "Credits", "System"];
+const filterCategories = ["All", "Invitation", "Publishing", "Intelligence", "Community", "Credits", "System"];
 
 export function NotificationsPanel() {
   const [notifications, setNotifications] = useState(initialNotifications);
   const [filter, setFilter] = useState("All");
+  const { setReviewerStatus, setEditorStatus } = usePublishingRoles();
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const markAllRead = () => setNotifications(notifications.map((n) => ({ ...n, read: true })));
   const markRead = (id: number) => setNotifications(notifications.map((n) => n.id === id ? { ...n, read: true } : n));
   const clearAll = () => setNotifications([]);
+
+  const acceptInvite = (n: Notification) => {
+    if (n.invitationKind === "reviewer") {
+      setReviewerStatus("approved");
+      toast.success("Reviewer role activated. Peer Reviews is now in your sidebar.");
+    } else if (n.invitationKind === "editor") {
+      setEditorStatus("approved");
+      toast.success("Editor role activated. Editor Workspace is now in your sidebar.");
+    }
+    setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+  };
+
+  const declineInvite = (n: Notification) => {
+    setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+  };
 
   const filtered = filter === "All" ? notifications : notifications.filter((n) => n.category === filter);
 
@@ -93,7 +115,27 @@ export function NotificationsPanel() {
               <p className="text-sm text-muted-foreground mt-2">No notifications.</p>
             </div>
           ) : (
-            filtered.map((n) => (
+            filtered.map((n) => n.category === "Invitation" ? (
+              <div key={n.id} className={`block px-5 py-3.5 border-b border-border ${!n.read ? "bg-accent/5" : ""}`}>
+                <div className="flex items-start gap-3">
+                  <div className="h-8 w-8 rounded-md bg-accent/10 flex items-center justify-center text-accent shrink-0">
+                    {n.invitationKind === "editor" ? <Shield className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <Badge className={`text-[9px] ${categoryColors[n.category]}`}>{n.category}</Badge>
+                      <span className="text-[10px] text-muted-foreground">{n.time}</span>
+                    </div>
+                    <p className="text-sm font-medium text-foreground">{n.title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{n.description}</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button size="sm" variant="afrika" className="h-7 text-xs" onClick={() => acceptInvite(n)}>Accept</Button>
+                      <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => declineInvite(n)}>Decline</Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
               <Link
                 key={n.id}
                 to={n.link}

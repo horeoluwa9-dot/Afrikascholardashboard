@@ -3,8 +3,10 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Clock, CheckCircle, BookOpen, Plus, ArrowRight, Send } from "lucide-react";
+import { FileText, Clock, CheckCircle, BookOpen, Plus, ArrowRight, Send, UserCheck, Shield, Sparkles } from "lucide-react";
 import { usePublishing } from "@/hooks/usePublishing";
+import { usePublishingRoles } from "@/hooks/usePublishingRoles";
+import { toast } from "sonner";
 
 // Demo fallback submissions
 const DEMO_SUBMISSIONS = [
@@ -15,6 +17,7 @@ const DEMO_SUBMISSIONS = [
 
 const PublishingOverview = () => {
   const { submissions: dbSubmissions, loading } = usePublishing();
+  const { reviewer, editor, setReviewerStatus, setEditorStatus } = usePublishingRoles();
 
   const submissions = dbSubmissions.length > 0 ? dbSubmissions : DEMO_SUBMISSIONS;
 
@@ -31,6 +34,10 @@ const PublishingOverview = () => {
   ];
 
   const isEmpty = submissions.length === 0;
+
+  const applyReviewer = () => { setReviewerStatus("pending"); toast.success("Reviewer application submitted — we will email you on approval."); };
+  const applyEditor = () => { setEditorStatus("pending"); toast.success("Editor application submitted — we will email you on approval."); };
+  const startJournal = () => { setEditorStatus("approved"); toast.success("Editor workspace unlocked. Set up your journal."); };
 
   return (
     <DashboardLayout>
@@ -106,6 +113,74 @@ const PublishingOverview = () => {
             </div>
           </>
         )}
+
+        {/* Grow your role in publishing */}
+        <div className="pt-2">
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="h-4 w-4 text-accent" />
+            <h2 className="text-lg font-semibold text-foreground">Grow your role in publishing</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Reviewer card */}
+            <Card className="border-border">
+              <CardContent className="pt-5 pb-5 px-5 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <UserCheck className="h-5 w-5" />
+                  </div>
+                  {reviewer === "approved" && <Badge className="bg-afrika-green/10 text-afrika-green border-0 text-[10px]">Reviewer ✓</Badge>}
+                  {reviewer === "pending" && <Badge variant="secondary" className="text-[10px]">Pending</Badge>}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Become a reviewer</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Review manuscripts, contribute to academic quality, and build your reputation.</p>
+                </div>
+                {reviewer === "none" && (
+                  <Button variant="afrika" size="sm" onClick={applyReviewer}>Apply to review</Button>
+                )}
+                {reviewer === "pending" && (
+                  <p className="text-xs text-muted-foreground italic">Application under review.</p>
+                )}
+                {reviewer === "approved" && (
+                  <Link to="/dashboard/publishing/reviews">
+                    <Button variant="afrikaOutline" size="sm" className="gap-1">Open Peer Reviews <ArrowRight className="h-3.5 w-3.5" /></Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Editor card */}
+            <Card className="border-border">
+              <CardContent className="pt-5 pb-5 px-5 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                    <Shield className="h-5 w-5" />
+                  </div>
+                  {editor === "approved" && <Badge className="bg-afrika-green/10 text-afrika-green border-0 text-[10px]">Editor ✓</Badge>}
+                  {editor === "pending" && <Badge variant="secondary" className="text-[10px]">Pending</Badge>}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Become an editor</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Start or manage a journal and oversee the publication process.</p>
+                </div>
+                {editor === "none" && (
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="afrika" size="sm" onClick={startJournal}>Start a journal</Button>
+                    <Button variant="afrikaOutline" size="sm" onClick={applyEditor}>Apply to be editor</Button>
+                  </div>
+                )}
+                {editor === "pending" && (
+                  <p className="text-xs text-muted-foreground italic">Application under review.</p>
+                )}
+                {editor === "approved" && (
+                  <Link to="/dashboard/publishing/journals">
+                    <Button variant="afrikaOutline" size="sm" className="gap-1">Open Editor Workspace <ArrowRight className="h-3.5 w-3.5" /></Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );

@@ -34,6 +34,7 @@ import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 import { useAuth, AppRole, UserType } from "@/contexts/AuthContext";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { ModuleType } from "@/hooks/useModuleUnlocks";
+import { usePublishingRoles } from "@/hooks/usePublishingRoles";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 
@@ -241,7 +242,7 @@ function NestedSidebarItem({ item, collapsed, getIsItemActive }: { item: Sidebar
   );
 }
 
-function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: SidebarSection; collapsed: boolean; userRole: AppRole | null }) {
+function CollapsibleSidebarGroup({ section, collapsed, userRole, extraGrantedTitles }: { section: SidebarSection; collapsed: boolean; userRole: AppRole | null; extraGrantedTitles?: Set<string> }) {
   const location = useLocation();
   const allItems = section.items.flatMap((item) => [item, ...(item.children || [])]);
   const isActive = allItems.some((item) => {
@@ -285,7 +286,7 @@ function CollapsibleSidebarGroup({ section, collapsed, userRole }: { section: Si
             <SidebarMenu>
               {section.items.map((item) => {
                 const active = getIsItemActive(item);
-                if (!canAccess(userRole, item.requiredRoles)) return null;
+                if (!canAccess(userRole, item.requiredRoles) && !(extraGrantedTitles && extraGrantedTitles.has(item.title))) return null;
 
                 if (item.children) {
                   return <NestedSidebarItem key={item.title} item={item} collapsed={collapsed} getIsItemActive={getIsItemActive} />;
@@ -319,6 +320,7 @@ function AppSidebar() {
   const { profile, role, userType, accountType } = useAuth();
   const { isModuleUnlocked, unlockedModules } = useModuleUnlocksContext();
   const { isActive: hasSubscription } = useSubscriptionContext();
+  const { reviewer: reviewerStatus, editor: editorStatus } = usePublishingRoles();
   const currentUserType = userType || "researcher";
 
   const displayName = profile?.display_name || "User";
@@ -394,7 +396,10 @@ function AppSidebar() {
           if (section.requiredModule && !isModuleUnlocked(section.requiredModule)) return null;
 
           if (section.collapsible && section.label) {
-            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} />;
+            const extraGrantedTitles = new Set<string>();
+            if (reviewerStatus === "approved") extraGrantedTitles.add("Peer Reviews");
+            if (editorStatus === "approved") extraGrantedTitles.add("Editor Workspace");
+            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} extraGrantedTitles={extraGrantedTitles} />;
           }
           return (
             <SidebarGroup key={gi}>
