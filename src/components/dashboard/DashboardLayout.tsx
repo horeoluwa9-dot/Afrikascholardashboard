@@ -34,6 +34,7 @@ import { NotificationsPanel } from "@/components/dashboard/NotificationsPanel";
 import { useAuth, AppRole, UserType } from "@/contexts/AuthContext";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { ModuleType } from "@/hooks/useModuleUnlocks";
+import { usePublishingRoles } from "@/hooks/usePublishingRoles";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 
