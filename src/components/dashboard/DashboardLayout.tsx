@@ -75,29 +75,14 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
 
-  // === MY RESEARCH ===
-  {
-    label: "My Research",
-    collapsible: true,
-    allowedUserTypes: ["researcher", "academic"],
-    items: [
-      { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
-      { title: "Research Projects", url: "/dashboard/research-projects", icon: FolderOpen },
-      { title: "Reading Lists", url: "/dashboard/reading-lists", icon: BookOpen },
-      { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
-    ],
-  },
-  // === LIBRARY (collapsible module) ===
+  // === LIBRARY (overview + my papers + pro tip) ===
   {
     label: "Library",
     collapsible: true,
     items: [
       { title: "Overview", url: "/dashboard/library", icon: BookOpen },
-      { title: "Purchased Papers", url: "/dashboard/library?tab=purchased", icon: FileText },
-      { title: "Saved Articles", url: "/dashboard/library?tab=saved", icon: Bookmark },
-      { title: "Download History", url: "/dashboard/library?tab=downloads", icon: Download },
-      { title: "Reading Lists", url: "/dashboard/library?tab=lists", icon: FolderOpen },
-      { title: "Journal Subscriptions", url: "/dashboard/library?tab=subscriptions", icon: Globe },
+      { title: "My Papers", url: "/dashboard/my-papers", icon: FileText },
+      { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
   },
   {
@@ -177,6 +162,7 @@ const sidebarSections: SidebarSection[] = [
       { title: "Intelligence Hub", url: "/dashboard/intelligence?tab=journals", icon: Compass },
       { title: "Generate Paper", url: "/dashboard/generate-paper", icon: FilePlus },
       { title: "Build Presentation", url: "/dashboard/build-presentation", icon: Presentation },
+      { title: "Research Projects", url: "/dashboard/research-projects", icon: FolderOpen },
       { title: "Dataset Explorer", url: "/dashboard/data/explorer", icon: Database },
       { title: "Dataset Analyzer", url: "/dashboard/data/analyzer", icon: BarChart3 },
       {
@@ -355,7 +341,7 @@ function AppSidebar() {
   // Brand-new user: no unlocked modules and no active subscription → show only core items.
   // Once a user activates a module from the dashboard, its section appears here.
   const isBrandNew = (!unlockedModules || unlockedModules.size === 0) && !hasSubscription;
-  const CORE_LABELS = new Set(["", "My Research", "Library", "Billing"]);
+  const CORE_LABELS = new Set(["", "Library", "Billing"]);
   const visibleSections = isBrandNew
     ? sidebarSections.filter(
         (s) =>
