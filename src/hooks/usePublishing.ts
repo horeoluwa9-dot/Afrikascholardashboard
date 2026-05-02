@@ -20,6 +20,11 @@ export interface ManuscriptSubmission {
   reviewer_feedback: any[];
   submitted_at: string;
   updated_at: string;
+  is_paid?: boolean;
+  price_amount?: number;
+  total_earnings?: number;
+  view_count?: number;
+  download_count?: number;
 }
 
 export interface Journal {

@@ -522,54 +522,69 @@ export type Database = {
           abstract: string | null
           co_authors: Json | null
           cover_letter: string | null
+          download_count: number
           id: string
+          is_paid: boolean
           journal_id: string | null
           journal_name: string
           keywords: string | null
           manuscript_url: string | null
+          price_amount: number
           research_field: string | null
           reviewer_feedback: Json | null
           status: string
           submitted_at: string
           title: string
+          total_earnings: number
           updated_at: string
           user_id: string
+          view_count: number
           workflow_stage: string
         }
         Insert: {
           abstract?: string | null
           co_authors?: Json | null
           cover_letter?: string | null
+          download_count?: number
           id?: string
+          is_paid?: boolean
           journal_id?: string | null
           journal_name: string
           keywords?: string | null
           manuscript_url?: string | null
+          price_amount?: number
           research_field?: string | null
           reviewer_feedback?: Json | null
           status?: string
           submitted_at?: string
           title: string
+          total_earnings?: number
           updated_at?: string
           user_id: string
+          view_count?: number
           workflow_stage?: string
         }
         Update: {
           abstract?: string | null
           co_authors?: Json | null
           cover_letter?: string | null
+          download_count?: number
           id?: string
+          is_paid?: boolean
           journal_id?: string | null
           journal_name?: string
           keywords?: string | null
           manuscript_url?: string | null
+          price_amount?: number
           research_field?: string | null
           reviewer_feedback?: Json | null
           status?: string
           submitted_at?: string
           title?: string
+          total_earnings?: number
           updated_at?: string
           user_id?: string
+          view_count?: number
           workflow_stage?: string
         }
         Relationships: [
