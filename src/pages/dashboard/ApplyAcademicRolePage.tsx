@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { UserCheck, Shield, ArrowRight, Check, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePublishingRoles } from "@/hooks/usePublishingRoles";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { toast } from "sonner";
 
 type Role = "reviewer" | "editor";
@@ -25,6 +26,7 @@ export default function ApplyAcademicRolePage() {
 
   const { profile, user } = useAuth();
   const { setReviewerStatus, setEditorStatus } = usePublishingRoles();
+  const { unlockModule } = useModuleUnlocksContext();
 
   const [form, setForm] = useState({
     fullName: profile?.display_name || "",
@@ -51,8 +53,9 @@ export default function ApplyAcademicRolePage() {
 
   const set = (k: string, v: string) => setForm((p) => ({ ...p, [k]: v }));
 
-  const submit = () => {
+  const submit = async () => {
     if (!role) return;
+    await unlockModule("publishing");
     if (role === "reviewer") setReviewerStatus("approved");
     else setEditorStatus("approved");
     setStep("success");
