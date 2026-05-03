@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,9 +38,33 @@ const QUICK_ACTIONS = [
 ];
 
 const NetworkOverviewPage = () => {
+  const { unlockModule } = useModuleUnlocksContext();
+  useEffect(() => { unlockModule("network"); }, [unlockModule]);
   return (
     <DashboardLayout>
       <div className="max-w-6xl mx-auto space-y-8">
+        {/* Hero — mirrors public Network page */}
+        <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/10 via-card to-accent/5 p-6 sm:p-8">
+          <div className="max-w-3xl space-y-3">
+            <Badge className="bg-accent/10 text-accent border-0">Lecturer & Academic Partners Network</Badge>
+            <h2 className="text-xl sm:text-2xl font-bold text-foreground font-serif leading-snug">
+              Earn beyond the classroom. Work with global institutions. Extend your academic impact.
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              A curated academic collaboration program for lecturers, professors, researchers, and academically
+              qualified professionals who want to extend their impact beyond their primary institutions.
+            </p>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <Link to="/dashboard/network/applications">
+                <Button variant="afrika" size="sm" className="gap-1">Apply to Join the Network <ArrowRight className="h-3.5 w-3.5" /></Button>
+              </Link>
+              <Link to="/dashboard/network/opportunities">
+                <Button variant="afrikaOutline" size="sm">Browse Opportunities</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, GraduationCap, FlaskConical, Building2, Compass } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ const Login = () => {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [demoLoading, setDemoLoading] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +39,30 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) toast.error("Google sign-in failed");
+  };
+
+  const demoAccounts = [
+    { key: "lecturer", label: "Lecturer", desc: "Access academic opportunities and earnings", email: "lecturer@afrikascholar.demo", icon: GraduationCap },
+    { key: "researcher", label: "Researcher", desc: "Publish and manage research papers", email: "researcher@afrikascholar.demo", icon: FlaskConical },
+    { key: "institution", label: "Institution", desc: "Hire academics and manage engagements", email: "institution@afrikascholar.demo", icon: Building2 },
+    { key: "advisory", label: "Advisory Client", desc: "Track academic support requests", email: "advisory@afrikascholar.demo", icon: Compass },
+  ];
+
+  const handleDemoLogin = async (demoEmail: string, key: string) => {
+    setEmail(demoEmail);
+    setPassword("AfrikascholarDemo");
+    setError("");
+    setDemoLoading(key);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: demoEmail,
+      password: "AfrikascholarDemo",
+    });
+    setDemoLoading(null);
+    if (signInError) {
+      toast.error("Demo account not available yet. Please try email login.");
+    } else {
+      navigate("/dashboard");
+    }
   };
 
   return (
@@ -104,6 +129,38 @@ const Login = () => {
           Don't have an account?{" "}
           <Link to="/auth/signup" className="text-primary font-semibold hover:underline">Sign up</Link>
         </p>
+
+        {/* Demo accounts */}
+        <div className="mt-6 bg-card rounded-2xl p-5 border border-border">
+          <div className="text-center mb-3">
+            <h2 className="text-sm font-semibold text-foreground">Try a Demo Account</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Explore Afrika Scholar with pre-loaded accounts</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {demoAccounts.map((d) => (
+              <button
+                key={d.key}
+                type="button"
+                onClick={() => handleDemoLogin(d.email, d.key)}
+                disabled={!!demoLoading}
+                className="text-left rounded-lg border border-border p-3 hover:border-primary/40 hover:bg-secondary/40 transition-colors disabled:opacity-60"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                    <d.icon className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-semibold text-foreground">{d.label}</p>
+                    <p className="text-[11px] text-muted-foreground leading-snug">{d.desc}</p>
+                  </div>
+                </div>
+                {demoLoading === d.key && (
+                  <p className="text-[10px] text-primary mt-1.5">Signing in...</p>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

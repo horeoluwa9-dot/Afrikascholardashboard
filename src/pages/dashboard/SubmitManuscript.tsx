@@ -12,7 +12,7 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { ChevronRight, Send, Upload, Loader2, Copy, ExternalLink, Check } from "lucide-react";
+import { ChevronRight, Send, Loader2, Check, FileSearch, FileEdit, Upload as UploadIcon, Users2, BookOpen } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const journals = [
@@ -31,6 +31,7 @@ const SubmitManuscript = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
   const { unlockModule } = useModuleUnlocksContext();
 
@@ -61,12 +62,65 @@ const SubmitManuscript = () => {
           <span className="text-foreground font-medium">Submit Manuscript</span>
         </div>
 
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Submit Manuscript</h1>
-          <p className="text-sm text-muted-foreground mt-1">Submit your research manuscript for publication review.</p>
-        </div>
+        {!showForm && !submitted && (
+          <div className="bg-card rounded-2xl border border-border p-8 space-y-6">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Submit Your Manuscript</h1>
+              <p className="text-sm text-muted-foreground mt-2">
+                Share your research with the world through Afrika Scholar's peer-reviewed journals.
+              </p>
+            </div>
 
-        {!submitted ? (
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Submission Process</h2>
+              <p className="text-xs text-muted-foreground mt-1">Our streamlined 5-step process from submission to publication</p>
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 mt-4">
+                {[
+                  { icon: BookOpen, title: "Select Journal", desc: "Choose the right journal for your research" },
+                  { icon: FileEdit, title: "Prepare Manuscript", desc: "Format according to guidelines" },
+                  { icon: UploadIcon, title: "Submit", desc: "Upload your manuscript and files" },
+                  { icon: Users2, title: "Peer Review", desc: "Expert evaluation of your work" },
+                  { icon: Check, title: "Publication", desc: "Get published and indexed" },
+                ].map((s, i) => (
+                  <div key={s.title} className="rounded-xl border border-border p-3 bg-secondary/40">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="h-7 w-7 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                        <s.icon className="h-3.5 w-3.5" />
+                      </div>
+                      <span className="text-[10px] text-muted-foreground font-semibold">STEP {i + 1}</span>
+                    </div>
+                    <p className="text-[12px] font-semibold text-foreground">{s.title}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 space-y-3">
+              <div>
+                <h3 className="text-base font-semibold text-foreground">Start Your Submission</h3>
+                <p className="text-xs text-muted-foreground mt-1">The full manuscript submission form will guide you through each step.</p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-[11px]">
+                <span className="px-2 py-1 rounded-full bg-card border border-border">4–6 Week Review</span>
+                <span className="px-2 py-1 rounded-full bg-card border border-border">Double-Blind Review</span>
+                <span className="px-2 py-1 rounded-full bg-card border border-border">Open Access</span>
+              </div>
+              <Button variant="afrika" className="gap-1" onClick={() => setShowForm(true)}>
+                <Send className="h-4 w-4" /> Begin Submission
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {showForm && !submitted && (
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Submit Manuscript</h1>
+            <p className="text-sm text-muted-foreground mt-1">Complete the form below to submit your manuscript.</p>
+          </div>
+        )}
+
+        {showForm && !submitted ? (
           <div className="bg-card rounded-xl border border-border p-6 space-y-5">
             <div className="space-y-2">
               <Label>Manuscript Title</Label>
@@ -102,7 +156,7 @@ const SubmitManuscript = () => {
               {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Submitting...</> : <><Send className="h-4 w-4" /> Submit Manuscript</>}
             </Button>
           </div>
-        ) : (
+        ) : submitted ? (
           <div className="space-y-4">
             <div className="bg-afrika-green/10 border border-afrika-green/30 rounded-xl p-4 flex items-start gap-3">
               <Check className="h-5 w-5 text-afrika-green mt-0.5 shrink-0" />
@@ -115,12 +169,12 @@ const SubmitManuscript = () => {
               <Link to="/dashboard/publishing/track">
                 <Button variant="afrika" size="sm" className="gap-1">Track Submission</Button>
               </Link>
-              <Button variant="outline" size="sm" onClick={() => { setSubmitted(false); setTitle(""); setJournal(""); setAbstractText(""); }}>
+              <Button variant="outline" size="sm" onClick={() => { setSubmitted(false); setShowForm(true); setTitle(""); setJournal(""); setAbstractText(""); }}>
                 Submit Another
               </Button>
             </div>
           </div>
-        )}
+        ) : null}
 
         {/* Share Modal after submission */}
         <Dialog open={showShareModal} onOpenChange={setShowShareModal}>

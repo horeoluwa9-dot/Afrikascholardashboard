@@ -259,6 +259,29 @@ const EditorialWorkflow = () => {
           </div>
         </div>
 
+        {/* Call for Papers — mirrors public site intro */}
+        <div className="rounded-2xl border border-accent/30 bg-gradient-to-r from-accent/10 via-card to-primary/5 p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="space-y-2 max-w-2xl">
+              <Badge className="bg-accent/15 text-accent border-0">Call for Papers</Badge>
+              <h2 className="text-lg font-bold text-foreground font-serif">
+                Invite submissions for your journal's next issue
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Publish a Call for Papers to attract high-quality submissions from researchers across Africa.
+                Set the scope, deadlines, and review timelines — Afrika Scholar handles distribution to relevant authors.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link to="/dashboard/publishing/journals">
+                <Button variant="afrika" size="sm" className="gap-1">
+                  <Send className="h-3.5 w-3.5" /> Publish Call for Papers
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* ── SECTION 1: OVERVIEW METRICS ── */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {[
