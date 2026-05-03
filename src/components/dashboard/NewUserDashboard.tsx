@@ -55,7 +55,7 @@ const actionsByRole: Record<RoleKey, ActionCard[]> = {
   lecturer: [
     { title: "Review and contribute to research", description: "Review submissions, provide expert feedback, and contribute to academic work.", cta: "Start reviewing", link: "/dashboard/publishing/reviews", badge: "Recommended", primary: true, icon: ClipboardList, unlockModule: "publishing" },
     { title: "Publish your research", description: "Submit your work, track peer reviews, and publish your research.", cta: "Submit a paper", link: "/dashboard/publishing/submit", icon: FileText, unlockModule: "publishing" },
-    { title: "Explore opportunities", description: "Access teaching, supervision, and research opportunities across institutions.", cta: "Explore opportunities", link: "/dashboard/institutional", icon: Briefcase, unlockModule: "institutional" },
+    { title: "Join the academic network", description: "Access teaching, supervision, and research opportunities across institutions.", cta: "Explore network", link: "/dashboard/network", icon: Users2, unlockModule: "network" },
     { title: "Use AI research assistant", description: "Generate content, analyse literature, and support your academic workflow with AI.", cta: "Use AI tools", link: "/dashboard/generate-paper", badge: "Popular", icon: Sparkles, unlockModule: "research_intelligence" },
   ],
   student: [
