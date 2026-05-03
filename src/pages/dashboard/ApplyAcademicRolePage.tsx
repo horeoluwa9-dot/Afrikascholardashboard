@@ -34,9 +34,9 @@ export default function ApplyAcademicRolePage() {
     qualification: "",
     institution: profile?.institution || "",
     years: "",
-    orcid: profile?.orcid_id || "",
-    scholar: profile?.google_scholar_url || "",
-    linkedin: profile?.linkedin_url || "",
+    orcid: "",
+    scholar: "",
+    linkedin: "",
     // reviewer-specific
     prevReviewExp: "",
     papersReviewed: "",
