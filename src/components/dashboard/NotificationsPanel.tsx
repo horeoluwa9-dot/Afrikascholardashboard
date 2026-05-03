@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger,
@@ -48,7 +48,7 @@ const filterCategories = ["All", "Invitation", "Publishing", "Intelligence", "Co
 export function NotificationsPanel() {
   const [notifications, setNotifications] = useState(initialNotifications);
   const [filter, setFilter] = useState("All");
-  const { setReviewerStatus, setEditorStatus } = usePublishingRoles();
+  const navigate = useNavigate();
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const markAllRead = () => setNotifications(notifications.map((n) => ({ ...n, read: true })));
@@ -56,14 +56,12 @@ export function NotificationsPanel() {
   const clearAll = () => setNotifications([]);
 
   const acceptInvite = (n: Notification) => {
-    if (n.invitationKind === "reviewer") {
-      setReviewerStatus("approved");
-      toast.success("Reviewer role activated. Peer Reviews is now in your sidebar.");
-    } else if (n.invitationKind === "editor") {
-      setEditorStatus("approved");
-      toast.success("Editor role activated. Editor Workspace is now in your sidebar.");
-    }
     setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+    if (n.invitationKind === "reviewer") {
+      navigate("/dashboard/apply-role?role=reviewer");
+    } else if (n.invitationKind === "editor") {
+      navigate("/dashboard/apply-role?role=editor");
+    }
   };
 
   const declineInvite = (n: Notification) => {
