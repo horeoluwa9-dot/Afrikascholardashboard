@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ModuleUnlocksProvider } from "@/contexts/ModuleUnlocksContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import { AppNotificationsProvider } from "@/hooks/useAppNotifications";
+import ApprovalBoot from "@/components/dashboard/ApprovalBoot";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PubleeshLanding from "./pages/PubleeshLanding";
 import PricingPage from "./pages/PricingPage";
@@ -113,6 +115,8 @@ const App = () => (
         <AuthProvider>
           <ModuleUnlocksProvider>
           <SubscriptionProvider>
+          <AppNotificationsProvider>
+          <ApprovalBoot />
           <Routes>
             <Route path="/" element={<Navigate to="/auth/login" replace />} />
             <Route path="/publeesh" element={<PubleeshLanding />} />
@@ -242,6 +246,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </AppNotificationsProvider>
           </SubscriptionProvider>
           </ModuleUnlocksProvider>
         </AuthProvider>
