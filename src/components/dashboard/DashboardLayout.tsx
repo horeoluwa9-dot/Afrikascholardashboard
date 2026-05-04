@@ -408,7 +408,18 @@ function AppSidebar() {
             const extraGrantedTitles = new Set<string>();
             if (reviewerStatus === "approved") extraGrantedTitles.add("Peer Reviews");
             if (editorStatus === "approved") extraGrantedTitles.add("Editor Workspace");
-            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} extraGrantedTitles={extraGrantedTitles} />;
+            // Hide capability-gated items when not approved
+            const filteredSection: SidebarSection = section.label === "Publishing"
+              ? {
+                  ...section,
+                  items: section.items.filter((it) => {
+                    if (it.title === "Peer Reviews") return reviewerStatus === "approved";
+                    if (it.title === "Editor Workspace") return editorStatus === "approved";
+                    return true;
+                  }),
+                }
+              : section;
+            return <CollapsibleSidebarGroup key={gi} section={filteredSection} collapsed={collapsed} userRole={role} extraGrantedTitles={extraGrantedTitles} />;
           }
           return (
             <SidebarGroup key={gi}>
