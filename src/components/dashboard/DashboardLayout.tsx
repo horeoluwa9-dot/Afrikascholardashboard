@@ -86,6 +86,14 @@ const sidebarSections: SidebarSection[] = [
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
   },
+  // Community visible to all roles
+  {
+    label: "",
+    collapsible: false,
+    items: [
+      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+    ],
+  },
   {
     label: "Publishing",
     collapsible: true,
@@ -117,11 +125,10 @@ const sidebarSections: SidebarSection[] = [
     items: [
       { title: "Overview", url: "/dashboard/network", icon: Globe },
       { title: "Opportunities", url: "/dashboard/network/opportunities", icon: Briefcase },
-      { title: "Applications", url: "/dashboard/network/applications", icon: Inbox },
-      { title: "Directory", url: "/dashboard/network/directory", icon: Users2 },
-      { title: "Engagements", url: "/dashboard/network/engagements", icon: Handshake },
-      { title: "Contracts", url: "/dashboard/network/contracts", icon: FileSignature },
-      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+      { title: "My Applications", url: "/dashboard/network/applications", icon: Inbox },
+      { title: "My Engagements", url: "/dashboard/network/engagements", icon: Handshake },
+      { title: "Earnings", url: "/dashboard/earnings", icon: Wallet },
+      { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
   },
   {
@@ -134,6 +141,8 @@ const sidebarSections: SidebarSection[] = [
       { title: "Partnership Requests", url: "/dashboard/institutional/partnership-requests", icon: Handshake },
       { title: "Lecturer Requests", url: "/dashboard/institutional/lecturer-requests", icon: GraduationCap },
       { title: "Research Collaboration", url: "/dashboard/institutional/research-collaboration", icon: Users2 },
+      { title: "Applications", url: "/dashboard/institutional/applications", icon: Inbox },
+      { title: "Directory", url: "/dashboard/network/directory", icon: Users2 },
       { title: "Curriculum & Validation", url: "/dashboard/institutional/curriculum", icon: BookOpen },
       { title: "Advisory Support", url: "/dashboard/institutional/advisory-support", icon: Compass },
       { title: "My Requests", url: "/dashboard/institutional/my-requests", icon: ClipboardList },
