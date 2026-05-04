@@ -452,9 +452,13 @@ function AppSidebar() {
         <div className="mt-auto border-t border-sidebar-border p-4">
           <Link to="/dashboard/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">{initial}</div>
-            <div className="text-xs">
-              <p className="font-semibold text-sidebar-foreground">{displayName}</p>
-              <p className="text-sidebar-foreground/50">{badgeLabel}</p>
+            <div className="text-xs min-w-0">
+              <p className="font-semibold text-sidebar-foreground truncate">{displayName}</p>
+              <div className="flex items-center gap-1 flex-wrap">
+                <span className="text-sidebar-foreground/50">{badgeLabel}</span>
+                {reviewerStatus === "approved" && <Badge className="text-[9px] py-0 px-1.5 bg-primary/15 text-primary border-0">Reviewer</Badge>}
+                {editorStatus === "approved" && <Badge className="text-[9px] py-0 px-1.5 bg-accent/15 text-accent border-0">Editor</Badge>}
+              </div>
             </div>
           </Link>
         </div>
