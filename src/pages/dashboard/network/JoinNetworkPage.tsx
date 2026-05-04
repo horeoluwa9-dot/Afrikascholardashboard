@@ -77,7 +77,7 @@ export default function JoinNetworkPage() {
     );
   }
 
-  if (status === "approved" || done && status === "approved") {
+  if (status === "approved") {
     return (
       <DashboardLayout>
         <div className="max-w-2xl mx-auto bg-card border border-border rounded-2xl p-8 text-center space-y-3">
