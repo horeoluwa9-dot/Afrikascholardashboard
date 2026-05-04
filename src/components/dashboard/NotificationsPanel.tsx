@@ -6,33 +6,9 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Check, Trash2, UserCheck, Shield } from "lucide-react";
-import { usePublishingRoles } from "@/hooks/usePublishingRoles";
-import { toast } from "sonner";
-
-interface Notification {
-  id: number;
-  category: "Publishing" | "Intelligence" | "Community" | "Credits" | "System" | "Invitation";
-  title: string;
-  description: string;
-  time: string;
-  read: boolean;
-  link: string;
-  invitationKind?: "reviewer" | "editor";
-}
-
-const initialNotifications: Notification[] = [
-  { id: 101, category: "Invitation", title: "Reviewer invitation", description: "African Journal of Public Health invites you to join as a peer reviewer.", time: "1 hour ago", read: false, link: "/dashboard/publishing", invitationKind: "reviewer" },
-  { id: 102, category: "Invitation", title: "Editor invitation", description: "East African Economic Review invites you to join the editorial board.", time: "3 hours ago", read: false, link: "/dashboard/publishing", invitationKind: "editor" },
-  { id: 1, category: "Publishing", title: "Submission status updated", description: "Your manuscript 'AI in African Health Systems' is now Under Review.", time: "2 hours ago", read: false, link: "/dashboard/publishing/track" },
-  { id: 2, category: "Intelligence", title: "New journal match found", description: "African Journal of Energy Studies matches your profile with 92% score.", time: "5 hours ago", read: false, link: "/dashboard/intelligence?tab=journals" },
-  { id: 3, category: "Community", title: "New comment on your post", description: "@hassanb07 commented on your research post.", time: "1 day ago", read: false, link: "/dashboard/community" },
-  { id: 4, category: "Intelligence", title: "Conference deadline approaching", description: "Pan-African Science Conference deadline is in 5 days.", time: "1 day ago", read: true, link: "/dashboard/intelligence?tab=conferences" },
-  { id: 5, category: "Credits", title: "Credits deducted", description: "1 Paper Credit used for paper generation.", time: "1 day ago", read: true, link: "/dashboard/billing" },
-  { id: 6, category: "Credits", title: "Credits running low", description: "You have 5 Paper Credits remaining this month.", time: "2 days ago", read: true, link: "/dashboard/billing" },
-  { id: 7, category: "System", title: "Referral signed up", description: "Your referral Aisha M. has created an account.", time: "2 days ago", read: true, link: "/dashboard/billing" },
-  { id: 8, category: "Intelligence", title: "Saved trend updated", description: "AI-Powered Climate Modeling trend data has been refreshed.", time: "3 days ago", read: true, link: "/dashboard/intelligence?tab=trends" },
-  { id: 9, category: "System", title: "Welcome to Afrika Scholar", description: "Your Pro trial is active. Explore your dashboard.", time: "3 days ago", read: true, link: "/dashboard" },
-];
+import { useAppNotifications, AppNotification } from "@/hooks/useAppNotifications";
+import { useAcademicEligibility } from "@/hooks/useAcademicEligibility";
+import { useAuth } from "@/contexts/AuthContext";
 
 const categoryColors: Record<string, string> = {
   Publishing: "bg-primary/10 text-primary",
@@ -43,32 +19,33 @@ const categoryColors: Record<string, string> = {
   Invitation: "bg-accent/10 text-accent",
 };
 
-const filterCategories = ["All", "Invitation", "Publishing", "Intelligence", "Community", "Credits", "System"];
+const filterCategories = ["All", "Invitation", "Approval", "Publishing", "Network", "Engagement", "Intelligence", "Community", "Credits", "System"];
 
 export function NotificationsPanel() {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const { notifications, unreadCount, markAllRead, markRead, clear, remove } = useAppNotifications();
+  const { eligible } = useAcademicEligibility();
+  const { accountType } = useAuth();
   const [filter, setFilter] = useState("All");
   const navigate = useNavigate();
-  const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const markAllRead = () => setNotifications(notifications.map((n) => ({ ...n, read: true })));
-  const markRead = (id: number) => setNotifications(notifications.map((n) => n.id === id ? { ...n, read: true } : n));
-  const clearAll = () => setNotifications([]);
-
-  const acceptInvite = (n: Notification) => {
-    setNotifications((prev) => prev.filter((x) => x.id !== n.id));
+  const acceptInvite = (n: AppNotification) => {
+    remove(n.id);
     if (n.invitationKind === "reviewer") {
       navigate("/dashboard/apply-role?role=reviewer");
     } else if (n.invitationKind === "editor") {
       navigate("/dashboard/apply-role?role=editor");
     }
   };
+  const declineInvite = (n: AppNotification) => remove(n.id);
 
-  const declineInvite = (n: Notification) => {
-    setNotifications((prev) => prev.filter((x) => x.id !== n.id));
-  };
-
-  const filtered = filter === "All" ? notifications : notifications.filter((n) => n.category === filter);
+  const visible = notifications.filter((n) => {
+    // Audience gating
+    if (n.audience && accountType && !n.audience.includes(accountType)) return false;
+    // Hide all reviewer/editor invitations from ineligible users
+    if (n.category === "Invitation" && !eligible) return false;
+    return true;
+  });
+  const filtered = filter === "All" ? visible : visible.filter((n) => n.category === filter);
 
   return (
     <Sheet>
@@ -88,7 +65,7 @@ export function NotificationsPanel() {
               <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={markAllRead}>
                 <Check className="h-3 w-3" /> Mark all read
               </Button>
-              <Button variant="ghost" size="sm" className="text-xs gap-1 text-destructive" onClick={clearAll}>
+          <Button variant="ghost" size="sm" className="text-xs gap-1 text-destructive" onClick={clear}>
                 <Trash2 className="h-3 w-3" /> Clear
               </Button>
             </div>
