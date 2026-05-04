@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Users2, Briefcase, FileText, Handshake, ArrowRight, Search, Plus,
-  TrendingUp, Globe, Building2, CheckCircle,
+  TrendingUp, Globe, Building2, CheckCircle, Wallet, User, Inbox,
 } from "lucide-react";
+import { useNetworkMembership } from "@/hooks/useNetworkMembership";
 
 const STATS = [
   { label: "Active Academics", value: "5,200", icon: Users2, color: "text-accent", bg: "bg-accent/10" },
@@ -20,8 +21,8 @@ const STATS = [
 const RECENT_ACTIVITY = [
   { title: "Dr. Amina Bello applied for AI Course Instructor", type: "Application", date: "2026-03-08", icon: FileText, link: "/dashboard/network/applications" },
   { title: "New opportunity posted: Climate Policy Research Lead", type: "Opportunity", date: "2026-03-07", icon: Briefcase, link: "/dashboard/network/opportunities" },
-  { title: "Contract signed with Prof. Kwame Asante", type: "Contract", date: "2026-03-06", icon: CheckCircle, link: "/dashboard/network/contracts" },
-  { title: "Dr. Fatou Diallo joined the network", type: "New Member", date: "2026-03-05", icon: Users2, link: "/dashboard/network/directory" },
+  { title: "Engagement started with Prof. Kwame Asante", type: "Engagement", date: "2026-03-06", icon: CheckCircle, link: "/dashboard/network/engagements" },
+  { title: "New invitation: Solar Energy Lecturer", type: "Invitation", date: "2026-03-05", icon: Inbox, link: "/dashboard/network/applications" },
 ];
 
 const FEATURED_OPPORTUNITIES = [
@@ -31,14 +32,15 @@ const FEATURED_OPPORTUNITIES = [
 ];
 
 const QUICK_ACTIONS = [
-  { title: "Browse Academics", desc: "Find researchers and experts", icon: Search, link: "/dashboard/network/directory", color: "text-primary", bg: "bg-primary/10" },
-  { title: "Post Opportunity", desc: "Create a new academic role", icon: Plus, link: "/dashboard/network/opportunities", color: "text-accent", bg: "bg-accent/10" },
-  { title: "View Applications", desc: "Review incoming applications", icon: FileText, link: "/dashboard/network/applications", color: "text-afrika-green", bg: "bg-afrika-green/10" },
-  { title: "Manage Contracts", desc: "Track active agreements", icon: Handshake, link: "/dashboard/network/contracts", color: "text-afrika-orange", bg: "bg-afrika-orange-light" },
+  { title: "Browse Opportunities", desc: "Find roles matched to you", icon: Briefcase, link: "/dashboard/network/opportunities", color: "text-primary", bg: "bg-primary/10" },
+  { title: "My Applications", desc: "Track submitted opportunities", icon: Inbox, link: "/dashboard/network/applications", color: "text-accent", bg: "bg-accent/10" },
+  { title: "My Engagements", desc: "Active and pending work", icon: Handshake, link: "/dashboard/network/engagements", color: "text-afrika-green", bg: "bg-afrika-green/10" },
+  { title: "Earnings", desc: "Track payments and invoices", icon: Wallet, link: "/dashboard/earnings", color: "text-afrika-orange", bg: "bg-afrika-orange-light" },
 ];
 
 const NetworkOverviewPage = () => {
   const { unlockModule } = useModuleUnlocksContext();
+  const { status: membershipStatus } = useNetworkMembership();
   useEffect(() => { unlockModule("network"); }, [unlockModule]);
   return (
     <DashboardLayout>
@@ -55,9 +57,15 @@ const NetworkOverviewPage = () => {
               qualified professionals who want to extend their impact beyond their primary institutions.
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
-              <Link to="/dashboard/network/applications">
-                <Button variant="afrika" size="sm" className="gap-1">Apply to Join the Network <ArrowRight className="h-3.5 w-3.5" /></Button>
-              </Link>
+              {membershipStatus === "approved" ? (
+                <Link to="/dashboard/profile"><Button variant="afrika" size="sm" className="gap-1">Build Academic Profile <ArrowRight className="h-3.5 w-3.5" /></Button></Link>
+              ) : membershipStatus === "pending" ? (
+                <Button variant="afrika" size="sm" disabled>Application Under Review</Button>
+              ) : (
+                <Link to="/dashboard/network/join">
+                  <Button variant="afrika" size="sm" className="gap-1">Apply to Join the Network <ArrowRight className="h-3.5 w-3.5" /></Button>
+                </Link>
+              )}
               <Link to="/dashboard/network/opportunities">
                 <Button variant="afrikaOutline" size="sm">Browse Opportunities</Button>
               </Link>
@@ -74,14 +82,9 @@ const NetworkOverviewPage = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <Link to="/dashboard/network/directory">
-              <Button variant="outline" className="gap-2">
-                <Search className="h-4 w-4" /> Browse Academics
-              </Button>
-            </Link>
             <Link to="/dashboard/network/opportunities">
               <Button className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground">
-                <Plus className="h-4 w-4" /> Post Opportunity
+                <Briefcase className="h-4 w-4" /> Browse Opportunities
               </Button>
             </Link>
           </div>
