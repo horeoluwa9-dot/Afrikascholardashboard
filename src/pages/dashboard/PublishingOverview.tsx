@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Clock, CheckCircle, BookOpen, Plus, ArrowRight, Send, UserCheck, Shield, Sparkles } from "lucide-react";
 import { usePublishing } from "@/hooks/usePublishing";
 import { usePublishingRoles } from "@/hooks/usePublishingRoles";
+import { useAcademicEligibility } from "@/hooks/useAcademicEligibility";
 import { toast } from "sonner";
 
 // Demo fallback submissions
@@ -17,7 +18,9 @@ const DEMO_SUBMISSIONS = [
 
 const PublishingOverview = () => {
   const { submissions: dbSubmissions, loading } = usePublishing();
-  const { reviewer, editor, setReviewerStatus, setEditorStatus } = usePublishingRoles();
+  const { reviewer, editor } = usePublishingRoles();
+  const { eligible } = useAcademicEligibility();
+  const navigate = useNavigate();
 
   const submissions = dbSubmissions.length > 0 ? dbSubmissions : DEMO_SUBMISSIONS;
 
@@ -35,9 +38,9 @@ const PublishingOverview = () => {
 
   const isEmpty = submissions.length === 0;
 
-  const applyReviewer = () => { setReviewerStatus("pending"); toast.success("Reviewer application submitted — we will email you on approval."); };
-  const applyEditor = () => { setEditorStatus("pending"); toast.success("Editor application submitted — we will email you on approval."); };
-  const startJournal = () => { setEditorStatus("approved"); toast.success("Editor workspace unlocked. Set up your journal."); };
+  const applyReviewer = () => navigate("/dashboard/apply-role?role=reviewer");
+  const applyEditor = () => navigate("/dashboard/apply-role?role=editor");
+  const startJournal = () => navigate("/dashboard/apply-role?role=editor");
 
   return (
     <DashboardLayout>
@@ -114,7 +117,8 @@ const PublishingOverview = () => {
           </>
         )}
 
-        {/* Grow your role in publishing */}
+        {/* Grow your role in publishing — only for eligible academic users */}
+        {eligible && (
         <div className="pt-2">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="h-4 w-4 text-accent" />
@@ -181,6 +185,7 @@ const PublishingOverview = () => {
             </Card>
           </div>
         </div>
+        )}
       </div>
     </DashboardLayout>
   );

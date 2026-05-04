@@ -17,9 +17,11 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
-  Plus, Eye, Search, Building2, Clock, Banknote, Briefcase, Users2, ListFilter, Send,
+  Plus, Eye, Search, Building2, Clock, Banknote, Briefcase, Users2, ListFilter, Send, CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAppNotifications } from "@/hooks/useAppNotifications";
 
 interface Opportunity {
   id: string;
@@ -75,8 +77,12 @@ const ENGAGEMENT_TYPES = [
 const OpportunitiesPage = () => {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [showPostDialog, setShowPostDialog] = useState(false);
   const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
+  const [applyOpp, setApplyOpp] = useState<Opportunity | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const { profile } = useAuth();
+  const { add } = useAppNotifications();
+  const [appForm, setAppForm] = useState({ statement: "", experience: "", availability: "", file: null as File | null });
 
   const filtered = DEMO_OPPORTUNITIES.filter((o) => {
     const matchSearch = !search || o.title.toLowerCase().includes(search.toLowerCase()) || o.organization.toLowerCase().includes(search.toLowerCase());
@@ -84,10 +90,17 @@ const OpportunitiesPage = () => {
     return matchSearch && matchType;
   });
 
-  const handlePost = () => {
-    toast.success("Opportunity published successfully");
-    setShowPostDialog(false);
+  const submitApply = () => {
+    if (!appForm.statement.trim()) { toast.error("Please complete your statement"); return; }
+    setSubmitted(true);
+    add({
+      category: "Network",
+      title: "Application submitted",
+      description: `Your interest in "${applyOpp?.title}" was shared with ${applyOpp?.organization}.`,
+      link: "/dashboard/network/applications",
+    });
   };
+  const closeApply = () => { setApplyOpp(null); setSubmitted(false); setAppForm({ statement: "", experience: "", availability: "", file: null }); };
 
   return (
     <DashboardLayout>
@@ -100,9 +113,7 @@ const OpportunitiesPage = () => {
               Post academic roles, consulting requests, and research collaborations.
             </p>
           </div>
-          <Button className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => setShowPostDialog(true)}>
-            <Plus className="h-4 w-4" /> Post Opportunity
-          </Button>
+          {/* Posting opportunities is reserved for institutions */}
         </div>
 
         {/* Filters */}
@@ -170,7 +181,7 @@ const OpportunitiesPage = () => {
                         <Eye className="h-3 w-3 mr-1" /> Details
                       </Button>
                       {opp.status === "open" && (
-                        <Button size="sm" className="text-xs h-7 bg-accent hover:bg-accent/90 text-accent-foreground">
+                        <Button size="sm" className="text-xs h-7 bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => setApplyOpp(opp)}>
                           <Send className="h-3 w-3 mr-1" /> Apply
                         </Button>
                       )}
@@ -193,53 +204,64 @@ const OpportunitiesPage = () => {
         )}
       </div>
 
-      {/* Post Opportunity Dialog */}
-      <Dialog open={showPostDialog} onOpenChange={setShowPostDialog}>
+      {/* Apply Dialog */}
+      <Dialog open={!!applyOpp} onOpenChange={(o) => !o && closeApply()}>
         <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="font-serif">Post Opportunity</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label>Opportunity Title</Label>
-              <Input placeholder="e.g., AI Course Instructor" />
-            </div>
-            <div className="space-y-2">
-              <Label>Organization Name</Label>
-              <Input placeholder="e.g., African Health Institute" />
-            </div>
-            <div className="space-y-2">
-              <Label>Engagement Type</Label>
-              <Select>
-                <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
-                <SelectContent>
-                  {ENGAGEMENT_TYPES.map((t) => (
-                    <SelectItem key={t} value={t}>{t}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Textarea placeholder="Describe the opportunity..." rows={3} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Duration</Label>
-                <Input placeholder="e.g., 6 weeks" />
+          {!submitted ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="font-serif">Apply: {applyOpp?.title}</DialogTitle>
+                <p className="text-xs text-muted-foreground">{applyOpp?.organization}</p>
+              </DialogHeader>
+              <div className="space-y-4 py-2">
+                <section className="bg-secondary/40 rounded-md p-3 space-y-1">
+                  <p className="text-[11px] uppercase text-muted-foreground tracking-wide">Basic Info</p>
+                  <div className="text-sm"><strong>{profile?.display_name || "—"}</strong></div>
+                  <div className="text-xs text-muted-foreground">{profile?.discipline || "Discipline not set"}</div>
+                  <div className="text-xs text-muted-foreground">{profile?.institution || "Institution not set"}</div>
+                </section>
+                <div className="space-y-1.5">
+                  <Label>Why are you a good fit for this opportunity? *</Label>
+                  <Textarea rows={5} maxLength={3000} value={appForm.statement} onChange={(e) => setAppForm({ ...appForm, statement: e.target.value })} placeholder="Share why this opportunity is a strong fit..." />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Highlight relevant experience (optional)</Label>
+                  <Textarea rows={3} value={appForm.experience} onChange={(e) => setAppForm({ ...appForm, experience: e.target.value })} placeholder="Teaching, research, related projects..." />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Availability</Label>
+                  <Select value={appForm.availability} onValueChange={(v) => setAppForm({ ...appForm, availability: v })}>
+                    <SelectTrigger><SelectValue placeholder="Select availability" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="immediate">Immediately Available</SelectItem>
+                      <SelectItem value="1-2 weeks">Available within 1–2 weeks</SelectItem>
+                      <SelectItem value="flexible">Flexible</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Attach Supporting Document (optional)</Label>
+                  <Input type="file" onChange={(e) => setAppForm({ ...appForm, file: e.target.files?.[0] || null })} />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>Payment Budget (₦)</Label>
-                <Input placeholder="e.g., 350000" type="number" />
+              <DialogFooter>
+                <Button variant="outline" onClick={closeApply}>Cancel</Button>
+                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground gap-1" onClick={submitApply}>
+                  <Send className="h-3.5 w-3.5" /> Submit Interest
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <div className="text-center py-6 space-y-3">
+              <CheckCircle2 className="h-10 w-10 text-afrika-green mx-auto" />
+              <h3 className="text-lg font-bold text-foreground">Interest Submitted</h3>
+              <p className="text-sm text-muted-foreground">Your interest has been shared with the institution. You will be notified if selected.</p>
+              <div className="flex gap-2 justify-center pt-2">
+                <Button variant="afrikaOutline" onClick={closeApply}>Close</Button>
+                <Link to="/dashboard/network/applications"><Button variant="afrika">View My Applications</Button></Link>
               </div>
             </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowPostDialog(false)}>Cancel</Button>
-            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground" onClick={handlePost}>
-              Publish Opportunity
-            </Button>
-          </DialogFooter>
+          )}
         </DialogContent>
       </Dialog>
 
@@ -283,7 +305,7 @@ const OpportunitiesPage = () => {
                 </div>
                 {selectedOpp.status === "open" && (
                   <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => {
-                    toast.success("Application submitted successfully");
+                    setApplyOpp(selectedOpp);
                     setSelectedOpp(null);
                   }}>
                     <Send className="h-4 w-4 mr-2" /> Apply Now

@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ModuleUnlocksProvider } from "@/contexts/ModuleUnlocksContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
+import { AppNotificationsProvider } from "@/hooks/useAppNotifications";
+import ApprovalBoot from "@/components/dashboard/ApprovalBoot";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PubleeshLanding from "./pages/PubleeshLanding";
 import PricingPage from "./pages/PricingPage";
@@ -84,7 +86,7 @@ import OpportunitiesPage from "./pages/dashboard/network/OpportunitiesPage";
 import NetworkApplicationsPage from "./pages/dashboard/network/NetworkApplicationsPage";
 import DirectoryPage from "./pages/dashboard/network/DirectoryPage";
 import NetworkEngagementsPage from "./pages/dashboard/network/NetworkEngagementsPage";
-import NetworkContractsPage from "./pages/dashboard/network/NetworkContractsPage";
+import JoinNetworkPage from "./pages/dashboard/network/JoinNetworkPage";
 import AdvisoryRequestsPage from "./pages/dashboard/AdvisoryRequestsPage";
 import AdvisoryOverviewPage from "./pages/dashboard/advisory/AdvisoryOverviewPage";
 import TranscriptRequestsPage from "./pages/dashboard/advisory/TranscriptRequestsPage";
@@ -113,6 +115,8 @@ const App = () => (
         <AuthProvider>
           <ModuleUnlocksProvider>
           <SubscriptionProvider>
+          <AppNotificationsProvider>
+          <ApprovalBoot />
           <Routes>
             <Route path="/" element={<Navigate to="/auth/login" replace />} />
             <Route path="/publeesh" element={<PubleeshLanding />} />
@@ -176,7 +180,9 @@ const App = () => (
             <Route path="/dashboard/network/applications" element={<P><NetworkApplicationsPage /></P>} />
             <Route path="/dashboard/network/directory" element={<P><DirectoryPage /></P>} />
             <Route path="/dashboard/network/engagements" element={<P><NetworkEngagementsPage /></P>} />
-            <Route path="/dashboard/network/contracts" element={<P><NetworkContractsPage /></P>} />
+            <Route path="/dashboard/network/join" element={<P><JoinNetworkPage /></P>} />
+            {/* Contracts are now part of engagement detail */}
+            <Route path="/dashboard/network/contracts" element={<Navigate to="/dashboard/network/engagements" replace />} />
             {/* Legacy network tab redirect */}
             <Route path="/dashboard/network-legacy" element={<P><NetworkPage /></P>} />
             <Route path="/dashboard/earnings" element={<P><EarningsPage /></P>} />
@@ -242,6 +248,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </AppNotificationsProvider>
           </SubscriptionProvider>
           </ModuleUnlocksProvider>
         </AuthProvider>

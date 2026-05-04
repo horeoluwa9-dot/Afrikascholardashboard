@@ -1,274 +1,216 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from "@/components/ui/table";
-import {
-  Sheet, SheetContent, SheetHeader, SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import {
-  Handshake, Clock, CheckCircle, Search, Eye, ListFilter, Building2, Calendar, User,
-} from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Briefcase, Building2, Eye, Handshake, FileSignature, Wallet, CheckCircle2, Send } from "lucide-react";
 import { toast } from "sonner";
+import { useAppNotifications } from "@/hooks/useAppNotifications";
+
+type EStatus = "pending" | "active" | "submitted" | "completed";
+type PStatus = "in_escrow" | "pending_release" | "paid";
 
 interface Engagement {
-  id: string;
-  title: string;
-  academicPartner: string;
-  institution: string;
-  engagementType: string;
-  startDate: string;
-  endDate: string | null;
-  status: "active" | "completed" | "pending";
-  description: string;
-  progress: number;
+  id: string; title: string; institution: string; type: string; startDate: string;
+  status: EStatus; payment: PStatus; amount: string; scope: string; duration: string; terms: string; role: string;
 }
 
-const DEMO_ENGAGEMENTS: Engagement[] = [
-  {
-    id: "1", title: "AI for Public Health Course", academicPartner: "Dr. Amina Bello",
-    institution: "University of Lagos", engagementType: "Short Course Instructor",
-    startDate: "2026-04-10", endDate: "2026-06-10", status: "active",
-    description: "Development and delivery of a 6-week AI for Public Health course for graduate students.",
-    progress: 35,
-  },
-  {
-    id: "2", title: "Climate Adaptation Policy Research", academicPartner: "Prof. Kwame Asante",
-    institution: "University of Ghana", engagementType: "Research Collaboration",
-    startDate: "2026-02-01", endDate: "2026-07-31", status: "active",
-    description: "Multi-country research study on climate adaptation policies in West Africa.",
-    progress: 60,
-  },
-  {
-    id: "3", title: "Renewable Energy Workshop", academicPartner: "Dr. Fatou Diallo",
-    institution: "Université Cheikh Anta Diop", engagementType: "Workshop Facilitator",
-    startDate: "2025-11-01", endDate: "2026-01-31", status: "completed",
-    description: "Series of workshops on solar energy systems for engineering students.",
-    progress: 100,
-  },
-  {
-    id: "4", title: "Agricultural Data Analysis", academicPartner: "Dr. Ibrahim Sadiq",
-    institution: "University of Nairobi", engagementType: "Advisory Work",
-    startDate: "2026-05-01", endDate: null, status: "pending",
-    description: "Advisory services for agricultural data collection and analysis project.",
-    progress: 0,
-  },
+const SEED: Engagement[] = [
+  { id: "e1", title: "AI & Public Health Course", institution: "African Health Institute", type: "Short Course", startDate: "2026-04-25", status: "pending", payment: "in_escrow", amount: "₦350,000", role: "Course Instructor", scope: "Design and deliver a 6-week course.", duration: "6 weeks", terms: "Standard Afrika Scholar engagement terms apply." },
+  { id: "e2", title: "Energy Policy Advisory", institution: "University of Ghana", type: "Advisory", startDate: "2026-03-01", status: "active", payment: "in_escrow", amount: "₦500,000", role: "Policy Advisor", scope: "Provide expert guidance on national energy policy.", duration: "3 months", terms: "Standard Afrika Scholar engagement terms apply." },
+  { id: "e3", title: "Digital Literacy Curriculum Review", institution: "University of Nairobi", type: "Collaboration", startDate: "2025-09-15", status: "submitted", payment: "pending_release", amount: "₦420,000", role: "Reviewer", scope: "Review and feedback on curriculum.", duration: "4 months", terms: "Standard terms." },
+  { id: "e4", title: "Pan-African Education Index", institution: "African Development Bank", type: "Collaboration", startDate: "2025-04-01", status: "completed", payment: "paid", amount: "₦750,000", role: "Lead Researcher", scope: "Develop standardized education quality metrics.", duration: "6 months", terms: "Standard terms." },
 ];
 
-const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "outline" }> = {
-  active: { label: "Active", variant: "default" },
-  completed: { label: "Completed", variant: "secondary" },
-  pending: { label: "Pending", variant: "outline" },
+const E_STATUS: Record<EStatus, { label: string; cls: string; hint: string }> = {
+  pending: { label: "Pending", cls: "bg-accent/15 text-accent", hint: "Accept to start work" },
+  active: { label: "Active", cls: "bg-primary/15 text-primary", hint: "Continue work" },
+  submitted: { label: "Submitted", cls: "bg-secondary text-foreground", hint: "Waiting for approval" },
+  completed: { label: "Completed", cls: "bg-afrika-green/15 text-afrika-green", hint: "Engagement closed" },
+};
+const P_STATUS: Record<PStatus, { label: string; cls: string }> = {
+  in_escrow: { label: "In Escrow", cls: "bg-secondary text-foreground" },
+  pending_release: { label: "Pending Release", cls: "bg-accent/15 text-accent" },
+  paid: { label: "Paid", cls: "bg-afrika-green/15 text-afrika-green" },
 };
 
-const STATS = [
-  { label: "Active Engagements", value: 8, icon: Handshake, color: "text-accent", bg: "bg-accent/10" },
-  { label: "Completed", value: 22, icon: CheckCircle, color: "text-afrika-green", bg: "bg-afrika-green/10" },
-  { label: "Pending", value: 3, icon: Clock, color: "text-primary", bg: "bg-primary/10" },
-];
+export default function NetworkEngagementsPage() {
+  const [list, setList] = useState<Engagement[]>(SEED);
+  const [view, setView] = useState<Engagement | null>(null);
+  const { add } = useAppNotifications();
 
-const NetworkEngagementsPage = () => {
-  const [selected, setSelected] = useState<Engagement | null>(null);
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const update = (id: string, patch: Partial<Engagement>) => {
+    setList((prev) => prev.map((e) => e.id === id ? { ...e, ...patch } : e));
+    setView((v) => v && v.id === id ? { ...v, ...patch } : v);
+  };
 
-  const filtered = DEMO_ENGAGEMENTS.filter((e) => {
-    const matchSearch = !search || e.title.toLowerCase().includes(search.toLowerCase()) || e.academicPartner.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || e.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  const accept = (e: Engagement) => {
+    update(e.id, { status: "active" });
+    add({ category: "Engagement", title: "Engagement activated", description: `You started "${e.title}"`, link: "/dashboard/network/engagements" });
+    toast.success("Engagement is now Active");
+  };
+  const submitWork = (e: Engagement) => {
+    update(e.id, { status: "submitted", payment: "pending_release" });
+    toast.success("Work submitted — awaiting institution approval");
+  };
+
+  const counts = {
+    pending: list.filter(e => e.status === "pending").length,
+    active: list.filter(e => e.status === "active").length,
+    submitted: list.filter(e => e.status === "submitted").length,
+    completed: list.filter(e => e.status === "completed").length,
+  };
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
+      <div className="max-w-6xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground font-serif">Active Engagements</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Track active academic collaborations and consulting projects.
-          </p>
+          <h1 className="text-2xl font-bold text-foreground font-serif">My Engagements</h1>
+          <p className="text-sm text-muted-foreground mt-1">Track all advisory work, research partnerships, and collaborations.</p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-3">
-          {STATS.map((s) => (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: "Pending", value: counts.pending },
+            { label: "Active", value: counts.active },
+            { label: "Submitted", value: counts.submitted },
+            { label: "Completed", value: counts.completed },
+          ].map(s => (
             <Card key={s.label} className="border-border">
               <CardContent className="pt-4 pb-3 px-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[11px] text-muted-foreground">{s.label}</p>
-                    <p className="text-xl font-bold text-foreground mt-0.5">{s.value}</p>
-                  </div>
-                  <div className={`h-9 w-9 rounded-lg ${s.bg} flex items-center justify-center`}>
-                    <s.icon className={`h-4 w-4 ${s.color}`} />
-                  </div>
-                </div>
+                <p className="text-[11px] text-muted-foreground">{s.label}</p>
+                <p className="text-xl font-bold text-foreground mt-0.5">{s.value}</p>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search engagements..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-[160px]">
-              <ListFilter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Table */}
-        <Card className="border-border">
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Project Title</TableHead>
-                  <TableHead>Academic Partner</TableHead>
-                  <TableHead className="hidden md:table-cell">Engagement Type</TableHead>
-                  <TableHead className="hidden md:table-cell">Start Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map((eng) => {
-                  const st = STATUS_MAP[eng.status];
-                  return (
-                    <TableRow key={eng.id}>
-                      <TableCell className="font-medium text-foreground">{eng.title}</TableCell>
-                      <TableCell className="text-muted-foreground">{eng.academicPartner}</TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">{eng.engagementType}</TableCell>
-                      <TableCell className="hidden md:table-cell text-muted-foreground">
-                        {new Date(eng.startDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                      </TableCell>
-                      <TableCell><Badge variant={st.variant}>{st.label}</Badge></TableCell>
-                      <TableCell className="text-right">
-                        <Button size="sm" variant="ghost" onClick={() => setSelected(eng)}>
-                          <Eye className="h-3.5 w-3.5" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-                {filtered.length === 0 && (
+        {list.length === 0 ? (
+          <Card className="border-border border-dashed">
+            <CardContent className="py-12 text-center space-y-3">
+              <Briefcase className="h-10 w-10 text-muted-foreground/40 mx-auto" />
+              <p className="font-medium text-foreground">You have no engagements yet</p>
+              <Link to="/dashboard/network/opportunities"><Button variant="afrika" size="sm">Browse Opportunities</Button></Link>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="border-border">
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No engagements found.</TableCell>
+                    <TableHead>Project</TableHead>
+                    <TableHead className="hidden md:table-cell">Institution</TableHead>
+                    <TableHead className="hidden lg:table-cell">Start Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Payment</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </div>
+                </TableHeader>
+                <TableBody>
+                  {list.map((e) => {
+                    const s = E_STATUS[e.status];
+                    const p = P_STATUS[e.payment];
+                    return (
+                      <TableRow key={e.id}>
+                        <TableCell>
+                          <p className="text-sm font-medium text-foreground">{e.title}</p>
+                          <p className="text-[11px] text-muted-foreground italic mt-0.5">{s.hint}</p>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          <span className="text-sm text-muted-foreground inline-flex items-center gap-1"><Building2 className="h-3 w-3" />{e.institution}</span>
+                        </TableCell>
+                        <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
+                          {new Date(e.startDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                        </TableCell>
+                        <TableCell><Badge className={`text-[10px] ${s.cls}`}>{s.label}</Badge></TableCell>
+                        <TableCell><Badge className={`text-[10px] ${p.cls}`}>{p.label}</Badge></TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <Button size="sm" variant="ghost" className="h-8 text-xs gap-1" onClick={() => setView(e)}>
+                              <Eye className="h-3 w-3" /> View Details
+                            </Button>
+                            {e.status === "pending" && (
+                              <Button size="sm" variant="afrika" className="h-8 text-xs gap-1" onClick={() => accept(e)}>
+                                <Handshake className="h-3 w-3" /> Accept
+                              </Button>
+                            )}
+                            {e.status === "active" && (
+                              <Button size="sm" variant="afrikaOutline" className="h-8 text-xs gap-1" onClick={() => submitWork(e)}>
+                                <Send className="h-3 w-3" /> Submit Work
+                              </Button>
+                            )}
+                            {e.status === "submitted" && (
+                              <Button size="sm" variant="ghost" disabled className="h-8 text-xs">Waiting Approval</Button>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Engagement Detail Sheet */}
-      <Sheet open={!!selected} onOpenChange={() => setSelected(null)}>
-        <SheetContent className="sm:max-w-lg overflow-y-auto">
-          {selected && (
-            <>
-              <SheetHeader>
-                <SheetTitle className="text-lg">{selected.title}</SheetTitle>
-              </SheetHeader>
-
-              <div className="mt-6 space-y-6">
-                <div className="flex gap-2">
-                  <Badge variant={STATUS_MAP[selected.status].variant}>{STATUS_MAP[selected.status].label}</Badge>
-                  <Badge variant="secondary">{selected.engagementType}</Badge>
-                </div>
-
-                <section className="grid grid-cols-2 gap-4">
-                  <div className="flex items-start gap-2">
-                    <User className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                    <div>
-                      <p className="text-[11px] text-muted-foreground">Academic Partner</p>
-                      <p className="text-sm font-medium text-foreground">{selected.academicPartner}</p>
-                    </div>
+        {/* Detail */}
+        <Sheet open={!!view} onOpenChange={(o) => !o && setView(null)}>
+          <SheetContent className="sm:max-w-lg overflow-y-auto">
+            {view && (
+              <>
+                <SheetHeader>
+                  <SheetTitle>{view.title}</SheetTitle>
+                  <p className="text-sm text-muted-foreground">{view.institution}</p>
+                </SheetHeader>
+                <div className="mt-6 space-y-6">
+                  <div className="flex flex-wrap gap-2">
+                    <Badge className={`text-[10px] ${E_STATUS[view.status].cls}`}>{E_STATUS[view.status].label}</Badge>
+                    <Badge className={`text-[10px] ${P_STATUS[view.payment].cls}`}>{P_STATUS[view.payment].label}</Badge>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <Building2 className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                    <div>
-                      <p className="text-[11px] text-muted-foreground">Institution</p>
-                      <p className="text-sm font-medium text-foreground">{selected.institution}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Calendar className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                    <div>
-                      <p className="text-[11px] text-muted-foreground">Start Date</p>
-                      <p className="text-sm font-medium text-foreground">
-                        {new Date(selected.startDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                      </p>
-                    </div>
-                  </div>
-                  {selected.endDate && (
-                    <div className="flex items-start gap-2">
-                      <Calendar className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                      <div>
-                        <p className="text-[11px] text-muted-foreground">End Date</p>
-                        <p className="text-sm font-medium text-foreground">
-                          {new Date(selected.endDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </section>
 
-                <section>
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Description</h3>
-                  <p className="text-sm text-foreground">{selected.description}</p>
-                </section>
-
-                {selected.status === "active" && (
-                  <section>
-                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Progress</h3>
-                    <div className="flex items-center gap-3">
-                      <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
-                        <div className="h-full bg-accent" style={{ width: `${selected.progress}%` }} />
-                      </div>
-                      <span className="text-sm font-semibold text-foreground">{selected.progress}%</span>
+                  <section className="border border-border rounded-lg p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <FileSignature className="h-4 w-4 text-accent" />
+                      <h3 className="text-sm font-semibold text-foreground">Contract / Agreement</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div><p className="text-xs text-muted-foreground">Role</p><p className="font-medium text-foreground">{view.role}</p></div>
+                      <div><p className="text-xs text-muted-foreground">Duration</p><p className="font-medium text-foreground">{view.duration}</p></div>
+                      <div><p className="text-xs text-muted-foreground">Compensation</p><p className="font-medium text-foreground">{view.amount}</p></div>
+                      <div><p className="text-xs text-muted-foreground">Start</p><p className="font-medium text-foreground">{new Date(view.startDate).toLocaleDateString()}</p></div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Scope of Work</p>
+                      <p className="text-sm text-foreground">{view.scope}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Terms</p>
+                      <p className="text-sm text-foreground">{view.terms}</p>
+                    </div>
+                    <div className="pt-2">
+                      {view.status === "pending" && <Button size="sm" variant="afrika" className="gap-1" onClick={() => accept(view)}><Handshake className="h-3.5 w-3.5" /> Accept Contract</Button>}
+                      {view.status === "active" && <Button size="sm" variant="afrikaOutline" className="gap-1"><FileSignature className="h-3.5 w-3.5" /> View Contract</Button>}
+                      {view.status === "completed" && <Badge variant="secondary" className="text-[10px]">Archived Contract</Badge>}
                     </div>
                   </section>
-                )}
 
-                <div className="flex gap-2 pt-4 border-t border-border">
-                  <Button size="sm" variant="outline" onClick={() => toast.success("Opened project details")}>
-                    View Full Project
-                  </Button>
-                  {selected.status === "active" && (
-                    <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => {
-                      toast.success("Marked as complete");
-                      setSelected(null);
-                    }}>
-                      <CheckCircle className="h-3.5 w-3.5 mr-1.5" /> Mark Complete
-                    </Button>
-                  )}
+                  <section className="border border-border rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Wallet className="h-4 w-4 text-accent" />
+                      <h3 className="text-sm font-semibold text-foreground">Payment</h3>
+                    </div>
+                    <p className="text-sm text-foreground">{view.amount} — <span className="text-muted-foreground">{P_STATUS[view.payment].label}</span></p>
+                  </section>
                 </div>
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
+              </>
+            )}
+          </SheetContent>
+        </Sheet>
+      </div>
     </DashboardLayout>
   );
-};
-
-export default NetworkEngagementsPage;
+}

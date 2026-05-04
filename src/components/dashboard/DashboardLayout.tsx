@@ -86,6 +86,14 @@ const sidebarSections: SidebarSection[] = [
       { title: "Pro Tip", url: "/dashboard/pro-tip", icon: Lightbulb },
     ],
   },
+  // Community visible to all roles
+  {
+    label: "",
+    collapsible: false,
+    items: [
+      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+    ],
+  },
   {
     label: "Publishing",
     collapsible: true,
@@ -117,11 +125,10 @@ const sidebarSections: SidebarSection[] = [
     items: [
       { title: "Overview", url: "/dashboard/network", icon: Globe },
       { title: "Opportunities", url: "/dashboard/network/opportunities", icon: Briefcase },
-      { title: "Applications", url: "/dashboard/network/applications", icon: Inbox },
-      { title: "Directory", url: "/dashboard/network/directory", icon: Users2 },
-      { title: "Engagements", url: "/dashboard/network/engagements", icon: Handshake },
-      { title: "Contracts", url: "/dashboard/network/contracts", icon: FileSignature },
-      { title: "Community", url: "/dashboard/community", icon: MessageCircle },
+      { title: "My Applications", url: "/dashboard/network/applications", icon: Inbox },
+      { title: "My Engagements", url: "/dashboard/network/engagements", icon: Handshake },
+      { title: "Earnings", url: "/dashboard/earnings", icon: Wallet },
+      { title: "Profile", url: "/dashboard/profile", icon: User },
     ],
   },
   {
@@ -134,6 +141,8 @@ const sidebarSections: SidebarSection[] = [
       { title: "Partnership Requests", url: "/dashboard/institutional/partnership-requests", icon: Handshake },
       { title: "Lecturer Requests", url: "/dashboard/institutional/lecturer-requests", icon: GraduationCap },
       { title: "Research Collaboration", url: "/dashboard/institutional/research-collaboration", icon: Users2 },
+      { title: "Applications", url: "/dashboard/institutional/applications", icon: Inbox },
+      { title: "Directory", url: "/dashboard/network/directory", icon: Users2 },
       { title: "Curriculum & Validation", url: "/dashboard/institutional/curriculum", icon: BookOpen },
       { title: "Advisory Support", url: "/dashboard/institutional/advisory-support", icon: Compass },
       { title: "My Requests", url: "/dashboard/institutional/my-requests", icon: ClipboardList },
@@ -399,7 +408,18 @@ function AppSidebar() {
             const extraGrantedTitles = new Set<string>();
             if (reviewerStatus === "approved") extraGrantedTitles.add("Peer Reviews");
             if (editorStatus === "approved") extraGrantedTitles.add("Editor Workspace");
-            return <CollapsibleSidebarGroup key={gi} section={section} collapsed={collapsed} userRole={role} extraGrantedTitles={extraGrantedTitles} />;
+            // Hide capability-gated items when not approved
+            const filteredSection: SidebarSection = section.label === "Publishing"
+              ? {
+                  ...section,
+                  items: section.items.filter((it) => {
+                    if (it.title === "Peer Reviews") return reviewerStatus === "approved";
+                    if (it.title === "Editor Workspace") return editorStatus === "approved";
+                    return true;
+                  }),
+                }
+              : section;
+            return <CollapsibleSidebarGroup key={gi} section={filteredSection} collapsed={collapsed} userRole={role} extraGrantedTitles={extraGrantedTitles} />;
           }
           return (
             <SidebarGroup key={gi}>
@@ -432,9 +452,13 @@ function AppSidebar() {
         <div className="mt-auto border-t border-sidebar-border p-4">
           <Link to="/dashboard/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-sm font-bold">{initial}</div>
-            <div className="text-xs">
-              <p className="font-semibold text-sidebar-foreground">{displayName}</p>
-              <p className="text-sidebar-foreground/50">{badgeLabel}</p>
+            <div className="text-xs min-w-0">
+              <p className="font-semibold text-sidebar-foreground truncate">{displayName}</p>
+              <div className="flex items-center gap-1 flex-wrap">
+                <span className="text-sidebar-foreground/50">{badgeLabel}</span>
+                {reviewerStatus === "approved" && <Badge className="text-[9px] py-0 px-1.5 bg-primary/15 text-primary border-0">Reviewer</Badge>}
+                {editorStatus === "approved" && <Badge className="text-[9px] py-0 px-1.5 bg-accent/15 text-accent border-0">Editor</Badge>}
+              </div>
             </div>
           </Link>
         </div>
