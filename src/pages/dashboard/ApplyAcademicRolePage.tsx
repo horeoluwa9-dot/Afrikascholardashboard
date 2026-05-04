@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -8,10 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { UserCheck, Shield, ArrowRight, Check, ArrowLeft } from "lucide-react";
+import { UserCheck, Shield, ArrowRight, Check, ArrowLeft, Clock } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { usePublishingRoles } from "@/hooks/usePublishingRoles";
+import { usePublishingRoles, scheduleAutoApproval } from "@/hooks/usePublishingRoles";
 import { useModuleUnlocksContext } from "@/contexts/ModuleUnlocksContext";
+import { useAppNotifications } from "@/hooks/useAppNotifications";
+import { useAcademicEligibility } from "@/hooks/useAcademicEligibility";
 import { toast } from "sonner";
 
 type Role = "reviewer" | "editor";
@@ -25,8 +27,10 @@ export default function ApplyAcademicRolePage() {
   const [role, setRole] = useState<Role | null>(initialRole);
 
   const { profile, user } = useAuth();
-  const { setReviewerStatus, setEditorStatus } = usePublishingRoles();
+  const { setReviewerStatus, setEditorStatus, reviewer, editor } = usePublishingRoles();
   const { unlockModule } = useModuleUnlocksContext();
+  const { add } = useAppNotifications();
+  const { eligible } = useAcademicEligibility();
 
   const [form, setForm] = useState({
     fullName: profile?.display_name || "",
@@ -56,14 +60,40 @@ export default function ApplyAcademicRolePage() {
   const submit = async () => {
     if (!role) return;
     await unlockModule("publishing");
-    if (role === "reviewer") setReviewerStatus("approved");
-    else setEditorStatus("approved");
+    if (role === "reviewer") setReviewerStatus("pending");
+    else setEditorStatus("pending");
+    // Schedule auto approval after 30 seconds
+    scheduleAutoApproval(role, () => {
+      add({
+        category: "Approval",
+        title: role === "reviewer" ? "Reviewer access approved" : "Editor access approved",
+        description: role === "reviewer"
+          ? "You've been approved as a Reviewer. You can now start reviewing."
+          : "You've been approved as an Editor. You can now manage journal submissions.",
+        link: role === "reviewer" ? "/dashboard/publishing/reviews" : "/dashboard/publishing/journals",
+      });
+    });
     setStep("success");
-    toast.success("Application submitted — access temporarily enabled for testing.");
+    toast.success("Application submitted — under review.");
   };
 
   const targetLink = role === "editor" ? "/dashboard/publishing/journals" : "/dashboard/publishing/reviews";
   const targetLabel = role === "editor" ? "Open Editorial Workspace" : "Open Peer Review";
+
+  if (!eligible) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-2xl mx-auto bg-card rounded-2xl border border-border p-8 text-center space-y-3">
+          <Shield className="h-8 w-8 text-muted-foreground mx-auto" />
+          <h2 className="text-xl font-bold text-foreground">Not available for your account type</h2>
+          <p className="text-sm text-muted-foreground">
+            Reviewer and Editor roles are reserved for Researchers and Lecturers.
+          </p>
+          <Link to="/dashboard"><Button variant="afrika">Back to dashboard</Button></Link>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -241,22 +271,19 @@ export default function ApplyAcademicRolePage() {
 
         {step === "success" && role && (
           <div className="bg-card rounded-2xl border border-border p-8 text-center space-y-4">
-            <div className="mx-auto h-12 w-12 rounded-full bg-afrika-green/10 text-afrika-green flex items-center justify-center">
-              <Check className="h-6 w-6" />
+            <div className="mx-auto h-12 w-12 rounded-full bg-accent/10 text-accent flex items-center justify-center">
+              <Clock className="h-6 w-6" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-foreground">Application Submitted</h2>
-              <p className="text-sm text-muted-foreground mt-1">
-                Your application has been received and is currently under review.
-              </p>
+              <p className="text-sm text-muted-foreground mt-1">Your application is under review.</p>
             </div>
             <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-xs text-foreground">
-              For now, your access has been temporarily enabled while we complete internal testing.
-              <div className="mt-1"><Badge variant="secondary" className="text-[10px]">Pending Verification</Badge></div>
+              You'll receive a notification as soon as your access is approved (typically within minutes for testing).
+              <div className="mt-1"><Badge variant="secondary" className="text-[10px]">Pending</Badge></div>
             </div>
             <div className="flex flex-wrap justify-center gap-2">
               <Link to="/dashboard"><Button variant="afrika" className="gap-1">Go to Dashboard</Button></Link>
-              <Link to={targetLink}><Button variant="afrikaOutline" className="gap-1">{targetLabel} <ArrowRight className="h-3.5 w-3.5" /></Button></Link>
             </div>
           </div>
         )}
