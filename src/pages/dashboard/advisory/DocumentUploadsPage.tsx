@@ -1,195 +1,171 @@
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileUp, Eye, RefreshCw, File, CheckCircle, Clock, Upload } from "lucide-react";
+import { Upload, FileText, Eye } from "lucide-react";
+import { useAdvisoryCases, DocStatus } from "@/hooks/useAdvisoryCases";
+import { CaseIdPill } from "@/components/dashboard/advisory/StatusBadge";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  upload_date: string;
-  status: string;
-}
-
-const sampleDocs: Document[] = [
-  { id: "d1", name: "BSc Transcript — University of Ibadan", type: "Transcript", upload_date: "2026-03-05", status: "verified" },
-  { id: "d2", name: "Statement of Purpose", type: "Statement", upload_date: "2026-03-03", status: "under_review" },
-  { id: "d3", name: "National ID Card", type: "Identification", upload_date: "2026-03-01", status: "verified" },
-  { id: "d4", name: "BSc Certificate — Makerere University", type: "Certificate", upload_date: "2026-02-20", status: "verified" },
-  { id: "d5", name: "Master's Transcript Draft", type: "Transcript", upload_date: "2026-02-15", status: "pending" },
-];
-
-const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "outline" }> = {
-  verified: { label: "Verified", variant: "default" },
-  under_review: { label: "Under Review", variant: "secondary" },
-  pending: { label: "Pending", variant: "outline" },
+const docStatusStyles: Record<DocStatus, string> = {
+  missing: "bg-red-100 text-red-700",
+  submitted: "bg-blue-100 text-blue-700",
+  under_review: "bg-amber-100 text-amber-700",
+  approved: "bg-emerald-100 text-emerald-700",
+  rejected: "bg-red-100 text-red-700",
+};
+const docStatusLabel: Record<DocStatus, string> = {
+  missing: "Missing", submitted: "Submitted", under_review: "Under Review", approved: "Approved", rejected: "Rejected",
 };
 
-const docTypes = ["Transcript", "Certificate", "Statement", "Identification"];
+export default function DocumentUploadsPage() {
+  const { cases, uploadDoc } = useAdvisoryCases();
+  const [open, setOpen] = useState(false);
+  const [selectedCase, setSelectedCase] = useState<string>("");
+  const [selectedDoc, setSelectedDoc] = useState<string>("");
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string>("");
 
-const DocumentUploadsPage = () => {
-  const [docs] = useState(sampleDocs);
-  const [showUpload, setShowUpload] = useState(false);
-  const [viewDoc, setViewDoc] = useState<Document | null>(null);
-  const [uploadForm, setUploadForm] = useState({ name: "", type: "Transcript" });
+  const allDocs = useMemo(() =>
+    cases.flatMap(c => c.docs.map(d => ({ ...d, caseId: c.id, caseType: c.type }))), [cases]
+  );
 
-  const handleUpload = () => {
-    if (!uploadForm.name) {
-      toast.error("Please enter a document name");
-      return;
-    }
-    toast.success("Document uploaded successfully!");
-    setShowUpload(false);
-    setUploadForm({ name: "", type: "Transcript" });
+  const summary = {
+    total: allDocs.filter(d => d.status !== "missing").length,
+    approved: allDocs.filter(d => d.status === "approved").length,
+    pending: allDocs.filter(d => d.status === "submitted" || d.status === "under_review").length,
+    rejected: allDocs.filter(d => d.status === "rejected").length,
   };
 
-  const stats = [
-    { label: "Total Documents", value: docs.length, icon: File, color: "text-accent", bg: "bg-accent/10" },
-    { label: "Verified", value: docs.filter(d => d.status === "verified").length, icon: CheckCircle, color: "text-afrika-green", bg: "bg-afrika-green/10" },
-    { label: "Pending Review", value: docs.filter(d => d.status !== "verified").length, icon: Clock, color: "text-afrika-orange", bg: "bg-afrika-orange-light" },
-  ];
+  const submit = () => {
+    if (!selectedCase || !selectedDoc || !fileName) { toast.error("Please complete all fields."); return; }
+    uploadDoc(selectedCase, selectedDoc, fileName);
+    toast.success("Document uploaded.");
+    setOpen(false); setSelectedCase(""); setSelectedDoc(""); setFileName("");
+  };
+
+  const docOptionsForCase = (caseId: string) => cases.find(c => c.id === caseId)?.docs || [];
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Document Uploads</h1>
-            <p className="text-sm text-muted-foreground mt-1">Upload and manage documents for your advisory cases.</p>
+            <h1 className="text-2xl font-bold text-foreground">My Documents</h1>
+            <p className="text-sm text-muted-foreground mt-1">All documents across your advisory cases.</p>
           </div>
-          <Button variant="afrika" className="gap-1.5" onClick={() => setShowUpload(true)}>
+          <Button variant="afrika" className="gap-2" onClick={() => setOpen(true)}>
             <Upload className="h-4 w-4" /> Upload Document
           </Button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
-          {stats.map(s => (
-            <Card key={s.label} className="border-border">
-              <CardContent className="pt-5 pb-4 px-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-muted-foreground">{s.label}</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{s.value}</p>
-                  </div>
-                  <div className={`h-10 w-10 rounded-lg ${s.bg} flex items-center justify-center`}>
-                    <s.icon className={`h-5 w-5 ${s.color}`} />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <StatPill label="Total Uploaded" value={summary.total} />
+          <StatPill label="Approved" value={summary.approved} tone="emerald" />
+          <StatPill label="Pending Review" value={summary.pending} tone="amber" />
+          <StatPill label="Rejected" value={summary.rejected} tone="red" />
         </div>
 
-        {/* Supported types */}
-        <div className="flex flex-wrap gap-2">
-          <span className="text-xs text-muted-foreground">Supported:</span>
-          {["Academic transcripts", "Certificates", "Statement of purpose", "Identification documents"].map(t => (
-            <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
-          ))}
-        </div>
-
-        {/* Table */}
-        <div className="bg-card rounded-xl border border-border overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Document Name</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Upload Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {docs.map(d => {
-                const sc = statusConfig[d.status] || statusConfig.pending;
-                return (
-                  <TableRow key={d.id}>
-                    <TableCell className="font-medium text-sm">{d.name}</TableCell>
-                    <TableCell><Badge variant="outline" className="text-[10px]">{d.type}</Badge></TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {new Date(d.upload_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={sc.variant} className="text-[10px]">{sc.label}</Badge>
-                    </TableCell>
-                    <TableCell className="text-right space-x-1">
-                      <Button variant="ghost" size="sm" className="text-xs gap-1" onClick={() => setViewDoc(d)}>
-                        <Eye className="h-3 w-3" /> View
-                      </Button>
-                      <Button variant="ghost" size="sm" className="text-xs gap-1">
-                        <RefreshCw className="h-3 w-3" /> Replace
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+        <Card>
+          {allDocs.length === 0 ? (
+            <CardContent className="py-12 text-center">
+              <FileText className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+              <p className="text-sm text-muted-foreground">No documents uploaded yet. Check your cases for required documents.</p>
+              <Link to="/dashboard/advisory/cases" className="text-primary text-sm hover:underline mt-2 inline-block">Go to My Cases →</Link>
+            </CardContent>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="border-b border-border bg-muted/40">
+                <tr className="text-left text-xs uppercase text-muted-foreground">
+                  <th className="px-4 py-3 font-medium">Document</th>
+                  <th className="px-4 py-3 font-medium">Case</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">File</th>
+                  <th className="px-4 py-3 font-medium" />
+                </tr>
+              </thead>
+              <tbody>
+                {allDocs.map(d => (
+                  <tr key={`${d.caseId}-${d.id}`} className="border-b border-border last:border-0">
+                    <td className="px-4 py-3 font-medium">{d.name}</td>
+                    <td className="px-4 py-3"><CaseIdPill id={d.caseId} /></td>
+                    <td className="px-4 py-3">
+                      <span className={cn("px-2 py-0.5 rounded-md text-xs font-medium", docStatusStyles[d.status])}>
+                        {docStatusLabel[d.status]}
+                      </span>
+                      {d.status === "rejected" && d.rejectionReason && (
+                        <p className="text-xs text-red-600 mt-1">{d.rejectionReason}</p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">{d.fileName || "—"}</td>
+                    <td className="px-4 py-3">
+                      <Link to={`/dashboard/advisory/cases/${d.caseId}`} className="text-primary text-sm hover:underline gap-1 inline-flex items-center">
+                        <Eye className="h-3.5 w-3.5" /> View Case
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </Card>
       </div>
 
-      {/* View Dialog */}
-      <Dialog open={!!viewDoc} onOpenChange={(open) => !open && setViewDoc(null)}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader><DialogTitle>Document Details</DialogTitle></DialogHeader>
-          {viewDoc && (
-            <div className="space-y-3 text-sm">
-              <div><p className="text-muted-foreground text-xs">Name</p><p className="font-medium">{viewDoc.name}</p></div>
-              <div className="grid grid-cols-2 gap-3">
-                <div><p className="text-muted-foreground text-xs">Type</p><Badge variant="outline" className="text-[10px] mt-0.5">{viewDoc.type}</Badge></div>
-                <div><p className="text-muted-foreground text-xs">Status</p>
-                  <Badge variant={statusConfig[viewDoc.status]?.variant || "secondary"} className="text-[10px] mt-0.5">
-                    {statusConfig[viewDoc.status]?.label}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Upload Dialog */}
-      <Dialog open={showUpload} onOpenChange={setShowUpload}>
-        <DialogContent className="max-w-md">
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
           <DialogHeader><DialogTitle>Upload Document</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label>Document Name *</Label>
-              <Input className="mt-1.5" placeholder="e.g. BSc Transcript" value={uploadForm.name} onChange={e => setUploadForm(f => ({ ...f, name: e.target.value }))} />
-            </div>
-            <div>
-              <Label>Document Type</Label>
-              <Select value={uploadForm.type} onValueChange={v => setUploadForm(f => ({ ...f, type: v }))}>
-                <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
+              <label className="text-xs font-medium text-muted-foreground">Case</label>
+              <Select value={selectedCase} onValueChange={(v) => { setSelectedCase(v); setSelectedDoc(""); }}>
+                <SelectTrigger><SelectValue placeholder="Select case" /></SelectTrigger>
                 <SelectContent>
-                  {docTypes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  {cases.map(c => <SelectItem key={c.id} value={c.id}>{c.id} — {c.title}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
-            <div>
-              <Label>File</Label>
-              <div className="mt-1.5 border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-accent/40 transition-colors">
-                <FileUp className="h-8 w-8 text-muted-foreground/40 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground">Click or drag to upload</p>
-                <p className="text-[10px] text-muted-foreground mt-1">PDF, JPG, PNG up to 20MB</p>
+            {selectedCase && (
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Document Type</label>
+                <Select value={selectedDoc} onValueChange={setSelectedDoc}>
+                  <SelectTrigger><SelectValue placeholder="Select document" /></SelectTrigger>
+                  <SelectContent>
+                    {docOptionsForCase(selectedCase).map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
+            )}
+            <div
+              onClick={() => fileRef.current?.click()}
+              className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary"
+            >
+              <Upload className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">{fileName || "Click to browse — PDF, JPG, PNG (max 10MB)"}</p>
+              <input ref={fileRef} type="file" className="hidden" accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => setFileName(e.target.files?.[0]?.name || "")}
+              />
             </div>
-            <Button variant="afrika" className="w-full" onClick={handleUpload}>Upload Document</Button>
           </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="afrika" onClick={submit}>Upload</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </DashboardLayout>
   );
-};
+}
 
-export default DocumentUploadsPage;
+function StatPill({ label, value, tone }: { label: string; value: number; tone?: "emerald" | "amber" | "red" }) {
+  const c = tone === "emerald" ? "text-emerald-600" : tone === "amber" ? "text-amber-600" : tone === "red" ? "text-red-600" : "text-primary";
+  return (
+    <Card><CardContent className="p-4">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className={cn("text-2xl font-bold mt-1", c)}>{value}</p>
+    </CardContent></Card>
+  );
+}
