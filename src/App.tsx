@@ -95,6 +95,8 @@ import StudyInAfricaPage from "./pages/dashboard/advisory/StudyInAfricaPage";
 import AcademicPathwaysPage from "./pages/dashboard/advisory/AcademicPathwaysPage";
 import MyCasesPage from "./pages/dashboard/advisory/MyCasesPage";
 import DocumentUploadsPage from "./pages/dashboard/advisory/DocumentUploadsPage";
+import CaseDetailPage from "./pages/dashboard/advisory/CaseDetailPage";
+import NewAdvisoryRequestPage from "./pages/dashboard/advisory/NewAdvisoryRequestPage";
 import Features from "./pages/Features";
 import InstitutionalDemo from "./pages/InstitutionalDemo";
 import CompliancePage from "./pages/CompliancePage";
@@ -220,6 +222,8 @@ const App = () => (
             <Route path="/dashboard/advisory/study-africa" element={<P><StudyInAfricaPage /></P>} />
             <Route path="/dashboard/advisory/pathways" element={<P><AcademicPathwaysPage /></P>} />
             <Route path="/dashboard/advisory/cases" element={<P><MyCasesPage /></P>} />
+            <Route path="/dashboard/advisory/cases/:id" element={<P><CaseDetailPage /></P>} />
+            <Route path="/dashboard/advisory/new" element={<P><NewAdvisoryRequestPage /></P>} />
             <Route path="/dashboard/advisory/documents" element={<P><DocumentUploadsPage /></P>} />
             <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={["institutional_admin"]}><AdminDashboard /></ProtectedRoute>} />
 
